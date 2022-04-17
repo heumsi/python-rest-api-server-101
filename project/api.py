@@ -1,30 +1,11 @@
-import time
-from typing import Optional, List
+from typing import List
 
-import uvicorn
 from fastapi import FastAPI, HTTPException, status, Query
 from fastapi.responses import PlainTextResponse
-from sqlmodel import Field, SQLModel, create_engine, Session, select
+from sqlmodel import Session, select
 
-
-class Post(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    title: str
-    author: str
-    content: str
-    created_at: Optional[int] = Field(default_factory=time.time)
-    updated_at: Optional[int] = Field(default_factory=time.time)
-
-
-sqlite_file_name = "database.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
-
-engine = create_engine(sqlite_url, echo=True)
-
-
-def create_db_and_tables() -> None:
-    SQLModel.metadata.create_all(engine)
-
+from project.database import engine
+from project.model import Post
 
 app = FastAPI()
 
@@ -36,6 +17,7 @@ def healthcheck() -> str:
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 def create_post(new_post: Post) -> Post:
+
     with Session(engine) as session:
         session.add(new_post)
         session.commit()
@@ -87,12 +69,3 @@ def delete_post(post_id: int) -> None:
             raise HTTPException(status_code=404, detail="Post not found")
         session.delete(post)
         session.commit()
-
-
-def main() -> None:
-    create_db_and_tables()
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
-
-
-if __name__ == "__main__":
-    main()
