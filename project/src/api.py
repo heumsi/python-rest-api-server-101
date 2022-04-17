@@ -1,34 +1,11 @@
-import time
-from typing import Optional, List
+from typing import List
 
-import uvicorn
 from fastapi import FastAPI, HTTPException, status, Query
 from fastapi.responses import PlainTextResponse
-from sqlmodel import Field, SQLModel, create_engine, Session, select
+from sqlmodel import Session, select
 
-
-def get_current_unix_timestamp() -> int:
-    return int(time.time())
-
-
-class Post(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    title: str
-    author: str
-    content: str
-    created_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
-    updated_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
-
-
-sqlite_file_name = "database.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
-
-engine = create_engine(sqlite_url, echo=True)
-
-
-def create_db_and_tables() -> None:
-    SQLModel.metadata.create_all(engine)
-
+from src.database import engine, create_db_and_tables
+from src.model import Post
 
 app = FastAPI()
 
@@ -96,11 +73,3 @@ def delete_post(post_id: int) -> None:
 @app.on_event("startup")
 def handle_startup_event():
     create_db_and_tables()
-
-
-def main() -> None:
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-
-
-if __name__ == "__main__":
-    main()
