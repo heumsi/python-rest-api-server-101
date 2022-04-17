@@ -91,7 +91,7 @@ def delete_post(post_id: int) -> None:
 
 def main() -> None:
     create_db_and_tables()
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
 if __name__ == "__main__":
