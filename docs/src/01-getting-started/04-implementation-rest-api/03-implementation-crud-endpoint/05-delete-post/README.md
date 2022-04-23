@@ -30,7 +30,7 @@ def delete_post(post_id: int) -> None:
 
 지금까지 `app.py` 에 작성한 코드는 다음과 같습니다. (하이라이팅된 부분은 이번 내용을 통해 추가된 부분입니다.)
 
-```python{97-106}
+```python{100-109}
 # app.py
 
 import time
@@ -38,13 +38,16 @@ from typing import Optional
 
 from sqlmodel import Field, SQLModel, create_engine
 
+def get_current_unix_timestamp() -> int:
+    return int(time.time())
+
 class Post(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
     author: str
     content: str
-    created_at: Optional[int] = Field(default_factory=time.time)
-    updated_at: Optional[int] = Field(default_factory=time.time)
+    created_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
+    updated_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
 
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
@@ -118,7 +121,7 @@ def update_post(post_id: int, updated_post: Post) -> Post:
         post = session.get(Post, post_id)
         if not post:
             raise HTTPException(status_code=404, detail="Post not found")
-        post.updated_at = int(time.time())
+        post.updated_at = int(get_current_unix_timestamp())
         updated_post_data = updated_post.dict(exclude_unset=True)
         for key, value in updated_post_data.items():
             setattr(post, key, value)

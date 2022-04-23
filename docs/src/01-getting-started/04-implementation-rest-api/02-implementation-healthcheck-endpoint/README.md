@@ -22,7 +22,7 @@ def healthcheck() -> str:
 
 지금까지 `app.py` 에 작성한 코드는 다음과 같습니다. (하이라이팅된 부분은 이번 내용을 통해 추가된 부분입니다.)
 
-```python{42-47}
+```python{45-50}
 # app.py
 
 import time
@@ -30,13 +30,16 @@ from typing import Optional
 
 from sqlmodel import Field, SQLModel, create_engine
 
+def get_current_unix_timestamp() -> int:
+    return int(time.time())
+
 class Post(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
     author: str
     content: str
-    created_at: Optional[int] = Field(default_factory=time.time)
-    updated_at: Optional[int] = Field(default_factory=time.time)
+    created_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
+    updated_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
 
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"

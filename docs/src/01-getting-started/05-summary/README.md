@@ -16,13 +16,16 @@ from fastapi.responses import PlainTextResponse
 from sqlmodel import Field, SQLModel, create_engine, Session, select
 
 
+def get_current_unix_timestamp() -> int:
+    return int(time.time())
+
 class Post(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
     author: str
     content: str
-    created_at: Optional[int] = Field(default_factory=time.time)
-    updated_at: Optional[int] = Field(default_factory=time.time)
+    created_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
+    updated_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
 
 
 sqlite_file_name = "database.db"
@@ -76,7 +79,7 @@ def update_post(post_id: int, updated_post: Post) -> Post:
         post = session.get(Post, post_id)
         if not post:
             raise HTTPException(status_code=404, detail="Post not found")
-        post.updated_at = int(time.time())
+        post.updated_at = int(get_current_unix_timestamp())
         updated_post_data = updated_post.dict(exclude_unset=True)
         for key, value in updated_post_data.items():
             setattr(post, key, value)
@@ -115,7 +118,7 @@ if __name__ == "__main__":
 
 ## Database 모델 구현 부분
 
-```python{7,10-26}
+```python{7,13-29}
 import time
 from typing import Optional, List
 
@@ -125,13 +128,16 @@ from fastapi.responses import PlainTextResponse
 from sqlmodel import Field, SQLModel, create_engine, Session, select
 
 
+def get_current_unix_timestamp() -> int:
+    return int(time.time())
+
 class Post(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
     author: str
     content: str
-    created_at: Optional[int] = Field(default_factory=time.time)
-    updated_at: Optional[int] = Field(default_factory=time.time)
+    created_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
+    updated_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
 
 
 sqlite_file_name = "database.db"
@@ -185,7 +191,7 @@ def update_post(post_id: int, updated_post: Post) -> Post:
         post = session.get(Post, post_id)
         if not post:
             raise HTTPException(status_code=404, detail="Post not found")
-        post.updated_at = int(time.time())
+        post.updated_at = int(get_current_unix_timestamp())
         updated_post_data = updated_post.dict(exclude_unset=True)
         for key, value in updated_post_data.items():
             setattr(post, key, value)
@@ -228,7 +234,7 @@ if __name__ == "__main__":
 
 ## REST API 구현 부분
 
-```python{1-2,5-7,29-94}
+```python{1-2,5-7,32-97}
 import time
 from typing import Optional, List
 
@@ -238,13 +244,16 @@ from fastapi.responses import PlainTextResponse
 from sqlmodel import Field, SQLModel, create_engine, Session, select
 
 
+def get_current_unix_timestamp() -> int:
+    return int(time.time())
+
 class Post(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
     author: str
     content: str
-    created_at: Optional[int] = Field(default_factory=time.time)
-    updated_at: Optional[int] = Field(default_factory=time.time)
+    created_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
+    updated_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
 
 
 sqlite_file_name = "database.db"
@@ -298,7 +307,7 @@ def update_post(post_id: int, updated_post: Post) -> Post:
         post = session.get(Post, post_id)
         if not post:
             raise HTTPException(status_code=404, detail="Post not found")
-        post.updated_at = int(time.time())
+        post.updated_at = int(get_current_unix_timestamp())
         updated_post_data = updated_post.dict(exclude_unset=True)
         for key, value in updated_post_data.items():
             setattr(post, key, value)
@@ -341,7 +350,7 @@ if __name__ == "__main__":
 
 ## Main 부분
 
-```python{4,97-102}
+```python{4,100-105}
 import time
 from typing import Optional, List
 
@@ -351,13 +360,16 @@ from fastapi.responses import PlainTextResponse
 from sqlmodel import Field, SQLModel, create_engine, Session, select
 
 
+def get_current_unix_timestamp() -> int:
+    return int(time.time())
+
 class Post(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
     author: str
     content: str
-    created_at: Optional[int] = Field(default_factory=time.time)
-    updated_at: Optional[int] = Field(default_factory=time.time)
+    created_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
+    updated_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
 
 
 sqlite_file_name = "database.db"
@@ -411,7 +423,7 @@ def update_post(post_id: int, updated_post: Post) -> Post:
         post = session.get(Post, post_id)
         if not post:
             raise HTTPException(status_code=404, detail="Post not found")
-        post.updated_at = int(time.time())
+        post.updated_at = int(get_current_unix_timestamp())
         updated_post_data = updated_post.dict(exclude_unset=True)
         for key, value in updated_post_data.items():
             setattr(post, key, value)
