@@ -1,3 +1,4 @@
+import time
 from typing import List
 
 from fastapi import FastAPI, HTTPException, status, Query
@@ -5,7 +6,7 @@ from fastapi.responses import PlainTextResponse
 from sqlmodel import Session, select
 
 from src.database import engine
-from src.model import Post
+from src.model import Post, PostBase
 
 app = FastAPI()
 
@@ -16,9 +17,9 @@ def healthcheck() -> str:
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(new_post: Post) -> Post:
-
+def create_post(post_base: PostBase) -> Post:
     with Session(engine) as session:
+        new_post = Post.from_orm(post_base)
         session.add(new_post)
         session.commit()
         session.refresh(new_post)
@@ -44,13 +45,13 @@ def read_posts(offset: int = 0, limit: int = Query(default=100, lte=100)) -> Lis
 
 
 @app.put("/posts/{post_id}", status_code=status.HTTP_200_OK)
-def update_post(post_id: int, updated_post: Post) -> Post:
+def update_post(post_id: int, post_base: PostBase) -> Post:
     with Session(engine) as session:
         post = session.get(Post, post_id)
         if not post:
             raise HTTPException(status_code=404, detail="Post not found")
         post.updated_at = int(time.time())
-        updated_post_data = updated_post.dict(exclude_unset=True)
+        updated_post_data = post_base.dict(exclude_unset=True)
         for key, value in updated_post_data.items():
             setattr(post, key, value)
         session.add(post)
