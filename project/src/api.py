@@ -8,15 +8,28 @@ from src.database import engine, create_db_and_tables
 from src.model import Post, PostPatch
 from src.model import PostBase, get_current_unix_timestamp
 
-app = FastAPI()
+app = FastAPI(
+    title="Project REST API Docs",
+    description="프로젝트 REST API 문서입니다.",
+    version="v1",
+)
 
 
-@app.get("/", response_class=PlainTextResponse, status_code=status.HTTP_200_OK)
+@app.get("/",
+    response_class=PlainTextResponse,
+    status_code=status.HTTP_200_OK,
+    summary="헬스체크용 엔드포인트 입니다.",
+    description="API 서버가 잘 작동하는지 확인합니다.",
+    response_description="API 서버가 잘 작동하고 있습니다.",
+)
 def healthcheck() -> str:
     return "I'm Alive!"
 
 
-@app.post("/posts", status_code=status.HTTP_201_CREATED)
+tags = ["post"]
+
+
+@app.post("/posts", status_code=status.HTTP_201_CREATED, tags=tags)
 def create_post(post_base: PostBase) -> Post:
     with Session(engine) as session:
         new_post = Post.from_orm(post_base)
@@ -26,7 +39,7 @@ def create_post(post_base: PostBase) -> Post:
         return new_post
 
 
-@app.get("/posts/{post_id}", status_code=status.HTTP_200_OK)
+@app.get("/posts/{post_id}", status_code=status.HTTP_200_OK, tags=tags)
 def read_post(post_id: int) -> Post:
     with Session(engine) as session:
         post = session.get(Post, post_id)
@@ -35,7 +48,7 @@ def read_post(post_id: int) -> Post:
         return post
 
 
-@app.get("/posts", status_code=status.HTTP_200_OK)
+@app.get("/posts", status_code=status.HTTP_200_OK, tags=tags)
 def read_posts(offset: int = 0, limit: int = Query(default=100, lte=100)) -> List[Post]:
     with Session(engine) as session:
         statement = select(Post).offset(offset).limit(limit)
@@ -44,7 +57,7 @@ def read_posts(offset: int = 0, limit: int = Query(default=100, lte=100)) -> Lis
         return posts
 
 
-@app.put("/posts/{post_id}", status_code=status.HTTP_200_OK)
+@app.put("/posts/{post_id}", status_code=status.HTTP_200_OK, tags=tags)
 def update_post(post_id: int, post_base: PostBase) -> Post:
     with Session(engine) as session:
         post = session.get(Post, post_id)
@@ -60,7 +73,7 @@ def update_post(post_id: int, post_base: PostBase) -> Post:
         return post
 
 
-@app.patch("/posts/{post_id}", status_code=status.HTTP_200_OK)
+@app.patch("/posts/{post_id}", status_code=status.HTTP_200_OK, tags=tags)
 def path_post(post_id: int, post_patch: PostPatch) -> Post:
     with Session(engine) as session:
         post = session.get(Post, post_id)
@@ -76,7 +89,7 @@ def path_post(post_id: int, post_patch: PostPatch) -> Post:
         return post
 
 
-@app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT, tags=tags)
 def delete_post(post_id: int) -> None:
     with Session(engine) as session:
         statement = select(Post).where(Post.id == post_id)
