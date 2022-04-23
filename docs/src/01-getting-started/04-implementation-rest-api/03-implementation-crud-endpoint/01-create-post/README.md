@@ -62,7 +62,7 @@ def create_post(new_post: Post) -> Post:
 
 지금까지 `app.py` 에 작성한 코드는 다음과 같습니다. (하이라이팅된 부분은 이번 내용을 통해 추가된 부분입니다.)
 
-```python{46-54}
+```python{49-57}
 # app.py
 
 import time
@@ -93,8 +93,11 @@ app = FastAPI()
 
 import uvicorn
 
-def main() -> None:
+@app.on_event("startup")
+def handle_startup_event():
     create_db_and_tables()
+
+def main() -> None:
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 

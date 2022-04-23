@@ -98,9 +98,13 @@ def delete_post(post_id: int) -> None:
         session.commit()
 
 
-def main() -> None:
+@app.on_event("startup")
+def handle_startup_event():
     create_db_and_tables()
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+
+
+def main() -> None:
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
 if __name__ == "__main__":
@@ -203,13 +207,18 @@ def delete_post(post_id: int) -> None:
         session.commit()
 
 
-def main() -> None:
+@app.on_event("startup")
+def handle_startup_event():
     create_db_and_tables()
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+
+
+def main() -> None:
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
 if __name__ == "__main__":
     main()
+
 ```
 
 - `Post` 라고 하는 Database 모델을 정의합니다. 
@@ -219,7 +228,7 @@ if __name__ == "__main__":
 
 ## REST API 구현 부분
 
-```python{1-2,5-7,29-89}
+```python{1-2,5-7,29-94}
 import time
 from typing import Optional, List
 
@@ -311,22 +320,28 @@ def delete_post(post_id: int) -> None:
         session.commit()
 
 
-def main() -> None:
+@app.on_event("startup")
+def handle_startup_event():
     create_db_and_tables()
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+
+
+def main() -> None:
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
 if __name__ == "__main__":
     main()
+
 ```
 
 - `fastapi.FastAPI` 인스턴스를 통해 서버 역할을 할 인스턴스를 만듭니다.
+- `@app..on_event("startup")` 와 같은 데코레이터를 함수 위에 붙임으로써 서버 기동 시 먼저 처리해야할 로직을 추가합니다.
 - `@app.get(...)` 과 같이 데코레이터를 함수 위에 붙임으로써 서버의 엔드포인트를 추가합니다.
 - Database 접근은 `Session` 객체를 통해 하며, 이 객체를 통해 필요한 여러 데이터를 받아오고, 핸들링합니다.
 
 ## Main 부분
 
-```python{4,92-98}
+```python{4,97-102}
 import time
 from typing import Optional, List
 
@@ -418,9 +433,13 @@ def delete_post(post_id: int) -> None:
         session.commit()
 
 
-def main() -> None:
+@app.on_event("startup")
+def handle_startup_event():
     create_db_and_tables()
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+
+
+def main() -> None:
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
 if __name__ == "__main__":
