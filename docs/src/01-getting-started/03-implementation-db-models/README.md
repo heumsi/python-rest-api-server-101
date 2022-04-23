@@ -21,49 +21,58 @@ from typing import Optional
 
 from sqlmodel import Field, SQLModel
 
+def get_current_unix_timestamp() -> int:
+    return int(get_current_unix_timestamp())
+
 class Post(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
     author: str
     content: str
-    created_at: Optional[int] = Field(default_factory=time.time)
-    updated_at: Optional[int] = Field(default_factory=time.time)
+    created_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
+    updated_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
 ```
 
 주요 포인트를 하나씩 살펴보겠습니다.
 
-```python{4,6}
+```python{4,9}
 import time
 from typing import Optional
 
 from sqlmodel import Field, SQLModel
 
+def get_current_unix_timestamp() -> int:
+    return int(get_current_unix_timestamp())
+
 class Post(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
     author: str
     content: str
-    created_at: Optional[int] = Field(default_factory=time.time)
-    updated_at: Optional[int] = Field(default_factory=time.time)
+    created_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
+    updated_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
 ```
 
 - 모델은 클래스로 정의하며, 이 클래스는 `sqlmodel.SQLModel` 클래스를 상속받아야 합니다. 여기서는 `Post` 가 되겠습니다. 
 - `table=True` 옵션을 주면, 이 모델은 Database의 Table로도 생성됩니다.
   - Table 이름은 기본적으로 클래스 이름을 `snake_case` 한 형태로 생성되며, 여기서는 `post` 가 됩니다.
 
-```python{1-2,7-12}
+```python{2-4,10-15}
 import time
 from typing import Optional
 
 from sqlmodel import Field, SQLModel
+
+def get_current_unix_timestamp() -> int:
+    return int(time.time())
 
 class Post(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
     author: str
     content: str
-    created_at: Optional[int] = Field(default_factory=time.time)
-    updated_at: Optional[int] = Field(default_factory=time.time)
+    created_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
+    updated_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
 ```
 
 - `7-12` 라인은 모델이 가지는 속성을 표현합니다. 구체적으로 모델이 담을 데이터 포맷이라고 볼 수 있습니다.
@@ -144,13 +153,16 @@ from typing import Optional
 
 from sqlmodel import Field, SQLModel, create_engine
 
+def get_current_unix_timestamp() -> int:
+    return int(get_current_unix_timestamp())
+
 class Post(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
     author: str
     content: str
-    created_at: Optional[int] = Field(default_factory=time.time)
-    updated_at: Optional[int] = Field(default_factory=time.time)
+    created_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
+    updated_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
 
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
