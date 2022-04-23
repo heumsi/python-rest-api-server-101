@@ -5,7 +5,7 @@ from fastapi.responses import PlainTextResponse
 from sqlmodel import Session, select
 
 from src.database import engine, create_db_and_tables
-from src.model import Post
+from src.model import Post, PostPatch
 from src.model import PostBase, get_current_unix_timestamp
 
 app = FastAPI()
@@ -52,6 +52,22 @@ def update_post(post_id: int, post_base: PostBase) -> Post:
             raise HTTPException(status_code=404, detail="Post not found")
         post.updated_at = get_current_unix_timestamp()
         updated_post_data = post_base.dict(exclude_unset=True)
+        for key, value in updated_post_data.items():
+            setattr(post, key, value)
+        session.add(post)
+        session.commit()
+        session.refresh(post)
+        return post
+
+
+@app.patch("/posts/{post_id}", status_code=status.HTTP_200_OK)
+def path_post(post_id: int, post_patch: PostPatch) -> Post:
+    with Session(engine) as session:
+        post = session.get(Post, post_id)
+        if not post:
+            raise HTTPException(status_code=404, detail="Post not found")
+        post.updated_at = get_current_unix_timestamp()
+        updated_post_data = post_patch.dict(exclude_unset=True)
         for key, value in updated_post_data.items():
             setattr(post, key, value)
         session.add(post)
