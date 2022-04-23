@@ -89,8 +89,12 @@ def delete_post(post_id: int) -> None:
         session.commit()
 
 
-def main() -> None:
+@app.on_event("startup")
+def handle_startup_event():
     create_db_and_tables()
+
+
+def main() -> None:
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
