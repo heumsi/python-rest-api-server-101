@@ -29,7 +29,7 @@ def read_post(post_id: int) -> Post:
 
 지금까지 `app.py` 에 작성한 코드는 다음과 같습니다. (하이라이팅된 부분은 이번 내용을 통해 추가된 부분입니다.)
 
-```python{56-64}
+```python{59-67}
 # app.py
 
 import time
@@ -60,8 +60,11 @@ app = FastAPI()
 
 import uvicorn
 
-def main() -> None:
+@app.on_event("startup")
+def handle_startup_event():
     create_db_and_tables()
+
+def main() -> None:
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
@@ -110,17 +113,17 @@ uvicorn app:app --host "0.0.0.0" --port 8000 --reload
 
 다음처럼 게시글 조회 API 엔드포인트가 추가된 것을 확인할 수 있습니다.
 
-![1.png](1.png)
+![1.png](./1.png)
 
 정말 잘 작동하는지 요청을 한번 날려봅시다.
 
 Try it out 버튼을 누른 뒤 Parameters에 있는 `post_id` 의 값을 `1`로 입력합니다.
 (이 `1`은 우리가 이전에 게시글 생성 - 동작 확인 부분을 통해 만들었던 게시글의 id 입니다.)
 
-![2.png](2.png)
+![2.png](./2.png)
 
 이제 Execute 버튼을 누르면 다음처럼 요청이 가고, 아래 Responses 부분에 응답 값에 대해 확인할 수 있습니다.
 
-![3.png](3.png)
+![3.png](./3.png)
 
 `200` Status Code로 응답이 잘 왔고, Response Body에도 의도한 대로 Json 데이터가 잘 나와있습니다.
