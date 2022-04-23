@@ -7,13 +7,17 @@ from fastapi.responses import PlainTextResponse
 from sqlmodel import Field, SQLModel, create_engine, Session, select
 
 
+def get_current_unix_timestamp() -> int:
+    return int(time.time())
+
+
 class Post(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
     author: str
     content: str
-    created_at: Optional[int] = Field(default_factory=time.time)
-    updated_at: Optional[int] = Field(default_factory=time.time)
+    created_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
+    updated_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
 
 
 sqlite_file_name = "database.db"
