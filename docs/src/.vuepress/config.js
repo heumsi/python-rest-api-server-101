@@ -65,6 +65,18 @@ module.exports = {
           ['/01-getting-started/05-summary/', '정리하기'],
         ]
       },
+      {
+        title: '개선하기',
+        path: '/02-improvement/',
+        collapsable: true,
+        children: [
+          ['/02-improvement/01-refactoring-to-layered-architecture/', 'Layered Architecture로 리팩토링하기'],
+          ['/02-improvement/02-separating-models/', '모델 분리하기'],
+          ['/02-improvement/03-implementation-patch-endpoint/', 'Patch 엔드포인트 구현하기'],
+          ['/02-improvement/04-enriching-model-metadata/', '모델 메타 데이터 풍성하기 하기'],
+          ['/02-improvement/05-enriching-api-metadata/', 'API 메타 데이터 풍성하기 하기'],
+        ]
+      }
     ]
   },
   markdown: {
