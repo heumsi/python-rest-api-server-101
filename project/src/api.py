@@ -2,10 +2,11 @@ from typing import List
 
 from fastapi import FastAPI, HTTPException, status, Query
 from fastapi.responses import PlainTextResponse
+from passlib.context import CryptContext
 from sqlmodel import Session, select
 
 from src.database import engine, create_db_and_tables
-from src.model import Post, PostPatch
+from src.model import Post, PostPatch, User, UserSignup, UserBase
 from src.model import PostBase, get_current_unix_timestamp
 
 app = FastAPI(
@@ -24,6 +25,35 @@ app = FastAPI(
 )
 def healthcheck() -> str:
     return "I'm Alive!"
+
+
+tags = ["auth"]
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+@app.post("/auth/signup", status_code=status.HTTP_201_CREATED, tags=tags)
+def signup(user_signup: UserSignup) -> UserBase:
+    with Session(engine) as session:
+        user = session.get(User, user_signup.id)
+        if user:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User already exist")
+        user_signup.password = pwd_context.hash(user_signup.password)
+        new_user = User.from_orm(user_signup)
+        session.add(new_user)
+        session.commit()
+        return new_user.to_user_base()
+
+
+tags = ["user"]
+
+
+@app.get("/users", status_code=status.HTTP_200_OK, tags=tags)
+def read_users(offset: int = 0, limit: int = Query(default=100, lte=100)) -> List[UserBase]:
+    with Session(engine) as session:
+        statement = select(User).offset(offset).limit(limit)
+        results = session.exec(statement)
+        users = results.all()
+        return [user.to_user_base() for user in users]
 
 
 tags = ["post"]
