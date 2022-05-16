@@ -10,7 +10,7 @@ from pydantic import BaseModel, ValidationError
 from sqlmodel import Session, select
 
 from src.database import engine, create_db_and_tables
-from src.model import Post, PostPatch, User, UserSignup, UserBase
+from src.model import Post, PostPatch, User, UserSignup, UserBase, Role
 from src.model import PostBase, get_current_unix_timestamp
 
 app = FastAPI(
@@ -88,15 +88,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/signin")
 tags = ["user"]
 
 
-@app.get("/users", status_code=status.HTTP_200_OK, tags=tags)
-def read_users(offset: int = 0, limit: int = Query(default=100, lte=100)) -> List[UserBase]:
-    with Session(engine) as session:
-        statement = select(User).offset(offset).limit(limit)
-        results = session.exec(statement)
-        users = results.all()
-        return [user.to_user_base() for user in users]
-
-
 def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     try:
         token_payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=JWT_ALGORITHM)
@@ -114,6 +105,32 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
                 detail="User does not exist",
             )
     return user
+
+
+class GetAuthorizedUser:
+    def __init__(self, allowed_roles: List[Role]) -> None:
+        self._allowed_roles = allowed_roles
+
+    def __call__(self, user: User = Depends(get_current_user)) -> User:
+        if Role(user.role) not in self._allowed_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="User does not authorized"
+            )
+        return user
+
+
+@app.get("/users",
+    dependencies=[Depends(GetAuthorizedUser(allowed_roles=[Role.ADMIN]))],
+    status_code=status.HTTP_200_OK,
+    tags=tags
+)
+def read_users(offset: int = 0, limit: int = Query(default=100, lte=100)) -> List[UserBase]:
+    with Session(engine) as session:
+        statement = select(User).offset(offset).limit(limit)
+        results = session.exec(statement)
+        users = results.all()
+        return [user.to_user_base() for user in users]
 
 
 @app.get("/users/me", tags=tags)
