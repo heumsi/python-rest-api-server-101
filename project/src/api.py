@@ -13,12 +13,6 @@ from src.database import engine, create_db_and_tables
 from src.model import Post, PostPatch, User, UserSignup, UserBase, Role
 from src.model import PostBase, get_current_unix_timestamp
 
-app = FastAPI(
-    title="Project REST API Docs",
-    description="프로젝트 REST API 문서입니다.",
-    version="v1",
-)
-
 
 @app.get("/",
     response_class=PlainTextResponse,
@@ -33,19 +27,6 @@ def healthcheck() -> str:
 
 tags = ["auth"]
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-@app.post("/auth/signup", status_code=status.HTTP_201_CREATED, tags=tags)
-def signup(user_signup: UserSignup) -> UserBase:
-    with Session(engine) as session:
-        user = session.get(User, user_signup.id)
-        if user:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User already exist")
-        user_signup.password = pwd_context.hash(user_signup.password)
-        new_user = User.from_orm(user_signup)
-        session.add(new_user)
-        session.commit()
-        return new_user.to_user_base()
 
 
 class Token(BaseModel):
@@ -236,7 +217,3 @@ def delete_post(
         session.delete(post)
         session.commit()
 
-
-@app.on_event("startup")
-def handle_startup_event():
-    create_db_and_tables()
