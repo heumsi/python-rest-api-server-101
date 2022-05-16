@@ -1,8 +1,12 @@
 from typing import List
 
-from fastapi import FastAPI, HTTPException, status, Query
+from fastapi import FastAPI, HTTPException, status, Query, Depends
 from fastapi.responses import PlainTextResponse
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from jose import jwt, JWTError
+from jose.constants import ALGORITHMS
 from passlib.context import CryptContext
+from pydantic import BaseModel, ValidationError
 from sqlmodel import Session, select
 
 from src.database import engine, create_db_and_tables
@@ -44,6 +48,43 @@ def signup(user_signup: UserSignup) -> UserBase:
         return new_user.to_user_base()
 
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenPayload(BaseModel):
+    user: User
+
+
+JWT_SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+JWT_ALGORITHM = ALGORITHMS.HS256
+
+
+@app.post("/auth/signin", response_model=Token, tags=tags)
+def signin(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
+    with Session(engine) as session:
+        user = session.get(User, form_data.username)
+        if not user:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User does not exist")
+        if not pwd_context.verify(form_data.password, user.password):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Password is incorrect")
+    token_payload = TokenPayload(
+        user=user
+    )
+    jwt_token = jwt.encode(
+        token_payload.dict(), key=JWT_SECRET_KEY, algorithm=JWT_ALGORITHM
+    )
+    token = Token(
+        access_token=jwt_token,
+        token_type="Bearer"
+    )
+    return token
+
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/signin")
+
+
 tags = ["user"]
 
 
@@ -54,6 +95,30 @@ def read_users(offset: int = 0, limit: int = Query(default=100, lte=100)) -> Lis
         results = session.exec(statement)
         users = results.all()
         return [user.to_user_base() for user in users]
+
+
+def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
+    try:
+        token_payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=JWT_ALGORITHM)
+        token_payload = TokenPayload(**token_payload)
+    except (JWTError, ValidationError):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token is not valid",
+        )
+    with Session(engine) as session:
+        user = session.get(User, token_payload.user.id)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User does not exist",
+            )
+    return user
+
+
+@app.get("/users/me", tags=tags)
+def get_me(user: User = Depends(get_current_user)) -> UserBase:
+    return user.to_user_base()
 
 
 tags = ["post"]
