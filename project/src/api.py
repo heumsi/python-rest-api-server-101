@@ -142,9 +142,16 @@ tags = ["post"]
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED, tags=tags)
-def create_post(post_base: PostBase) -> Post:
+def create_post(
+    post_base: PostBase,
+    user: User = Depends(GetAuthorizedUser(allowed_roles=[Role.ADMIN, Role.COMMON]))
+) -> Post:
     with Session(engine) as session:
-        new_post = Post.from_orm(post_base)
+        new_post = Post(
+            title=post_base.title,
+            content=post_base.content,
+            user_id=user.id,
+        )
         session.add(new_post)
         session.commit()
         session.refresh(new_post)
@@ -156,7 +163,7 @@ def read_post(post_id: int) -> Post:
     with Session(engine) as session:
         post = session.get(Post, post_id)
         if not post:
-            raise HTTPException(status_code=404, detail="Post not found")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
         return post
 
 
@@ -170,11 +177,17 @@ def read_posts(offset: int = 0, limit: int = Query(default=100, lte=100)) -> Lis
 
 
 @app.put("/posts/{post_id}", status_code=status.HTTP_200_OK, tags=tags)
-def update_post(post_id: int, post_base: PostBase) -> Post:
+def update_post(
+    post_id: int,
+    post_base: PostBase,
+    user: User = Depends(GetAuthorizedUser(allowed_roles=[Role.ADMIN, Role.COMMON])),
+) -> Post:
     with Session(engine) as session:
         post = session.get(Post, post_id)
         if not post:
-            raise HTTPException(status_code=404, detail="Post not found")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+        if Role(user.role) != Role.ADMIN and post.user_id != user.id:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User does not authorized")
         post.updated_at = get_current_unix_timestamp()
         updated_post_data = post_base.dict(exclude_unset=True)
         for key, value in updated_post_data.items():
@@ -186,11 +199,17 @@ def update_post(post_id: int, post_base: PostBase) -> Post:
 
 
 @app.patch("/posts/{post_id}", status_code=status.HTTP_200_OK, tags=tags)
-def path_post(post_id: int, post_patch: PostPatch) -> Post:
+def path_post(
+    post_id: int,
+    post_patch: PostPatch,
+    user: User = Depends(GetAuthorizedUser(allowed_roles=[Role.ADMIN, Role.COMMON])),
+) -> Post:
     with Session(engine) as session:
         post = session.get(Post, post_id)
         if not post:
-            raise HTTPException(status_code=404, detail="Post not found")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+        if Role(user.role) != Role.ADMIN and post.user_id != user.id:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User does not authorized")
         post.updated_at = get_current_unix_timestamp()
         updated_post_data = post_patch.dict(exclude_unset=True)
         for key, value in updated_post_data.items():
@@ -202,13 +221,18 @@ def path_post(post_id: int, post_patch: PostPatch) -> Post:
 
 
 @app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT, tags=tags)
-def delete_post(post_id: int) -> None:
+def delete_post(
+    post_id: int,
+    user: User = Depends(GetAuthorizedUser(allowed_roles=[Role.ADMIN, Role.COMMON])),
+) -> None:
     with Session(engine) as session:
         statement = select(Post).where(Post.id == post_id)
         results = session.exec(statement)
         post = results.first()
         if not post:
-            raise HTTPException(status_code=404, detail="Post not found")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+        if Role(user.role) != Role.ADMIN and post.user_id != user.id:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User does not authorized")
         session.delete(post)
         session.commit()
 
