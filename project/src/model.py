@@ -1,13 +1,9 @@
-import time
 from enum import Enum
 from typing import Optional
 
 from sqlmodel import SQLModel, Field
 
-
-def get_current_unix_timestamp() -> int:
-    return int(time.time())
-
+from src.models.utils import get_current_unix_timestamp
 
 title_field = Field(description="게시글 제목", min_length=1, max_length=100,)
 user_id_field = Field(description="게시글 작성자의 유저 ID", min_length=1, max_length=30)
