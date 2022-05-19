@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from src.api import auth, users
+from src.api import auth, users, posts
 from src.database import create_db_and_tables
 
 app = FastAPI(
@@ -11,6 +11,7 @@ app = FastAPI(
 
 app.include_router(auth.router)
 app.include_router(users.router)
+app.include_router(posts.router)
 
 
 @app.on_event("startup")
