@@ -9,7 +9,7 @@ from pydantic import BaseModel, ValidationError
 from sqlmodel import Session
 
 from src.database import engine
-from src.model import User, Role
+from src.models.user import Role, User
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

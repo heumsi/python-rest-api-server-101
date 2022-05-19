@@ -4,7 +4,7 @@ from fastapi import Query
 from sqlmodel import Session, select
 
 from src.database import engine
-from src.model import UserBase, User
+from src.models.user import UserBase, User
 
 tags = ["user"]
 

@@ -4,7 +4,7 @@ from starlette import status
 
 from src.api.auth.utils import GetAuthorizedUser
 from src.database import engine
-from src.model import User, Role
+from src.models.user import Role, User
 from src.models.post import PostBase, Post
 from src.models.utils import get_current_unix_timestamp
 

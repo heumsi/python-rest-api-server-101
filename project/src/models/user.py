@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional
 
-from sqlmodel import SQLModel, Field
+from sqlmodel import Field, SQLModel
 
 from src.models.utils import get_current_unix_timestamp
 

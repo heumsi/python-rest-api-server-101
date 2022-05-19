@@ -5,7 +5,7 @@ from sqlmodel import Session
 
 from src.api.auth.utils import pwd_context, Token, JWT_SECRET_KEY, JWT_ALGORITHM, TokenPayload
 from src.database import engine
-from src.model import User
+from src.models.user import User
 
 
 def handle(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
