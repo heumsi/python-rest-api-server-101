@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlmodel import Session
 
 from src.database import engine
-from src.model import Post
+from src.models.post import Post
 
 
 def handle(post_id: int) -> Post:
