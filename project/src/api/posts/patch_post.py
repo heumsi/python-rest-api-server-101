@@ -4,11 +4,11 @@ from starlette import status
 
 from src.api.auth.utils import GetAuthorizedUser
 from src.database import engine
-from src.model import PostPatch, User, Role, Post
+from src.model import User, Role
+from src.models.post import Post, PostPatch
 from src.models.utils import get_current_unix_timestamp
 
 
-# @app.patch("/posts/{post_id}", status_code=status.HTTP_200_OK, tags=tags)
 def handle(
     post_id: int,
     post_patch: PostPatch,

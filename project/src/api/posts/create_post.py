@@ -1,10 +1,10 @@
-# @app.post("/posts", status_code=status.HTTP_201_CREATED, tags=tags)
 from fastapi import Depends
 from sqlmodel import Session
 
 from src.api.auth.utils import GetAuthorizedUser
 from src.database import engine
-from src.model import PostBase, User, Role, Post
+from src.model import User, Role
+from src.models.post import PostBase, Post
 
 
 def handle(

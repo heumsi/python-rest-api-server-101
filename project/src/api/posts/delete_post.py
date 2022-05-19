@@ -1,10 +1,10 @@
-# @app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT, tags=tags)
 from fastapi import Depends, HTTPException, status
 from sqlmodel import Session, select
 
 from src.api.auth.utils import GetAuthorizedUser
 from src.database import engine
-from src.model import User, Role, Post
+from src.model import User, Role
+from src.models.post import Post
 
 
 def handle(
