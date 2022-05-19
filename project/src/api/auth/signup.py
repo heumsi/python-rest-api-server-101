@@ -3,7 +3,7 @@ from sqlmodel import Session
 
 from src.api.auth.utils import pwd_context
 from src.database import engine
-from src.model import UserSignup, UserBase, User
+from src.models.user import UserBase, UserSignup, User
 
 
 def handle(user_signup: UserSignup) -> UserBase:
