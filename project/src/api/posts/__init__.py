@@ -10,6 +10,7 @@ router.add_api_route(
     endpoint=create_post.handle,
     status_code=status.HTTP_201_CREATED,
     summary="게시글을 추가합니다.",
+    response_model=create_post.CreatePostResponse,
 )
 router.add_api_route(
     methods=["GET"],
@@ -17,6 +18,7 @@ router.add_api_route(
     endpoint=read_posts.handle,
     status_code=status.HTTP_200_OK,
     summary="게시글 목록을 조회합니다.",
+    response_model=read_posts.ReadPostsResponse,
 )
 router.add_api_route(
     methods=["GET"],
@@ -24,6 +26,7 @@ router.add_api_route(
     endpoint=read_post.handle,
     status_code=status.HTTP_200_OK,
     summary="게시글을 조회합니다.",
+    response_model=read_post.ReadPostResponse,
 )
 router.add_api_route(
     methods=["PUT"],
@@ -31,6 +34,7 @@ router.add_api_route(
     endpoint=update_post.handle,
     status_code=status.HTTP_200_OK,
     summary="게시글 전체를 수정합니다.",
+    response_model=update_post.UpdatePostResponse,
 )
 router.add_api_route(
     methods=["PATCH"],
@@ -38,6 +42,7 @@ router.add_api_route(
     endpoint=patch_post.handle,
     status_code=status.HTTP_200_OK,
     summary="게시글 일부를 수정합니다.",
+    response_model=patch_post.PatchPostResponse
 )
 router.add_api_route(
     methods=["DELETE"],
