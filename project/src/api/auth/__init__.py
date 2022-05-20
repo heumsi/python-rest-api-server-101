@@ -10,6 +10,7 @@ router.add_api_route(
     endpoint=signup.handle,
     status_code=status.HTTP_201_CREATED,
     summary="새로운 유저로 가입합니다.",
+    response_model=signup.SignUpResponse,
 )
 
 router.add_api_route(
@@ -18,4 +19,5 @@ router.add_api_route(
     endpoint=signin.handle,
     status_code=status.HTTP_200_OK,
     summary="로그인 합니다.",
+    response_model=signin.SigninResponse
 )

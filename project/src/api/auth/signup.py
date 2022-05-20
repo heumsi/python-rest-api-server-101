@@ -1,18 +1,37 @@
 from fastapi import HTTPException, status
+from pydantic import BaseModel
 from sqlmodel import Session
 
 from src.api.auth.utils import pwd_context
 from src.database import engine
-from src.models.user import UserBase, UserSignup, User
+from src.models import user
 
 
-def handle(user_signup: UserSignup) -> UserBase:
+class SignupRequest(BaseModel):
+    id: str = user.id_field
+    name: str = user.name_field
+    password: str = user.password_field
+
+
+class SignUpResponse(BaseModel):
+    id: str = user.id_field
+    name: str = user.name_field
+
+
+def handle(request: SignupRequest) -> SignUpResponse:
     with Session(engine) as session:
-        user = session.get(User, user_signup.id)
-        if user:
+        existing_user = session.get(user.User, request.id)
+        if existing_user:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User already exist")
-        user_signup.password = pwd_context.hash(user_signup.password)
-        new_user = User.from_orm(user_signup)
+        request.password = pwd_context.hash(request.password)
+        new_user = user.User(
+            id=request.id,
+            name=request.name,
+            password=request.password,
+        )
         session.add(new_user)
         session.commit()
-        return new_user.to_user_base()
+        return SignUpResponse(
+            id=new_user.id,
+            name=new_user.name,
+        )

@@ -1,14 +1,20 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
+from pydantic import BaseModel
 from sqlmodel import Session
 
-from src.api.auth.utils import pwd_context, Token, JWT_SECRET_KEY, JWT_ALGORITHM, TokenPayload
+from src.api.auth.utils import pwd_context, JWT_SECRET_KEY, JWT_ALGORITHM, TokenPayload
 from src.database import engine
 from src.models.user import User
 
 
-def handle(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
+class SigninResponse(BaseModel):
+    access_token: str
+    token_type: str
+
+
+def handle(form_data: OAuth2PasswordRequestForm = Depends()) -> SigninResponse:
     with Session(engine) as session:
         user = session.get(User, form_data.username)
         if not user:
@@ -21,9 +27,8 @@ def handle(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
     jwt_token = jwt.encode(
         token_payload.dict(), key=JWT_SECRET_KEY, algorithm=JWT_ALGORITHM
     )
-    token = Token(
+    return SigninResponse(
         access_token=jwt_token,
         token_type="Bearer"
     )
-    return token
 
