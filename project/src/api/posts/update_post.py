@@ -1,30 +1,50 @@
 from fastapi import Depends, HTTPException
+from pydantic import BaseModel
 from sqlmodel import Session
 from starlette import status
 
 from src.api.auth.utils import GetAuthorizedUser
 from src.database import engine
-from src.models.user import Role, User
-from src.models.post import PostBase, Post
+from src.models import post, user
 from src.models.utils import get_current_unix_timestamp
+
+
+class UpdatePostRequest(BaseModel):
+    title: str = post.title_field
+    content: str = post.content_field
+
+
+class UpdatePostResponse(BaseModel):
+    title: str = post.title_field
+    content: str = post.content_field
+    user_id: str = user.id_field
+    created_at: int = post.created_at_field
+    updated_at: int = post.updated_at_field
 
 
 def handle(
     post_id: int,
-    post_base: PostBase,
-    user: User = Depends(GetAuthorizedUser(allowed_roles=[Role.ADMIN, Role.COMMON])),
-) -> Post:
+    request: UpdatePostRequest,
+    current_user: user.User = Depends(GetAuthorizedUser(allowed_roles=[user.Role.ADMIN, user.Role.COMMON])),
+) -> UpdatePostResponse:
     with Session(engine) as session:
-        post = session.get(Post, post_id)
-        if not post:
+        post_to_update = session.get(post.Post, post_id)
+        if not post_to_update:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
-        if Role(user.role) != Role.ADMIN and post.user_id != user.id:
+        if user.Role(current_user.role) != user.Role.ADMIN and post_to_update.user_id != current_user.id:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User does not authorized")
-        post.updated_at = get_current_unix_timestamp()
-        updated_post_data = post_base.dict(exclude_unset=True)
-        for key, value in updated_post_data.items():
-            setattr(post, key, value)
-        session.add(post)
+        post_to_update.updated_at = get_current_unix_timestamp()
+        updated_data = request.dict(exclude_unset=True)
+        for key, value in updated_data.items():
+            setattr(post_to_update, key, value)
+        session.add(post_to_update)
         session.commit()
-        session.refresh(post)
-        return post
+        session.refresh(post_to_update)
+        return UpdatePostResponse(
+            title=post_to_update.title,
+            content=post_to_update.content,
+            user_id=post_to_update.user_id,
+            created_at=post_to_update.created_at,
+            updated_at=post_to_update.updated_at
+        )
+

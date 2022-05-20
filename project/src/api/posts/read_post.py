@@ -1,13 +1,31 @@
 from fastapi import HTTPException, status
+from pydantic import BaseModel
 from sqlmodel import Session
 
 from src.database import engine
+from src.models import post, user
 from src.models.post import Post
 
 
-def handle(post_id: int) -> Post:
+class ReadPostResponse(BaseModel):
+    id: int = post.id_field
+    title: str = post.title_field
+    content: str = post.content_field
+    user_id: str = user.id_field
+    created_at: int = post.created_at_field
+    updated_at: int = post.updated_at_field
+
+
+def handle(post_id: int) -> ReadPostResponse:
     with Session(engine) as session:
-        post = session.get(Post, post_id)
-        if not post:
+        post_to_read = session.get(Post, post_id)
+        if not post_to_read:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
-        return post
+        return ReadPostResponse(
+            id=post_to_read.id,
+            title=post_to_read.title,
+            content=post_to_read.content,
+            user_id=post_to_read.user_id,
+            created_at=post_to_read.created_at,
+            updated_at=post_to_read.updated_at,
+        )
