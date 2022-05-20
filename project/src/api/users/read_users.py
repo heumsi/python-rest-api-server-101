@@ -1,17 +1,26 @@
 from typing import List
 
 from fastapi import Query
+from pydantic import BaseModel
 from sqlmodel import Session, select
 
 from src.database import engine
-from src.models.user import UserBase, User
-
-tags = ["user"]
+from src.models import user
 
 
-def handle(offset: int = 0, limit: int = Query(default=100, lte=100)) -> List[UserBase]:
+class ReadUsersResponse(BaseModel):
+    class Item(BaseModel):
+        id: str = user.id_field
+        name: str = user.name_field
+
+    items: List[Item]
+
+
+def handle(offset: int = 0, limit: int = Query(default=100, lte=100)) -> ReadUsersResponse:
     with Session(engine) as session:
-        statement = select(User).offset(offset).limit(limit)
+        statement = select(user.User).offset(offset).limit(limit)
         results = session.exec(statement)
         users = results.all()
-        return [user.to_user_base() for user in users]
+        return ReadUsersResponse(
+            items=[ReadUsersResponse.Item(id=user_.id, name=user_.name) for user_ in users]
+        )
