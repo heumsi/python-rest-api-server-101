@@ -50,6 +50,36 @@ def headers_with_authorized_common(client) -> Dict[str, str]:
 
 
 @pytest.fixture()
+def headers_with_authorized_common_another(client) -> Dict[str, str]:
+    # given
+    response = client.post(
+        "/auth/signup",
+        json={
+            "id": "hardy",
+            "name": "hardy",
+            "password": "1234",
+        }
+    )
+    assert response.status_code == status.HTTP_201_CREATED
+    response = client.post(
+        "/auth/signin",
+        headers={
+            "content-type": "application/x-www-form-urlencoded",
+        },
+        data={
+            "username": "hardy",
+            "password": "1234",
+        }
+    )
+    assert response.status_code == status.HTTP_200_OK
+    data = response.json()
+    headers = {
+        "Authorization": f"{data['token_type']} {data['access_token']}"
+    }
+    return headers
+
+
+@pytest.fixture()
 def headers_with_authorized_admin(client) -> Dict[str, str]:
     # given
     with Session(engine) as session:
