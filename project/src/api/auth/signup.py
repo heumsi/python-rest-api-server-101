@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from pydantic import BaseModel
 from sqlmodel import Session
 
-from src.api.auth.utils import pwd_context
+from src.api.auth.utils import get_hashed_password
 from src.database import engine
 from src.models import user
 
@@ -23,7 +23,7 @@ def handle(request: SignupRequest) -> SignUpResponse:
         existing_user = session.get(user.User, request.id)
         if existing_user:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User already exist")
-        request.password = pwd_context.hash(request.password)
+        request.password = get_hashed_password(request.password)
         new_user = user.User(
             id=request.id,
             name=request.name,

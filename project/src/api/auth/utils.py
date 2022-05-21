@@ -53,3 +53,7 @@ class GetAuthorizedUser:
                 detail="User does not authorized"
             )
         return user
+
+
+def get_hashed_password(plain_password: str) -> str:
+    return pwd_context.hash(plain_password)
