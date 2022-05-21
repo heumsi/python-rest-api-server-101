@@ -47,3 +47,14 @@ def test_handle_successfully():
             "id": "heumsi",
             "name": "heumsi"
         }
+
+
+def test_handle_unsuccessfully_with_no_auth():
+    with TestClient(app) as client:
+        # when
+        response = client.get(
+            "/users/me",
+        )
+
+        # then
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
