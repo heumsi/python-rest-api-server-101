@@ -13,6 +13,7 @@ class CreatePostReqeust(BaseModel):
 
 
 class CreatePostResponse(BaseModel):
+    id: int = post.id_field
     title: str = post.title_field
     content: str = post.content_field
     user_id: str = user.id_field
@@ -34,6 +35,7 @@ def handle(
         session.commit()
         session.refresh(new_post)
         return CreatePostResponse(
+            id=new_post.id,
             title=new_post.title,
             content=new_post.content,
             user_id=new_post.user_id,
