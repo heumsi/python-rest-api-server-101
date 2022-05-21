@@ -1,37 +1,11 @@
 from fastapi import status
 
 
-def test_handle_successfully(client):
-    # given
-    response = client.post(
-        "/auth/signup",
-        json={
-            "id": "heumsi",
-            "name": "heumsi",
-            "password": "1234",
-        }
-    )
-    assert response.status_code == status.HTTP_201_CREATED
-    response = client.post(
-        "/auth/signin",
-        headers={
-            "content-type": "application/x-www-form-urlencoded",
-        },
-        data={
-            "username": "heumsi",
-            "password": "1234",
-        }
-    )
-    assert response.status_code == status.HTTP_200_OK
-    data = response.json()
-    headers = {
-        "Authorization": f"{data['token_type']} {data['access_token']}"
-    }
-
+def test_handle_successfully(client, headers_with_authorized_common):
     # when
     response = client.get(
         "/users/me",
-        headers=headers
+        headers=headers_with_authorized_common
     )
 
     # then
