@@ -2,7 +2,7 @@ import os
 from typing import Dict
 os.environ["DB_URL"] = "sqlite:///:memory:"
 
-from sqlmodel import Session
+from sqlmodel import Session, SQLModel
 import pytest
 from fastapi.testclient import TestClient
 from fastapi import status
@@ -74,3 +74,10 @@ def headers_with_authorized_admin(client) -> Dict[str, str]:
         "Authorization": f"{data['token_type']} {data['access_token']}"
     }
     return headers
+
+
+@pytest.fixture(autouse=True)
+def setup_and_teardown_db():
+    SQLModel.metadata.create_all(bind=engine)
+    yield
+    SQLModel.metadata.drop_all(bind=engine)
