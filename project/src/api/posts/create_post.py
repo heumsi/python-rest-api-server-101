@@ -30,6 +30,7 @@ def handle(
             title=request.title,
             content=request.content,
             user_id=current_user.id,
+            user=current_user,
         )
         session.add(new_post)
         session.commit()

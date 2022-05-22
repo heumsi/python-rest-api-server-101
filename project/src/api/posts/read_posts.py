@@ -25,6 +25,7 @@ def handle(offset: int = 0, limit: int = Query(default=100, lte=100)) -> ReadPos
                     title=post_to_read.title,
                     content=post_to_read.content,
                     user_id=post_to_read.user_id,
+                    user_name=post_to_read.user.name,
                     created_at=post_to_read.created_at,
                     updated_at=post_to_read.updated_at,
                 )
