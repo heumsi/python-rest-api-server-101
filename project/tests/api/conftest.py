@@ -1,8 +1,6 @@
 import os
 from typing import Dict
 
-from src.models.user import User
-
 os.environ["DB_URL"] = "sqlite:///:memory:"
 
 from sqlmodel import Session, SQLModel
@@ -37,6 +35,20 @@ def common_user() -> user.User:
 
 
 @pytest.fixture()
+def common_another_user() -> user.User:
+    with Session(engine) as session:
+        user_ = user.User(
+            id="hardy",
+            name="hardy",
+            password=get_hashed_password("1234"),
+        )
+        session.add(user_)
+        session.commit()
+        session.refresh(user_)
+    return user_
+
+
+@pytest.fixture()
 def headers_with_authorized_common(client, common_user) -> Dict[str, str]:
     response = client.post(
         "/auth/signin",
@@ -57,24 +69,14 @@ def headers_with_authorized_common(client, common_user) -> Dict[str, str]:
 
 
 @pytest.fixture()
-def headers_with_authorized_common_another(client) -> Dict[str, str]:
-    # given
-    response = client.post(
-        "/auth/signup",
-        json={
-            "id": "hardy",
-            "name": "hardy",
-            "password": "1234",
-        }
-    )
-    assert response.status_code == status.HTTP_201_CREATED
+def headers_with_authorized_common_another(client, common_another_user) -> Dict[str, str]:
     response = client.post(
         "/auth/signin",
         headers={
             "content-type": "application/x-www-form-urlencoded",
         },
         data={
-            "username": "hardy",
+            "username": common_another_user.id,
             "password": "1234",
         }
     )
