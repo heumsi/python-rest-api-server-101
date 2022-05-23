@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from src.api.comments import create_comment, read_comment, read_comments, update_comment
+from src.api.comments import create_comment, read_comment, read_comments, update_comment, delete_comment
 
 router = APIRouter(prefix="/comments", tags=["comments"])
 
@@ -38,4 +38,12 @@ router.add_api_route(
     status_code=status.HTTP_200_OK,
     summary="댓글 전체를 수정합니다.",
     response_model=update_comment.UpdateCommentResponse,
+)
+
+router.add_api_route(
+    methods=["DELETE"],
+    path="/{comment_id}",
+    endpoint=delete_comment.handle,
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="댓글을 삭제합니다.",
 )
