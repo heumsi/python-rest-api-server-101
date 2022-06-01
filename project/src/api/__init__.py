@@ -1,7 +1,7 @@
 from fastapi import FastAPI, status
 from fastapi.responses import PlainTextResponse
 
-from src.api import auth, users, posts, comments
+from src.api import auth, users, posts, comments, feedbacks
 from src.database import create_db_and_tables
 
 app = FastAPI(
@@ -14,6 +14,7 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(posts.router)
 app.include_router(comments.router)
+app.include_router(feedbacks.router)
 
 
 @app.on_event("startup")
