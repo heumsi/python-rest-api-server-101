@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from src.api.feedbacks.posts import create_or_update_post_feedback
+from src.api.feedbacks.posts import create_or_update_post_feedback, get_post_feedbacks
 
 router = APIRouter(prefix="/posts")
 
@@ -17,4 +17,13 @@ router.add_api_route(
             "model": create_or_update_post_feedback.CreatePostFeedbackResponse,
         }
     }
+)
+
+
+router.add_api_route(
+    methods=["GET"],
+    path="/",
+    endpoint=get_post_feedbacks.handle,
+    summary="게시글에 대한 피드백 목록을 조회합니다.",
+    response_model=get_post_feedbacks.GetPostFeedbacksResponse,
 )
