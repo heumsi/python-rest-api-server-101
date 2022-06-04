@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from sqlmodel import Field, SQLModel, Relationship
 
@@ -21,3 +21,5 @@ class Post(SQLModel, table=True):
     updated_at: Optional[int] = updated_at_field
 
     user: User = Relationship()
+    comments: List["Comment"] = Relationship()
+    feedbacks: List["PostFeedback"] = Relationship()

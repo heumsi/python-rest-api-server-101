@@ -21,5 +21,5 @@ class PostFeedback(SQLModel, table=True):
     created_at: int = created_at_field
     updated_at: int = updated_at_field
 
-    post: Post = Relationship()
+    post: Post = Relationship(back_populates="feedbacks")
     user: User = Relationship()
