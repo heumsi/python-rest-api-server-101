@@ -99,6 +99,20 @@ def test_handle_successfully_with_updating_post_feedback(
         "updated_at": data["updated_at"],
     }
 
+    with Session(engine) as session:
+        statement = select(post_feedback.PostFeedback)
+        results = session.exec(statement)
+        post_feedbacks = results.all()
+        assert len(post_feedbacks) == 1
+        assert post_feedbacks[0] == post_feedback.PostFeedback(
+            id=post_feedbacks[0].id,
+            post_id=post_feedbacks[0].post_id,
+            user_id=post_feedbacks[0].user_id,
+            like=False,
+            created_at=post_feedbacks[0].created_at,
+            updated_at=post_feedbacks[0].updated_at,
+        )
+
 
 def test_handle_unsuccessfully_with_no_authentication(client):
     # when
