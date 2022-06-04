@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from src.api.feedbacks.posts import create_or_update_post_feedback, get_post_feedbacks
+from src.api.feedbacks.posts import create_or_update_post_feedback, get_post_feedbacks, delete_post_feedback
 
 router = APIRouter(prefix="/posts")
 
@@ -26,4 +26,13 @@ router.add_api_route(
     endpoint=get_post_feedbacks.handle,
     summary="게시글에 대한 피드백 목록을 조회합니다.",
     response_model=get_post_feedbacks.GetPostFeedbacksResponse,
+)
+
+
+router.add_api_route(
+    methods=["DELETE"],
+    path="/{post_feedback_id}",
+    endpoint=delete_post_feedback.handle,
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="게시글에 대한 피드백을 삭제합니다.",
 )
