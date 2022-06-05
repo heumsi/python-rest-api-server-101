@@ -2,6 +2,7 @@ from typing import List
 
 from fastapi import Query
 from pydantic import BaseModel
+from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 
 from src.api.posts.read_post import ReadPostResponse
@@ -27,7 +28,14 @@ class ReadPostsResponse(BaseModel):
 
 def handle(offset: int = 0, limit: int = Query(default=100, lte=100)) -> ReadPostsResponse:
     with Session(engine) as session:
-        statement = select(post.Post).offset(offset).limit(limit)
+        statement = (
+            select(post.Post).offset(offset).limit(limit)
+            .options(
+                selectinload(post.Post.user),
+                selectinload(post.Post.comments),
+                selectinload(post.Post.feedbacks)
+            )
+        )
         results = session.exec(statement)
         posts_to_read = results.all()
         return ReadPostsResponse(
