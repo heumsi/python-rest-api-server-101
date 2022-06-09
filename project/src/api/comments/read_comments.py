@@ -2,11 +2,12 @@ from typing import List, Optional
 
 from fastapi import Query
 from pydantic import BaseModel
+from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 
 from src.api.comments.read_comment import ReadCommentResponse
 from src.database import engine
-from src.models import comment, post
+from src.models import comment
 
 
 class ReadCommentsResponse(BaseModel):
@@ -19,7 +20,12 @@ def handle(
     limit: int = Query(default=100, lte=100)
 ) -> ReadCommentsResponse:
     with Session(engine) as session:
-        statement = select(comment.Comment).offset(offset).limit(limit)
+        statement = (
+            select(comment.Comment).offset(offset).limit(limit)
+            .options(
+                selectinload(comment.Comment.user)
+            )
+        )
         if post_id:
             statement = statement.where(comment.Comment.post_id == post_id)
         results = session.exec(statement)

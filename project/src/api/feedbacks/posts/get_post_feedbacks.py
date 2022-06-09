@@ -2,6 +2,7 @@ from typing import Optional, List
 
 from fastapi import Query
 from pydantic import BaseModel
+from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 
 from src.database import engine
@@ -29,7 +30,12 @@ def handle(
     limit: int = Query(default=100, lte=100)
 ) -> GetPostFeedbacksResponse:
     with Session(engine) as session:
-        statement = select(post_feedback.PostFeedback).offset(offset).limit(limit)
+        statement = (
+            select(post_feedback.PostFeedback).offset(offset).limit(limit)
+            .options(
+                selectinload(post_feedback.PostFeedback.user),
+            )
+        )
         if post_id:
             statement = statement.where(post_feedback.PostFeedback.post_id == post_id)
         results = session.exec(statement)
