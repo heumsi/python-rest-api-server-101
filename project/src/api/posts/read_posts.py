@@ -5,13 +5,12 @@ from pydantic import BaseModel
 from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 
-from src.api.posts.read_post import ReadPostResponse
 from src.database import engine
 from src.models import post, user
 
 
 class ReadPostsResponse(BaseModel):
-    class Item(BaseModel):
+    class Data(BaseModel):
         id: int = post.id_field
         title: str = post.title_field
         content: str = post.content_field
@@ -23,7 +22,10 @@ class ReadPostsResponse(BaseModel):
         num_dislikes: int
         num_comments: int
 
-    items: List[Item]
+        class Config:
+            title = "ReadPostsResponse.Data"
+
+    data: List[Data]
 
 
 def handle(offset: int = 0, limit: int = Query(default=100, lte=100)) -> ReadPostsResponse:
@@ -39,8 +41,8 @@ def handle(offset: int = 0, limit: int = Query(default=100, lte=100)) -> ReadPos
         results = session.exec(statement)
         posts_to_read = results.all()
         return ReadPostsResponse(
-            items=[
-                ReadPostsResponse.Item(
+            data=[
+                ReadPostsResponse.Data(
                     id=post_to_read.id,
                     title=post_to_read.title,
                     content=post_to_read.content,

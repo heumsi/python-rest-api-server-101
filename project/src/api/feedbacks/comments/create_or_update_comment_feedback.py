@@ -12,20 +12,30 @@ from src.models.utils import get_current_unix_timestamp
 
 
 class BaseResponse(BaseModel):
-    id: int = comment_feedback.id_field
-    comment_id: int = comment.id_field
-    user_id: str = user.id_field
-    like: bool
-    created_at: int = comment_feedback.created_at_field
-    updated_at: int = comment_feedback.updated_at_field
+    class Data(BaseModel):
+        id: int = comment_feedback.id_field
+        comment_id: int = comment.id_field
+        user_id: str = user.id_field
+        like: bool
+        created_at: int = comment_feedback.created_at_field
+        updated_at: int = comment_feedback.updated_at_field
+
+        class Config:
+            title = 'CreateOrUpdateCommentFeedbackBaseResponse.Data'
+
+    data: Data
 
 
 class CreateCommentFeedbackResponse(BaseResponse):
-    pass
+    class Data(BaseResponse.Data):
+        class Config:
+            title = 'CreateCommentFeedbackResponse.Data'
 
 
 class UpdateCommentFeedbackResponse(BaseResponse):
-    pass
+    class Data(BaseResponse.Data):
+        class Config:
+            title = 'UpdateCommentFeedbackResponse.Data'
 
 
 def handle(
@@ -58,12 +68,14 @@ def handle(
 
             response.status_code = status.HTTP_200_OK
             return UpdateCommentFeedbackResponse(
-                id=existing_comment_feedback.id,
-                comment_id=existing_comment_feedback.comment_id,
-                user_id=existing_comment_feedback.user_id,
-                like=existing_comment_feedback.like,
-                created_at=existing_comment_feedback.created_at,
-                updated_at=existing_comment_feedback.updated_at
+                data=UpdateCommentFeedbackResponse.Data(
+                    id=existing_comment_feedback.id,
+                    comment_id=existing_comment_feedback.comment_id,
+                    user_id=existing_comment_feedback.user_id,
+                    like=existing_comment_feedback.like,
+                    created_at=existing_comment_feedback.created_at,
+                    updated_at=existing_comment_feedback.updated_at
+                )
             )
         else:
             if like_or_dislike == "like":
@@ -83,10 +95,12 @@ def handle(
 
             response.status_code = status.HTTP_201_CREATED
             return CreateCommentFeedbackResponse(
-                id=new_comment_feedback.id,
-                comment_id=new_comment_feedback.comment_id,
-                user_id=new_comment_feedback.user_id,
-                like=new_comment_feedback.like,
-                created_at=new_comment_feedback.created_at,
-                updated_at=new_comment_feedback.updated_at
+                data=CreateCommentFeedbackResponse.Data(
+                    id=new_comment_feedback.id,
+                    comment_id=new_comment_feedback.comment_id,
+                    user_id=new_comment_feedback.user_id,
+                    like=new_comment_feedback.like,
+                    created_at=new_comment_feedback.created_at,
+                    updated_at=new_comment_feedback.updated_at
+                )
             )

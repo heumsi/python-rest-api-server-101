@@ -10,8 +10,14 @@ from src.models.user import User
 
 
 class SigninResponse(BaseModel):
-    access_token: str
-    token_type: str
+    class Data(BaseModel):
+        access_token: str
+        token_type: str
+
+        class Config:
+            title = "SigninResponse.Data"
+
+    data: Data
 
 
 def handle(form_data: OAuth2PasswordRequestForm = Depends()) -> SigninResponse:
@@ -28,7 +34,9 @@ def handle(form_data: OAuth2PasswordRequestForm = Depends()) -> SigninResponse:
         token_payload.dict(), key=JWT_SECRET_KEY, algorithm=JWT_ALGORITHM
     )
     return SigninResponse(
-        access_token=jwt_token,
-        token_type="Bearer"
+        data=SigninResponse.Data(
+            access_token=jwt_token,
+            token_type="Bearer"
+        )
     )
 

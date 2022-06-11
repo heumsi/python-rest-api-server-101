@@ -43,29 +43,28 @@ def test_handle_successfully(client, common_user, common_another_user):
 
     # then
     assert response.status_code == status.HTTP_200_OK
-    data = response.json()
-    assert data == {
-        "items": [
-            {
-                "id": 1,
-                "post_id": post_.id,
-                "content": "테스트 내용 1",
-                "created_at": data['items'][0]["created_at"],
-                "updated_at": data['items'][0]["updated_at"],
-                "user_id": common_user.id,
-                "user_name": common_user.name,
-            },
-            {
-                "id": 2,
-                "post_id": post_.id,
-                "content": "테스트 내용 2",
-                "created_at": data['items'][0]["created_at"],
-                "updated_at": data['items'][0]["updated_at"],
-                "user_id": common_another_user.id,
-                "user_name": common_another_user.name,
-            },
-        ]
-    }
+    json_data = response.json()
+    data = json_data.get("data")
+    assert data == [
+        {
+            "id": 1,
+            "post_id": post_.id,
+            "content": "테스트 내용 1",
+            "created_at": data[0]["created_at"],
+            "updated_at": data[0]["updated_at"],
+            "user_id": common_user.id,
+            "user_name": common_user.name,
+        },
+        {
+            "id": 2,
+            "post_id": post_.id,
+            "content": "테스트 내용 2",
+            "created_at": data[0]["created_at"],
+            "updated_at": data[0]["updated_at"],
+            "user_id": common_another_user.id,
+            "user_name": common_another_user.name,
+        },
+    ]
 
 
 def test_handle_successfully_with_params_including_post_id(client, common_user):
@@ -120,17 +119,16 @@ def test_handle_successfully_with_params_including_post_id(client, common_user):
 
     # then
     assert response.status_code == status.HTTP_200_OK
-    data = response.json()
-    assert data == {
-        "items": [
-            {
-                "id": comment_1.id,
-                "post_id": comment_1.post_id,
-                "content": "테스트 내용 1",
-                "created_at": data['items'][0]["created_at"],
-                "updated_at": data['items'][0]["updated_at"],
-                "user_id": common_user.id,
-                "user_name": common_user.name,
-            },
-        ]
-    }
+    json_data = response.json()
+    data = json_data.get("data")
+    assert data == [
+        {
+            "id": comment_1.id,
+            "post_id": comment_1.post_id,
+            "content": "테스트 내용 1",
+            "created_at": data[0]["created_at"],
+            "updated_at": data[0]["updated_at"],
+            "user_id": common_user.id,
+            "user_name": common_user.name,
+        },
+    ]

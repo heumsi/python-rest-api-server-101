@@ -11,7 +11,7 @@ from src.models import comment
 
 
 class ReadCommentsResponse(BaseModel):
-    items: List[ReadCommentResponse]
+    data: List[ReadCommentResponse.Data]
 
 
 def handle(
@@ -31,8 +31,8 @@ def handle(
         results = session.exec(statement)
         comments_to_read = results.all()
         return ReadCommentsResponse(
-            items=[
-                ReadCommentResponse(
+            data=[
+                ReadCommentResponse.Data(
                     id=comment_to_read.id,
                     post_id=comment_to_read.post_id,
                     content=comment_to_read.content,

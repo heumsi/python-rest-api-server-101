@@ -35,7 +35,8 @@ def test_handle_successfully(client, common_user):
 
     # then
     assert response.status_code == status.HTTP_200_OK
-    data = response.json()
+    json_data = response.json()
+    data = json_data.get("data")
     assert data == {
         "id": comment_.id,
         "post_id": post_.id,

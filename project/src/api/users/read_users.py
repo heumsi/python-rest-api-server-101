@@ -9,11 +9,14 @@ from src.models import user
 
 
 class ReadUsersResponse(BaseModel):
-    class Item(BaseModel):
+    class Data(BaseModel):
         id: str = user.id_field
         name: str = user.name_field
 
-    items: List[Item]
+        class Config:
+            title = "ReadUsersResponse.Data"
+
+    data: List[Data]
 
 
 def handle(offset: int = 0, limit: int = Query(default=100, lte=100)) -> ReadUsersResponse:
@@ -22,5 +25,11 @@ def handle(offset: int = 0, limit: int = Query(default=100, lte=100)) -> ReadUse
         results = session.exec(statement)
         users = results.all()
         return ReadUsersResponse(
-            items=[ReadUsersResponse.Item(id=user_.id, name=user_.name) for user_ in users]
+            data=[
+                ReadUsersResponse.Data(
+                    id=user_.id,
+                    name=user_.name
+                )
+                for user_ in users
+            ]
         )

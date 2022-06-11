@@ -13,12 +13,18 @@ class CreatePostReqeust(BaseModel):
 
 
 class CreatePostResponse(BaseModel):
-    id: int = post.id_field
-    title: str = post.title_field
-    content: str = post.content_field
-    user_id: str = user.id_field
-    created_at: int = post.created_at_field
-    updated_at: int = post.updated_at_field
+    class Data(BaseModel):
+        id: int = post.id_field
+        title: str = post.title_field
+        content: str = post.content_field
+        user_id: str = user.id_field
+        created_at: int = post.created_at_field
+        updated_at: int = post.updated_at_field
+
+        class Config:
+            title = 'CreatePostResponse.Data'
+
+    data: Data
 
 
 def handle(
@@ -36,10 +42,12 @@ def handle(
         session.commit()
         session.refresh(new_post)
         return CreatePostResponse(
-            id=new_post.id,
-            title=new_post.title,
-            content=new_post.content,
-            user_id=new_post.user_id,
-            created_at=new_post.created_at,
-            updated_at=new_post.updated_at
+            data=CreatePostResponse.Data(
+                id=new_post.id,
+                title=new_post.title,
+                content=new_post.content,
+                user_id=new_post.user_id,
+                created_at=new_post.created_at,
+                updated_at=new_post.updated_at
+            )
         )

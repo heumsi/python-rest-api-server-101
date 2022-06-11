@@ -15,12 +15,18 @@ class UpdatePostRequest(BaseModel):
 
 
 class UpdatePostResponse(BaseModel):
-    id: int = post.id_field
-    title: str = post.title_field
-    content: str = post.content_field
-    user_id: str = user.id_field
-    created_at: int = post.created_at_field
-    updated_at: int = post.updated_at_field
+    class Data(BaseModel):
+        id: int = post.id_field
+        title: str = post.title_field
+        content: str = post.content_field
+        user_id: str = user.id_field
+        created_at: int = post.created_at_field
+        updated_at: int = post.updated_at_field
+
+        class Config:
+            title = "UpdatePostResponse.Data"
+
+    data: Data
 
 
 def handle(
@@ -42,11 +48,13 @@ def handle(
         session.commit()
         session.refresh(post_to_update)
         return UpdatePostResponse(
-            id=post_to_update.id,
-            title=post_to_update.title,
-            content=post_to_update.content,
-            user_id=post_to_update.user_id,
-            created_at=post_to_update.created_at,
-            updated_at=post_to_update.updated_at
+            data=UpdatePostResponse.Data(
+                id=post_to_update.id,
+                title=post_to_update.title,
+                content=post_to_update.content,
+                user_id=post_to_update.user_id,
+                created_at=post_to_update.created_at,
+                updated_at=post_to_update.updated_at
+            )
         )
 

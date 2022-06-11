@@ -12,20 +12,30 @@ from src.models.utils import get_current_unix_timestamp
 
 
 class BaseResponse(BaseModel):
-    id: int = post_feedback.id_field
-    post_id: int = post.id_field
-    user_id: str = user.id_field
-    like: bool
-    created_at: int = post_feedback.created_at_field
-    updated_at: int = post_feedback.updated_at_field
+    class Data(BaseModel):
+        id: int = post_feedback.id_field
+        post_id: int = post.id_field
+        user_id: str = user.id_field
+        like: bool
+        created_at: int = post_feedback.created_at_field
+        updated_at: int = post_feedback.updated_at_field
+
+        class Config:
+            title = 'CreateOrUpdatePostFeedbackBaseResponse.Data'
+
+    data: Data
 
 
 class CreatePostFeedbackResponse(BaseResponse):
-    pass
+    class Data(BaseResponse.Data):
+        class Config:
+            title = 'CreatePostFeedbackResponse.Data'
 
 
 class UpdatePostFeedbackResponse(BaseResponse):
-    pass
+    class Data(BaseResponse.Data):
+        class Config:
+            title = 'UpdatePostFeedbackResponse.Data'
 
 
 def handle(
@@ -58,12 +68,14 @@ def handle(
 
             response.status_code = status.HTTP_200_OK
             return UpdatePostFeedbackResponse(
-                id=existing_post_feedback.id,
-                post_id=existing_post_feedback.post_id,
-                user_id=existing_post_feedback.user_id,
-                like=existing_post_feedback.like,
-                created_at=existing_post_feedback.created_at,
-                updated_at=existing_post_feedback.updated_at
+                data=UpdatePostFeedbackResponse.Data(
+                    id=existing_post_feedback.id,
+                    post_id=existing_post_feedback.post_id,
+                    user_id=existing_post_feedback.user_id,
+                    like=existing_post_feedback.like,
+                    created_at=existing_post_feedback.created_at,
+                    updated_at=existing_post_feedback.updated_at
+                )
             )
         else:
             if like_or_dislike == "like":
@@ -83,10 +95,12 @@ def handle(
 
             response.status_code = status.HTTP_201_CREATED
             return CreatePostFeedbackResponse(
-                id=new_post_feedback.id,
-                post_id=new_post_feedback.post_id,
-                user_id=new_post_feedback.user_id,
-                like=new_post_feedback.like,
-                created_at=new_post_feedback.created_at,
-                updated_at=new_post_feedback.updated_at
+                data=CreatePostFeedbackResponse.Data(
+                    id=new_post_feedback.id,
+                    post_id=new_post_feedback.post_id,
+                    user_id=new_post_feedback.user_id,
+                    like=new_post_feedback.like,
+                    created_at=new_post_feedback.created_at,
+                    updated_at=new_post_feedback.updated_at
+                )
             )

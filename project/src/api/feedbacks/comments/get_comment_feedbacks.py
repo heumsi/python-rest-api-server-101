@@ -10,18 +10,20 @@ from src.models import comment, user
 from src.models.feedbacks import comment_feedback
 
 
-class GetCommentFeedbackResponse(BaseModel):
-    id: int = comment_feedback.id_field
-    comment_id: int = comment.id_field
-    user_id: str = user.id_field
-    user_name: str = user.name_field
-    like: bool
-    created_at: int = comment_feedback.created_at_field
-    updated_at: int = comment_feedback.updated_at_field
-
-
 class GetCommentFeedbacksResponse(BaseModel):
-    items: List[GetCommentFeedbackResponse]
+    class Data(BaseModel):
+        id: int = comment_feedback.id_field
+        comment_id: int = comment.id_field
+        user_id: str = user.id_field
+        user_name: str = user.name_field
+        like: bool
+        created_at: int = comment_feedback.created_at_field
+        updated_at: int = comment_feedback.updated_at_field
+
+        class Config:
+            title = 'GetCommentFeedbacksResponse.Data'
+
+    data: List[Data]
 
 
 def handle(
@@ -41,8 +43,8 @@ def handle(
         results = session.exec(statement)
         comment_feedbacks_to_read = results.all()
         return GetCommentFeedbacksResponse(
-            items=[
-                GetCommentFeedbackResponse(
+            data=[
+                GetCommentFeedbacksResponse.Data(
                     id=comment_feedback_to_read.id,
                     comment_id=comment_feedback_to_read.comment_id,
                     user_id=comment_feedback_to_read.user_id,

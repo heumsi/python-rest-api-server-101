@@ -14,8 +14,14 @@ class SignupRequest(BaseModel):
 
 
 class SignUpResponse(BaseModel):
-    id: str = user.id_field
-    name: str = user.name_field
+    class Data(BaseModel):
+        id: str = user.id_field
+        name: str = user.name_field
+
+        class Config:
+            title = "SignUpResponse.Data"
+
+    data: Data
 
 
 def handle(request: SignupRequest) -> SignUpResponse:
@@ -32,6 +38,8 @@ def handle(request: SignupRequest) -> SignUpResponse:
         session.add(new_user)
         session.commit()
         return SignUpResponse(
-            id=new_user.id,
-            name=new_user.name,
+            data=SignUpResponse.Data(
+                id=new_user.id,
+                name=new_user.name,
+            )
         )

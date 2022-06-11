@@ -96,44 +96,43 @@ def test_handle_successfully(
 
     # then
     assert response.status_code == status.HTTP_200_OK
-    data = response.json()
-    assert data == {
-        'items': [
-            {
-                'id': 1,
-                'comment_id': comment_1.id,
-                'user_id': common_user.id,
-                'user_name': common_user.name,
-                'like': True,
-                'created_at': data['items'][0]['created_at'],
-                'updated_at': data['items'][0]['updated_at'],
-            }, {
-                'id': 2,
-                'comment_id': comment_1.id,
-                'user_id': common_another_user.id,
-                'user_name': common_another_user.name,
-                'like': False,
-                'created_at': data['items'][1]['created_at'],
-                'updated_at': data['items'][1]['updated_at'],
-            }, {
-                'id': 3,
-                'comment_id': comment_2.id,
-                'user_id': common_user.id,
-                'user_name': common_user.name,
-                'like': True,
-                'created_at': data['items'][2]['created_at'],
-                'updated_at': data['items'][2]['updated_at'],
-            }, {
-                'id': 4,
-                'comment_id': comment_2.id,
-                'user_id': common_another_user.id,
-                'user_name': common_another_user.name,
-                'like': False,
-                'created_at': data['items'][3]['created_at'],
-                'updated_at': data['items'][3]['updated_at'],
-            }
-        ]
-    }
+    json_data = response.json()
+    data = json_data.get("data")
+    assert data == [
+        {
+            'id': 1,
+            'comment_id': comment_1.id,
+            'user_id': common_user.id,
+            'user_name': common_user.name,
+            'like': True,
+            'created_at': data[0]['created_at'],
+            'updated_at': data[0]['updated_at'],
+        }, {
+            'id': 2,
+            'comment_id': comment_1.id,
+            'user_id': common_another_user.id,
+            'user_name': common_another_user.name,
+            'like': False,
+            'created_at': data[1]['created_at'],
+            'updated_at': data[1]['updated_at'],
+        }, {
+            'id': 3,
+            'comment_id': comment_2.id,
+            'user_id': common_user.id,
+            'user_name': common_user.name,
+            'like': True,
+            'created_at': data[2]['created_at'],
+            'updated_at': data[2]['updated_at'],
+        }, {
+            'id': 4,
+            'comment_id': comment_2.id,
+            'user_id': common_another_user.id,
+            'user_name': common_another_user.name,
+            'like': False,
+            'created_at': data[3]['created_at'],
+            'updated_at': data[3]['updated_at'],
+        }
+    ]
 
 
 def test_handle_successfully_with_specific_post_id(
@@ -228,27 +227,26 @@ def test_handle_successfully_with_specific_post_id(
 
     # then
     assert response.status_code == status.HTTP_200_OK
-    data = response.json()
-    assert data == {
-        "items": [
-            {
-                "id": data["items"][0]["id"],
-                "user_id": common_user.id,
-                "user_name": common_user.name,
-                "comment_id": comment_1.id,
-                "like": True,
-                "created_at": data["items"][0]["created_at"],
-                "updated_at": data["items"][0]["updated_at"],
-            },
-            {
-                "id": data["items"][1]["id"],
-                "user_id": common_another_user.id,
-                "user_name": common_another_user.name,
-                "comment_id": comment_1.id,
-                "like": False,
-                "created_at": data["items"][1]["created_at"],
-                "updated_at": data["items"][1]["updated_at"],
-            }
-        ],
-    }
+    json_data = response.json()
+    data = json_data.get("data")
+    assert data == [
+        {
+            "id": data[0]["id"],
+            "user_id": common_user.id,
+            "user_name": common_user.name,
+            "comment_id": comment_1.id,
+            "like": True,
+            "created_at": data[0]["created_at"],
+            "updated_at": data[0]["updated_at"],
+        },
+        {
+            "id": data[1]["id"],
+            "user_id": common_another_user.id,
+            "user_name": common_another_user.name,
+            "comment_id": comment_1.id,
+            "like": False,
+            "created_at": data[1]["created_at"],
+            "updated_at": data[1]["updated_at"],
+        }
+    ]
 

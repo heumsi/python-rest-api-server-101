@@ -13,12 +13,18 @@ class CreateCommentReqeust(BaseModel):
 
 
 class CreateCommentResponse(BaseModel):
-    id: int = comment.id_field
-    content: str = comment.content_field
-    post_id: int = post.id_field
-    user_id: str = user.id_field
-    created_at: int = comment.created_at_field
-    updated_at: int = comment.updated_at_field
+    class Data(BaseModel):
+        id: int = comment.id_field
+        content: str = comment.content_field
+        post_id: int = post.id_field
+        user_id: str = user.id_field
+        created_at: int = comment.created_at_field
+        updated_at: int = comment.updated_at_field
+
+        class Config:
+            title = 'CreateCommentResponse.Data'
+
+    data: Data
 
 
 def handle(
@@ -40,10 +46,12 @@ def handle(
         session.commit()
         session.refresh(new_comment)
         return CreateCommentResponse(
-            id=new_comment.id,
-            content=new_comment.content,
-            post_id=new_comment.post_id,
-            user_id=new_comment.user_id,
-            created_at=new_comment.created_at,
-            updated_at=new_comment.updated_at
+            data=CreateCommentResponse.Data(
+                id=new_comment.id,
+                content=new_comment.content,
+                post_id=new_comment.post_id,
+                user_id=new_comment.user_id,
+                created_at=new_comment.created_at,
+                updated_at=new_comment.updated_at
+            )
         )

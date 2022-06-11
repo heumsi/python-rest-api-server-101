@@ -10,7 +10,9 @@ def test_handle_successfully(client, headers_with_authorized_common):
 
     # then
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {
+    json_data = response.json()
+    data = json_data.get("data")
+    assert data == {
         "id": "heumsi",
         "name": "heumsi"
     }

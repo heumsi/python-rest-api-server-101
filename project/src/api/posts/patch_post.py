@@ -17,12 +17,18 @@ class PatchPostRequest(BaseModel):
 
 
 class PatchPostResponse(BaseModel):
-    id: int = post.id_field
-    title: str = post.title_field
-    content: str = post.content_field
-    user_id: str = user.id_field
-    created_at: int = post.created_at_field
-    updated_at: int = post.updated_at_field
+    class Data(BaseModel):
+        id: int = post.id_field
+        title: str = post.title_field
+        content: str = post.content_field
+        user_id: str = user.id_field
+        created_at: int = post.created_at_field
+        updated_at: int = post.updated_at_field
+
+        class Config:
+            title = 'PatchPostResponse.Data'
+
+    data: Data
 
 
 def handle(
@@ -44,10 +50,12 @@ def handle(
         session.commit()
         session.refresh(post_to_patch)
         return PatchPostResponse(
-            id=post_to_patch.id,
-            title=post_to_patch.title,
-            content=post_to_patch.content,
-            user_id=post_to_patch.user_id,
-            created_at=post_to_patch.created_at,
-            updated_at=post_to_patch.updated_at
+            data=PatchPostResponse.Data(
+                id=post_to_patch.id,
+                title=post_to_patch.title,
+                content=post_to_patch.content,
+                user_id=post_to_patch.user_id,
+                created_at=post_to_patch.created_at,
+                updated_at=post_to_patch.updated_at
+            )
         )

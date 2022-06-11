@@ -67,32 +67,31 @@ def test_handle_successfully(client, common_user):
 
     # then
     assert response.status_code == status.HTTP_200_OK
-    data = response.json()
-    assert data == {
-        "items": [
-            {
-                "id": post_1.id,
-                "title": "테스트 제목",
-                "content": "테스트 내용",
-                "created_at": data['items'][0]["created_at"],
-                "updated_at": data['items'][0]["updated_at"],
-                "user_id": common_user.id,
-                "user_name": common_user.name,
-                "num_likes": 1,
-                "num_dislikes": 0,
-                "num_comments": 1,
-            },
-            {
-                "id": post_2.id,
-                "title": "테스트 제목",
-                "content": "테스트 내용",
-                "created_at": data['items'][0]["created_at"],
-                "updated_at": data['items'][0]["updated_at"],
-                "user_id": common_user.id,
-                "user_name": common_user.name,
-                "num_likes": 1,
-                "num_dislikes": 0,
-                "num_comments": 1,
-            },
-        ]
-    }
+    json_data = response.json()
+    data = json_data.get("data")
+    assert data == [
+        {
+            "id": post_1.id,
+            "title": "테스트 제목",
+            "content": "테스트 내용",
+            "created_at": data[0]["created_at"],
+            "updated_at": data[0]["updated_at"],
+            "user_id": common_user.id,
+            "user_name": common_user.name,
+            "num_likes": 1,
+            "num_dislikes": 0,
+            "num_comments": 1,
+        },
+        {
+            "id": post_2.id,
+            "title": "테스트 제목",
+            "content": "테스트 내용",
+            "created_at": data[0]["created_at"],
+            "updated_at": data[0]["updated_at"],
+            "user_id": common_user.id,
+            "user_name": common_user.name,
+            "num_likes": 1,
+            "num_dislikes": 0,
+            "num_comments": 1,
+        },
+    ]

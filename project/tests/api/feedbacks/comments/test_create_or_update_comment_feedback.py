@@ -40,7 +40,8 @@ def test_handle_successfully_with_creating_comment_feedback(
 
     # then
     assert response.status_code == status.HTTP_201_CREATED
-    data = response.json()
+    json_data = response.json()
+    data = json_data.get("data")
     assert data == {
         "id": data["id"],
         "user_id": common_user.id,
@@ -108,7 +109,8 @@ def test_handle_successfully_with_updating_comment_feedback(
 
     # then
     assert response.status_code == status.HTTP_200_OK
-    data = response.json()
+    json_data = response.json()
+    data = json_data.get("data")
     assert data == {
         "id": data["id"],
         "user_id": common_user.id,

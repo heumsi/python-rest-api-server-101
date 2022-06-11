@@ -10,14 +10,14 @@ def test_handle_successfully(client, headers_with_authorized_admin):
 
     # then
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {
-        "items": [
-            {
-                "id": "admin",
-                "name": "admin",
-            }
-        ]
-    }
+    json_data = response.json()
+    data = json_data.get("data")
+    assert data == [
+        {
+            "id": "admin",
+            "name": "admin",
+        }
+    ]
 
 
 def test_handle_unsuccessfully_with_no_authentication(client):
