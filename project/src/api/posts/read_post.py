@@ -1,7 +1,10 @@
-from fastapi import HTTPException, status
+from typing import List
+
+from fastapi import HTTPException, status, Request
 from pydantic import BaseModel
 from sqlmodel import Session
 
+from src.api.common import Link
 from src.database import engine
 from src.models import post, user
 from src.models.post import Post
@@ -21,9 +24,10 @@ class ReadPostResponse(BaseModel):
             title = 'ReadPostResponse.Data'
 
     data: Data
+    links: List[Link]
 
 
-def handle(post_id: int) -> ReadPostResponse:
+def handle(post_id: int, request: Request) -> ReadPostResponse:
     with Session(engine) as session:
         post_to_read = session.get(Post, post_id)
         if not post_to_read:
@@ -37,5 +41,19 @@ def handle(post_id: int) -> ReadPostResponse:
                 user_name=post_to_read.user.name,
                 created_at=post_to_read.created_at,
                 updated_at=post_to_read.updated_at,
-            )
+            ),
+            links=[
+                Link(
+                    rel="self",
+                    href=request.url._url,
+                ),
+                Link(
+                    rel="comments",
+                    href=f"{request.base_url}comments?post_id={post_id}"
+                ),
+                Link(
+                    rel="feedbacks",
+                    href=f"{request.base_url}feedbacks/posts?post_id={post_id}"
+                )
+            ]
         )

@@ -107,6 +107,12 @@ def test_handle_successfully(
             'like': True,
             'created_at': data[0]['created_at'],
             'updated_at': data[0]['updated_at'],
+            'links': [
+                {
+                    'href': f'{client.base_url}/comments/{comment_1.id}',
+                    'rel': 'comment'
+                }
+            ],
         }, {
             'id': 2,
             'comment_id': comment_1.id,
@@ -115,6 +121,12 @@ def test_handle_successfully(
             'like': False,
             'created_at': data[1]['created_at'],
             'updated_at': data[1]['updated_at'],
+            'links': [
+                {
+                    'href': f'{client.base_url}/comments/{comment_1.id}',
+                    'rel': 'comment'
+                },
+            ],
         }, {
             'id': 3,
             'comment_id': comment_2.id,
@@ -123,6 +135,12 @@ def test_handle_successfully(
             'like': True,
             'created_at': data[2]['created_at'],
             'updated_at': data[2]['updated_at'],
+            'links': [
+                {
+                    'href': f'{client.base_url}/comments/{comment_2.id}',
+                    'rel': 'comment'
+                },
+            ],
         }, {
             'id': 4,
             'comment_id': comment_2.id,
@@ -131,7 +149,20 @@ def test_handle_successfully(
             'like': False,
             'created_at': data[3]['created_at'],
             'updated_at': data[3]['updated_at'],
+            'links': [
+                {
+                    'href': f'{client.base_url}/comments/{comment_2.id}',
+                    'rel': 'comment'
+                },
+            ],
         }
+    ]
+    links = json_data.get("links")
+    assert links == [
+        {
+            'href': f'{client.base_url}/feedbacks/comments/',
+            'rel': 'self'
+        },
     ]
 
 
@@ -238,6 +269,12 @@ def test_handle_successfully_with_specific_post_id(
             "like": True,
             "created_at": data[0]["created_at"],
             "updated_at": data[0]["updated_at"],
+            'links': [
+                {
+                    'href': f'{client.base_url}/comments/{comment_1.id}',
+                    'rel': 'comment'
+                },
+            ],
         },
         {
             "id": data[1]["id"],
@@ -247,6 +284,19 @@ def test_handle_successfully_with_specific_post_id(
             "like": False,
             "created_at": data[1]["created_at"],
             "updated_at": data[1]["updated_at"],
+            'links': [
+                {
+                    'href': f'{client.base_url}/comments/{comment_1.id}',
+                    'rel': 'comment'
+                },
+            ],
         }
+    ]
+    links = json_data.get("links")
+    assert links == [
+        {
+            'href': f'{client.base_url}/feedbacks/comments/?comment_id={comment_1.id}',
+            'rel': 'self'
+        },
     ]
 

@@ -36,6 +36,22 @@ def test_handle_successfully(client, common_user):
         "user_id": common_user.id,
         "user_name": common_user.name,
     }
+    links = json_data.get("links")
+    assert links == [
+        {
+            'href': f'{client.base_url}/posts/1',
+            'rel': 'self'
+        },
+        {
+            'href': f'{client.base_url}/comments?post_id=1', 
+            'rel': 'comments'
+        },
+        {
+            'href': f'{client.base_url}/feedbacks/posts?post_id=1', 
+            'rel': 'feedbacks'
+        }
+    ]
+
 
 
 def test_handle_unsuccessfully_with_not_found(client):

@@ -1,10 +1,11 @@
 from typing import List
 
-from fastapi import Query
+from fastapi import Query, Request
 from pydantic import BaseModel
 from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 
+from src.api.common import Link
 from src.database import engine
 from src.models import post, user
 
@@ -21,14 +22,20 @@ class ReadPostsResponse(BaseModel):
         num_likes: int
         num_dislikes: int
         num_comments: int
+        links: List[Link]
 
         class Config:
             title = "ReadPostsResponse.Data"
 
     data: List[Data]
+    links: List[Link]
 
 
-def handle(offset: int = 0, limit: int = Query(default=100, lte=100)) -> ReadPostsResponse:
+def handle(*,
+   offset: int = 0,
+   limit: int = Query(default=100, lte=100),
+   request: Request
+) -> ReadPostsResponse:
     with Session(engine) as session:
         statement = (
             select(post.Post).offset(offset).limit(limit)
@@ -52,8 +59,28 @@ def handle(offset: int = 0, limit: int = Query(default=100, lte=100)) -> ReadPos
                     updated_at=post_to_read.updated_at,
                     num_likes=len([feedback for feedback in post_to_read.feedbacks if feedback.like]),
                     num_dislikes=len([feedback for feedback in post_to_read.feedbacks if not feedback.like]),
-                    num_comments=len(post_to_read.comments)
+                    num_comments=len(post_to_read.comments),
+                    links=[
+                        Link(
+                            rel="self",
+                            href=f"{request.base_url}posts/{post_to_read.id}"
+                        ),
+                        Link(
+                            rel="comments",
+                            href=f"{request.base_url}comments?post_id={post_to_read.id}"
+                        ),
+                        Link(
+                            rel="feedbacks",
+                            href=f"{request.base_url}feedbacks/posts?post_id={post_to_read.id}"
+                        ),
+                    ]
                 )
                 for post_to_read in posts_to_read
+            ],
+            links=[
+                Link(
+                    rel="self",
+                    href=request.url._url,
+                ),
             ]
         )

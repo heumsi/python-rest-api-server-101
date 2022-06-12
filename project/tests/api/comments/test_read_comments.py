@@ -54,6 +54,16 @@ def test_handle_successfully(client, common_user, common_another_user):
             "updated_at": data[0]["updated_at"],
             "user_id": common_user.id,
             "user_name": common_user.name,
+            'links': [
+                {
+                    'href': f'{client.base_url}/comments/1',
+                    'rel': 'self'
+                },
+                {
+                    'href': f'{client.base_url}/posts/{post_.id}',
+                    'rel': 'post'
+                }
+            ],
         },
         {
             "id": 2,
@@ -63,7 +73,24 @@ def test_handle_successfully(client, common_user, common_another_user):
             "updated_at": data[0]["updated_at"],
             "user_id": common_another_user.id,
             "user_name": common_another_user.name,
+            'links': [
+                {
+                    'href': f'{client.base_url}/comments/2',
+                    'rel': 'self'
+                },
+                {
+                    'href': f'{client.base_url}/posts/{post_.id}',
+                    'rel': 'post'
+                }
+            ],
         },
+    ]
+    links = json_data.get("links")
+    assert links == [
+        {
+            'href': f'{client.base_url}/comments/',
+            'rel': 'self'
+        }
     ]
 
 
@@ -130,5 +157,22 @@ def test_handle_successfully_with_params_including_post_id(client, common_user):
             "updated_at": data[0]["updated_at"],
             "user_id": common_user.id,
             "user_name": common_user.name,
+            'links': [
+                {
+                    'href': f'{client.base_url}/comments/{comment_1.id}',
+                    'rel': 'self'
+                },
+                {
+                    'href': f'{client.base_url}/posts/{post_1.id}',
+                    'rel': 'post'
+                }
+            ],
         },
+    ]
+    links = json_data.get("links")
+    assert links == [
+        {
+            'href': f'{client.base_url}/comments/?post_id={post_1.id}',
+            'rel': 'self'
+        }
     ]

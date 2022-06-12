@@ -18,6 +18,13 @@ def test_handle_successfully(client, headers_with_authorized_admin):
             "name": "admin",
         }
     ]
+    links = json_data.get("links")
+    assert links == [
+        {
+            'href': f'{client.base_url}/users/', 
+            'rel': 'self'
+        }
+    ]
 
 
 def test_handle_unsuccessfully_with_no_authentication(client):

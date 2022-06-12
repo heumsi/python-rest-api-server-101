@@ -16,6 +16,13 @@ def test_handle_successfully(client, headers_with_authorized_common):
         "id": "heumsi",
         "name": "heumsi"
     }
+    links = json_data.get("links")
+    assert links == [
+        {
+            'href': f'{client.base_url}/users/me', 
+            'rel': 'self'
+        }
+    ]
 
 
 def test_handle_unsuccessfully_with_no_auth(client):

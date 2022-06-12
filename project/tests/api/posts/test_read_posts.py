@@ -81,6 +81,20 @@ def test_handle_successfully(client, common_user):
             "num_likes": 1,
             "num_dislikes": 0,
             "num_comments": 1,
+            'links': [
+                {
+                    'href': f'{client.base_url}/posts/{post_1.id}', 
+                    'rel': 'self'
+                },
+                {
+                    'href': f'{client.base_url}/comments?post_id={post_1.id}', 
+                    'rel': 'comments'
+                },
+                {
+                    'href': f'{client.base_url}/feedbacks/posts?post_id={post_1.id}',
+                    'rel': 'feedbacks'
+                }
+            ],
         },
         {
             "id": post_2.id,
@@ -93,5 +107,27 @@ def test_handle_successfully(client, common_user):
             "num_likes": 1,
             "num_dislikes": 0,
             "num_comments": 1,
+            'links': [
+                {
+                    'href': f'{client.base_url}/posts/{post_2.id}',
+                    'rel': 'self'
+                },
+                {
+                    'href': f'{client.base_url}/comments?post_id={post_2.id}',
+                    'rel': 'comments'
+                },
+                {
+                    'href': f'{client.base_url}/feedbacks/posts?post_id={post_2.id}',
+                    'rel': 'feedbacks'
+                }
+            ],
+            
         },
+    ]
+    links = json_data.get("links")
+    assert links == [
+        {
+            'href': f'{client.base_url}/posts/',
+            'rel': 'self'
+        }
     ]

@@ -45,7 +45,24 @@ def test_handle_successfully(client, common_user):
         "content": "테스트 내용",
         "created_at": data["created_at"],
         "updated_at": data["updated_at"],
+        'links': [
+            {
+                'href': f'{client.base_url}/comments/1',
+                'rel': 'self'
+            },
+            {
+                'href': f'{client.base_url}/posts/1',
+                'rel': 'post'
+            }
+        ],
     }
+    links = json_data.get("links")
+    assert links == [
+        {
+            'href': f'{client.base_url}/comments/{comment_.id}',
+            'rel': 'self'
+        }
+    ]
 
 
 def test_handle_unsuccessfully_with_not_found(client):

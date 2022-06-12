@@ -82,39 +82,70 @@ def test_handle_successfully(
     json_data = response.json()
     data = json_data.get("data")
     assert data == [
-            {
-                'id': 1,
-                'post_id': post_1.id,
-                'user_id': common_user.id,
-                'user_name': common_user.name,
-                'like': True,
-                'created_at': data[0]['created_at'],
-                'updated_at': data[0]['updated_at'],
-            }, {
-                'id': 2,
-                'post_id': post_1.id,
-                'user_id': common_another_user.id,
-                'user_name': common_another_user.name,
-                'like': False,
-                'created_at': data[1]['created_at'],
-                'updated_at': data[1]['updated_at'],
-            }, {
-                'id': 3,
-                'post_id': post_2.id,
-                'user_id': common_user.id,
-                'user_name': common_user.name,
-                'like': True,
-                'created_at': data[2]['created_at'],
-                'updated_at': data[2]['updated_at'],
-            }, {
-                'id': 4,
-                'post_id': post_2.id,
-                'user_id': common_another_user.id,
-                'user_name': common_another_user.name,
-                'like': False,
-                'created_at': data[3]['created_at'],
-                'updated_at': data[3]['updated_at'],
-            }
+        {
+            'id': 1,
+            'post_id': post_1.id,
+            'user_id': common_user.id,
+            'user_name': common_user.name,
+            'like': True,
+            'created_at': data[0]['created_at'],
+            'updated_at': data[0]['updated_at'],
+            'links': [
+                {
+                    'href': f'{client.base_url}/posts/{post_1.id}',
+                    'rel': 'post'
+                }
+            ],
+        }, {
+            'id': 2,
+            'post_id': post_1.id,
+            'user_id': common_another_user.id,
+            'user_name': common_another_user.name,
+            'like': False,
+            'created_at': data[1]['created_at'],
+            'updated_at': data[1]['updated_at'],
+            'links': [
+                {
+                    'href': f'{client.base_url}/posts/{post_1.id}',
+                    'rel': 'post'
+                }
+            ],
+        }, {
+            'id': 3,
+            'post_id': post_2.id,
+            'user_id': common_user.id,
+            'user_name': common_user.name,
+            'like': True,
+            'created_at': data[2]['created_at'],
+            'updated_at': data[2]['updated_at'],
+            'links': [
+                {
+                    'href': f'{client.base_url}/posts/{post_2.id}',
+                    'rel': 'post'
+                }
+            ],
+        }, {
+            'id': 4,
+            'post_id': post_2.id,
+            'user_id': common_another_user.id,
+            'user_name': common_another_user.name,
+            'like': False,
+            'created_at': data[3]['created_at'],
+            'updated_at': data[3]['updated_at'],
+            'links': [
+                {
+                    'href': f'{client.base_url}/posts/{post_2.id}',
+                    'rel': 'post'
+                }
+            ],
+        }
+    ]
+    links = json_data.get("links")
+    assert links == [
+        {
+            'href': f'{client.base_url}/feedbacks/posts/',
+            'rel': 'self'
+        }
     ]
 
 
@@ -176,6 +207,12 @@ def test_handle_successfully_with_specific_post_id(
             "like": True,
             "created_at": data[0]["created_at"],
             "updated_at": data[0]["updated_at"],
+            'links': [
+                {
+                    'href': f'{client.base_url}/posts/{post_.id}',
+                    'rel': 'post'
+                }
+            ],
         },
         {
             "id": data[1]["id"],
@@ -185,6 +222,18 @@ def test_handle_successfully_with_specific_post_id(
             "like": False,
             "created_at": data[1]["created_at"],
             "updated_at": data[1]["updated_at"],
+            'links': [
+                {
+                    'href': f'{client.base_url}/posts/{post_.id}',
+                    'rel': 'post'
+                }
+            ],
         }
     ]
-
+    links = json_data.get("links")
+    assert links == [
+        {
+            'href': f'{client.base_url}/feedbacks/posts/?post_id={post_.id}',
+            'rel': 'self'
+        }
+    ]
