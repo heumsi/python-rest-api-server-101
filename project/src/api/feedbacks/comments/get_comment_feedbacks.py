@@ -2,9 +2,9 @@ from typing import Optional, List
 
 from fastapi import Query, Request
 from sqlalchemy.orm import selectinload
-from sqlmodel import Session, select
+from sqlmodel import Session, select, func
 
-from src.api.common import Link, SchemaModel
+from src.api.common import Link, SchemaModel, Pagination, get_links_for_pagination
 from src.database import engine
 from src.models import comment, user
 from src.models.feedbacks import comment_feedback
@@ -38,6 +38,7 @@ class GetCommentFeedbacksResponse(SchemaModel):
         class Config:
             title = 'GetCommentFeedbacksResponse.Data'
 
+    pagination: Pagination
     data: List[Data]
     links: List[Link]
 
@@ -50,6 +51,11 @@ def handle(
     request: Request
 ) -> GetCommentFeedbacksResponse:
     with Session(engine) as session:
+        # get total count of rows for pagination
+        statement = select([func.count(comment_feedback.CommentFeedback.id)])
+        total = session.exec(statement).one()
+
+        # get all rows
         statement = (
             select(comment_feedback.CommentFeedback).offset(offset).limit(limit)
             .options(
@@ -61,6 +67,11 @@ def handle(
         results = session.exec(statement)
         comment_feedbacks_to_read = results.all()
         return GetCommentFeedbacksResponse(
+            pagination=Pagination(
+                offset=offset,
+                limit=limit,
+                total=total
+            ),
             data=[
                 GetCommentFeedbacksResponse.Data(
                     id=comment_feedback_to_read.id,
@@ -83,10 +94,5 @@ def handle(
                 )
                 for comment_feedback_to_read in comment_feedbacks_to_read
             ],
-            links=[
-                Link(
-                    rel="self",
-                    href=request.url._url
-                )
-            ]
+            links=get_links_for_pagination(offset, limit, total, request)
         )

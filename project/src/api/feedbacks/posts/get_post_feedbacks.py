@@ -2,9 +2,9 @@ from typing import Optional, List
 
 from fastapi import Query, Request
 from sqlalchemy.orm import selectinload
-from sqlmodel import Session, select
+from sqlmodel import Session, select, func
 
-from src.api.common import Link, SchemaModel
+from src.api.common import Link, SchemaModel, Pagination, get_links_for_pagination
 from src.database import engine
 from src.models import post, user
 from src.models.feedbacks import post_feedback
@@ -37,6 +37,7 @@ class GetPostFeedbacksResponse(SchemaModel):
         class Config:
             title = 'GetPostFeedbacksResponse.Data'
 
+    pagination: Pagination
     data: List[Data]
     links: List[Link]
 
@@ -49,8 +50,16 @@ def handle(
     request: Request
 ) -> GetPostFeedbacksResponse:
     with Session(engine) as session:
+        # get total count of rows for pagination
+        statement = select([func.count(post_feedback.PostFeedback.id)])
+        total = session.exec(statement).one()
+
+        # get all rows
         statement = (
-            select(post_feedback.PostFeedback).offset(offset).limit(limit)
+            select(post_feedback.PostFeedback)
+            .order_by(post_feedback.PostFeedback.id)
+            .offset(offset)
+            .limit(limit)
             .options(
                 selectinload(post_feedback.PostFeedback.user),
             )
@@ -60,6 +69,11 @@ def handle(
         results = session.exec(statement)
         post_feedbacks_to_read = results.all()
         return GetPostFeedbacksResponse(
+            pagination=Pagination(
+                offset=offset,
+                limit=limit,
+                total=total
+            ),
             data=[
                 GetPostFeedbacksResponse.Data(
                     id=post_feedback_to_read.id,
@@ -82,10 +96,5 @@ def handle(
                 )
                 for post_feedback_to_read in post_feedbacks_to_read
             ],
-            links=[
-                Link(
-                    rel="self",
-                    href=request.url._url
-                )
-            ]
+            links=get_links_for_pagination(offset, limit, total, request)
         )

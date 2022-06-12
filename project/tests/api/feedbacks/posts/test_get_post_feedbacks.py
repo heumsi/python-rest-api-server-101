@@ -80,6 +80,12 @@ def test_handle_successfully(
     # then
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
+    pagination = json_data.get("pagination")
+    assert pagination == {
+        'limit': 100,
+        'offset': 0,
+        'total': 4
+    }
     data = json_data.get("data")
     assert data == [
         {
@@ -213,6 +219,12 @@ def test_handle_successfully_with_specific_post_id(
     # then
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
+    pagination = json_data.get("pagination")
+    assert pagination == {
+        'limit': 100,
+        'offset': 0,
+        'total': 2
+    }
     data = json_data.get("data")
     assert [
         {

@@ -2,15 +2,16 @@ from typing import List, Optional
 
 from fastapi import Query, Request
 from sqlalchemy.orm import selectinload
-from sqlmodel import Session, select
+from sqlmodel import Session, select, func
 
 from src.api.comments.read_comment import ReadCommentResponse
-from src.api.common import Link, SchemaModel
+from src.api.common import Link, SchemaModel, Pagination, get_links_for_pagination
 from src.database import engine
 from src.models import comment
 
 
 class ReadCommentsResponse(SchemaModel):
+    pagination: Pagination
     data: List[ReadCommentResponse.Data]
     links: List[Link]
 
@@ -23,8 +24,18 @@ def handle(
     request: Request
 ) -> ReadCommentsResponse:
     with Session(engine) as session:
+        # get total count of rows for pagination
+        statement = select([func.count(comment.Comment.id)])
+        if post_id:
+            statement = statement.where(comment.Comment.post_id == post_id)
+        total = session.exec(statement).one()
+
+        # get all rows
         statement = (
-            select(comment.Comment).offset(offset).limit(limit)
+            select(comment.Comment)
+            .order_by(comment.Comment.id)
+            .offset(offset)
+            .limit(limit)
             .options(
                 selectinload(comment.Comment.user)
             )
@@ -34,6 +45,11 @@ def handle(
         results = session.exec(statement)
         comments_to_read = results.all()
         return ReadCommentsResponse(
+            pagination=Pagination(
+                offset=offset,
+                limit=limit,
+                total=total
+            ),
             data=[
                 ReadCommentResponse.Data(
                     id=comment_to_read.id,
@@ -60,10 +76,5 @@ def handle(
                 )
                 for comment_to_read in comments_to_read
             ],
-            links=[
-                Link(
-                    rel="self",
-                    href=request.url._url
-                )
-            ]
+            links=get_links_for_pagination(offset, limit, total, request)
         )

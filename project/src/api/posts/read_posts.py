@@ -2,9 +2,9 @@ from typing import List
 
 from fastapi import Query, Request
 from sqlalchemy.orm import selectinload
-from sqlmodel import Session, select
+from sqlmodel import Session, select, func
 
-from src.api.common import Link, SchemaModel
+from src.api.common import Link, SchemaModel, Pagination, get_links_for_pagination
 from src.database import engine
 from src.models import post, user
 
@@ -39,6 +39,7 @@ class ReadPostsResponse(SchemaModel):
         class Config:
             title = "ReadPostsResponse.Data"
 
+    pagination: Pagination
     data: List[Data]
     links: List[Link]
 
@@ -49,8 +50,16 @@ def handle(*,
    request: Request
 ) -> ReadPostsResponse:
     with Session(engine) as session:
+        # get total count of rows for pagination
+        statement = select([func.count(post.Post.id)])
+        total = session.exec(statement).one()
+
+        # get all rows
         statement = (
-            select(post.Post).offset(offset).limit(limit)
+            select(post.Post)
+            .order_by(post.Post.id)
+            .offset(offset)
+            .limit(limit)
             .options(
                 selectinload(post.Post.user),
                 selectinload(post.Post.comments),
@@ -60,6 +69,11 @@ def handle(*,
         results = session.exec(statement)
         posts_to_read = results.all()
         return ReadPostsResponse(
+            pagination=Pagination(
+                offset=offset,
+                limit=limit,
+                total=total
+            ),
             data=[
                 ReadPostsResponse.Data(
                     id=post_to_read.id,
@@ -93,10 +107,5 @@ def handle(*,
                 )
                 for post_to_read in posts_to_read
             ],
-            links=[
-                Link(
-                    rel="self",
-                    href=request.url._url,
-                ),
-            ]
+            links=get_links_for_pagination(offset, limit, total, request)
         )
