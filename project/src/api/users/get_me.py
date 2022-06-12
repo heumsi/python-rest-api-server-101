@@ -32,7 +32,7 @@ def handle(
         links=[
             Link(
                 rel="self",
-                href=request.url._url
+                href=str(request.url)
             )
         ]
     )

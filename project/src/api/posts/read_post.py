@@ -53,7 +53,7 @@ def handle(post_id: int, request: Request) -> ReadPostResponse:
             links=[
                 Link(
                     rel="self",
-                    href=request.url._url,
+                    href=str(request.url),
                 ),
                 Link(
                     rel="comments",
