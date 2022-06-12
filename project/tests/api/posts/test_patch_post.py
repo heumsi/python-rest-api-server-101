@@ -36,13 +36,13 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
         "id": 1,
         "title": "수정된 테스트 제목",
         "content": "테스트 내용",
-        "created_at": data["created_at"],
-        "updated_at": data["updated_at"],
+        "createdAt": data["createdAt"],
+        "updatedAt": data["updatedAt"],
         "user": {
             "id": common_user.id,
         }
     }
-    assert data["updated_at"] > data["created_at"]
+    assert data["updatedAt"] > data["createdAt"]
     with Session(engine) as session:
         statement = select(post.Post)
         results = session.exec(statement)

@@ -85,8 +85,8 @@ def test_handle_successfully(
         {
             'id': 1,
             'like': True,
-            'created_at': data[0]['created_at'],
-            'updated_at': data[0]['updated_at'],
+            'createdAt': data[0]['createdAt'],
+            'updatedAt': data[0]['updatedAt'],
             "user": {
                 "id": common_user.id,
                 "name": common_user.name,
@@ -103,8 +103,8 @@ def test_handle_successfully(
         }, {
             'id': 2,
             'like': False,
-            'created_at': data[1]['created_at'],
-            'updated_at': data[1]['updated_at'],
+            'createdAt': data[1]['createdAt'],
+            'updatedAt': data[1]['updatedAt'],
             "user": {
                 "id": common_another_user.id,
                 "name": common_another_user.name,
@@ -121,8 +121,8 @@ def test_handle_successfully(
         }, {
             'id': 3,
             'like': True,
-            'created_at': data[2]['created_at'],
-            'updated_at': data[2]['updated_at'],
+            'createdAt': data[2]['createdAt'],
+            'updatedAt': data[2]['updatedAt'],
             "user": {
                 "id": common_user.id,
                 "name": common_user.name,
@@ -139,8 +139,8 @@ def test_handle_successfully(
         }, {
             'id': 4,
             'like': False,
-            'created_at': data[3]['created_at'],
-            'updated_at': data[3]['updated_at'],
+            'createdAt': data[3]['createdAt'],
+            'updatedAt': data[3]['updatedAt'],
             "user": {
                 "id": common_another_user.id,
                 "name": common_another_user.name,
@@ -218,8 +218,8 @@ def test_handle_successfully_with_specific_post_id(
         {
             "id": data[0]["id"],
             "like": True,
-            "created_at": data[0]["created_at"],
-            "updated_at": data[0]["updated_at"],
+            "createdAt": data[0]["createdAt"],
+            "updatedAt": data[0]["updatedAt"],
             "user": {
                 "id": common_user.id,
                 "name": common_user.name,
@@ -237,8 +237,8 @@ def test_handle_successfully_with_specific_post_id(
         {
             "id": data[1]["id"],
             "like": False,
-            "created_at": data[1]["created_at"],
-            "updated_at": data[1]["updated_at"],
+            "createdAt": data[1]["createdAt"],
+            "updatedAt": data[1]["updatedAt"],
             "user": {
                 "id": common_another_user.id,
                 "name": common_another_user.name,

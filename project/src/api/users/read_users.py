@@ -1,16 +1,15 @@
 from typing import List
 
 from fastapi import Query, Request
-from pydantic import BaseModel
 from sqlmodel import Session, select
 
-from src.api.common import Link
+from src.api.common import Link, SchemaModel
 from src.database import engine
 from src.models import user
 
 
-class ReadUsersResponse(BaseModel):
-    class Data(BaseModel):
+class ReadUsersResponse(SchemaModel):
+    class Data(SchemaModel):
         id: str = user.id_field
         name: str = user.name_field
 

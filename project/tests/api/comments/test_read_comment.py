@@ -40,8 +40,8 @@ def test_handle_successfully(client, common_user):
     assert data == {
         "id": comment_.id,
         "content": "테스트 내용",
-        "created_at": data["created_at"],
-        "updated_at": data["updated_at"],
+        "createdAt": data["createdAt"],
+        "updatedAt": data["updatedAt"],
         "post": {
             "id": post_.id,
         },

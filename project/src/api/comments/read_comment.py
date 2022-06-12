@@ -1,29 +1,28 @@
 from typing import List
 
 from fastapi import HTTPException, status, Request
-from pydantic import BaseModel
 from sqlmodel import Session
 
-from src.api.common import Link
+from src.api.common import Link, SchemaModel
 from src.database import engine
 from src.models import comment, user, post
 from src.models.comment import Comment
 
 
-class ReadCommentResponse(BaseModel):
-    class Data(BaseModel):
+class ReadCommentResponse(SchemaModel):
+    class Data(SchemaModel):
         id: int = comment.id_field
         content: str = comment.content_field
         created_at: int = comment.created_at_field
         updated_at: int = comment.updated_at_field
 
-        class Post(BaseModel):
+        class Post(SchemaModel):
             id: int = post.id_field
 
             class Config:
                 title = 'ReadCommentResponse.Data.Post'
 
-        class User(BaseModel):
+        class User(SchemaModel):
             id: str = user.id_field
             name: str = user.name_field
 

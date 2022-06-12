@@ -1,15 +1,14 @@
 from typing import List
 
 from fastapi import Depends, Request
-from pydantic import BaseModel
 
 from src.api.auth.utils import get_current_user
-from src.api.common import Link
+from src.api.common import Link, SchemaModel
 from src.models import user
 
 
-class GetMeResponse(BaseModel):
-    class Data(BaseModel):
+class GetMeResponse(SchemaModel):
+    class Data(SchemaModel):
         id: str = user.id_field
         name: str = user.name_field
 

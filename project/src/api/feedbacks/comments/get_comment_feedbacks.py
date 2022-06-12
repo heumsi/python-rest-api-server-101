@@ -1,31 +1,30 @@
 from typing import Optional, List
 
 from fastapi import Query, Request
-from pydantic import BaseModel
 from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 
-from src.api.common import Link
+from src.api.common import Link, SchemaModel
 from src.database import engine
 from src.models import comment, user
 from src.models.feedbacks import comment_feedback
 
 
-class GetCommentFeedbacksResponse(BaseModel):
-    class Data(BaseModel):
+class GetCommentFeedbacksResponse(SchemaModel):
+    class Data(SchemaModel):
         id: int = comment_feedback.id_field
         like: bool
         created_at: int = comment_feedback.created_at_field
         updated_at: int = comment_feedback.updated_at_field
         links: List[Link]
 
-        class Comment(BaseModel):
+        class Comment(SchemaModel):
             id: int = comment.id_field
 
             class Config:
                 title = 'GetCommentFeedbacksResponse.Data.Comment'
 
-        class User(BaseModel):
+        class User(SchemaModel):
             id: str = user.id_field
             name: str = user.name_field
 

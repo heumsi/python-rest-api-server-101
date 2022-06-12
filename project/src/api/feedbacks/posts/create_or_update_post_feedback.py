@@ -1,30 +1,30 @@
 from typing import Union, Literal
 
 from fastapi import Depends, HTTPException, status, Response
-from pydantic import BaseModel
 from sqlmodel import Session, select
 
 from src.api.auth.utils import GetAuthorizedUser
+from src.api.common import SchemaModel
 from src.database import engine
 from src.models import post, user
 from src.models.feedbacks import post_feedback
 from src.models.utils import get_current_unix_timestamp
 
 
-class BaseResponse(BaseModel):
-    class Data(BaseModel):
+class BaseResponse(SchemaModel):
+    class Data(SchemaModel):
         id: int = post_feedback.id_field
         like: bool
         created_at: int = post_feedback.created_at_field
         updated_at: int = post_feedback.updated_at_field
 
-        class Post(BaseModel):
+        class Post(SchemaModel):
             id: int = post.id_field
 
             class Config:
                 title = 'CreateOrUpdatePostFeedbackBaseResponse.Data'
 
-        class User(BaseModel):
+        class User(SchemaModel):
             id: str = user.id_field
 
             class Config:

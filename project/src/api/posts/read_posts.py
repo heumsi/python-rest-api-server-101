@@ -1,17 +1,16 @@
 from typing import List
 
 from fastapi import Query, Request
-from pydantic import BaseModel
 from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 
-from src.api.common import Link
+from src.api.common import Link, SchemaModel
 from src.database import engine
 from src.models import post, user
 
 
-class ReadPostsResponse(BaseModel):
-    class Data(BaseModel):
+class ReadPostsResponse(SchemaModel):
+    class Data(SchemaModel):
         id: int = post.id_field
         title: str = post.title_field
         content: str = post.content_field
@@ -19,14 +18,14 @@ class ReadPostsResponse(BaseModel):
         updated_at: int = post.updated_at_field
         links: List[Link]
 
-        class User(BaseModel):
+        class User(SchemaModel):
             id: str = user.id_field
             name: str = user.name_field
 
             class Config:
                 title = 'ReadPostsResponse.Data.User'
 
-        class NumOf(BaseModel):
+        class NumOf(SchemaModel):
             likes: int
             dislikes: int
             comments: int

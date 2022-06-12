@@ -1,17 +1,16 @@
 from typing import List, Optional
 
 from fastapi import Query, Request
-from pydantic import BaseModel
 from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 
 from src.api.comments.read_comment import ReadCommentResponse
-from src.api.common import Link
+from src.api.common import Link, SchemaModel
 from src.database import engine
 from src.models import comment
 
 
-class ReadCommentsResponse(BaseModel):
+class ReadCommentsResponse(SchemaModel):
     data: List[ReadCommentResponse.Data]
     links: List[Link]
 

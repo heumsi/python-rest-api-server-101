@@ -1,31 +1,31 @@
 from fastapi import Depends, status, HTTPException
-from pydantic import BaseModel
 from sqlmodel import Session
 
 from src.api.auth.utils import GetAuthorizedUser
+from src.api.common import SchemaModel
 from src.database import engine
 from src.models import comment, user, post
 
 
-class CreateCommentReqeust(BaseModel):
-    post_id: int = post.id_field
+class CreateCommentReqeust(SchemaModel):
+    post_id: int
     content: str = comment.content_field
 
 
-class CreateCommentResponse(BaseModel):
-    class Data(BaseModel):
+class CreateCommentResponse(SchemaModel):
+    class Data(SchemaModel):
         id: int = comment.id_field
         content: str = comment.content_field
         created_at: int = comment.created_at_field
         updated_at: int = comment.updated_at_field
 
-        class Post(BaseModel):
+        class Post(SchemaModel):
             id: int = post.id_field
 
             class Config:
                 title = 'CreateCommentResponse.Data.Post'
 
-        class User(BaseModel):
+        class User(SchemaModel):
             id: str = user.id_field
 
             class Config:

@@ -24,8 +24,8 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
         "id": data["id"],
         "title": "테스트 제목",
         "content": "테스트 내용",
-        "created_at": data["created_at"],
-        "updated_at": data["updated_at"],
+        "createdAt": data["createdAt"],
+        "updatedAt": data["updatedAt"],
         "user": {
             "id": common_user.id,
         }

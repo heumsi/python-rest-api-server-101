@@ -1,20 +1,20 @@
 from fastapi import HTTPException, status
-from pydantic import BaseModel
 from sqlmodel import Session
 
 from src.api.auth.utils import get_hashed_password
+from src.api.common import SchemaModel
 from src.database import engine
 from src.models import user
 
 
-class SignupRequest(BaseModel):
+class SignupRequest(SchemaModel):
     id: str = user.id_field
     name: str = user.name_field
     password: str = user.password_field
 
 
-class SignUpResponse(BaseModel):
-    class Data(BaseModel):
+class SignUpResponse(SchemaModel):
+    class Data(SchemaModel):
         id: str = user.id_field
         name: str = user.name_field
 

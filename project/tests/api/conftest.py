@@ -64,7 +64,7 @@ def headers_with_authorized_common(client, common_user) -> Dict[str, str]:
     json_data = response.json()
     data = json_data.get("data")
     headers = {
-        "Authorization": f"{data['token_type']} {data['access_token']}"
+        "Authorization": f"{data['tokenType']} {data['accessToken']}"
     }
     return headers
 
@@ -85,7 +85,7 @@ def headers_with_authorized_common_another(client, common_another_user) -> Dict[
     json_data = response.json()
     data = json_data.get("data")
     headers = {
-        "Authorization": f"{data['token_type']} {data['access_token']}"
+        "Authorization": f"{data['tokenType']} {data['accessToken']}"
     }
     return headers
 
@@ -113,7 +113,7 @@ def headers_with_authorized_admin(client) -> Dict[str, str]:
     json_data = response.json()
     data = json_data.get("data")
     headers = {
-        "Authorization": f"{data['token_type']} {data['access_token']}"
+        "Authorization": f"{data['tokenType']} {data['accessToken']}"
     }
     return headers
 

@@ -5,9 +5,10 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from jose.constants import ALGORITHMS
 from passlib.context import CryptContext
-from pydantic import BaseModel, ValidationError
+from pydantic import ValidationError
 from sqlmodel import Session
 
+from src.api.common import SchemaModel
 from src.database import engine
 from src.models.user import Role, User
 
@@ -19,7 +20,7 @@ JWT_SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3
 JWT_ALGORITHM = ALGORITHMS.HS256
 
 
-class TokenPayload(BaseModel):
+class TokenPayload(SchemaModel):
     user: User
 
 

@@ -49,8 +49,8 @@ def test_handle_successfully(client, common_user, common_another_user):
         {
             "id": 1,
             "content": "테스트 내용 1",
-            "created_at": data[0]["created_at"],
-            "updated_at": data[0]["updated_at"],
+            "createdAt": data[0]["createdAt"],
+            "updatedAt": data[0]["updatedAt"],
             "post": {
                 "id": post_.id,
             },
@@ -72,8 +72,8 @@ def test_handle_successfully(client, common_user, common_another_user):
         {
             "id": 2,
             "content": "테스트 내용 2",
-            "created_at": data[0]["created_at"],
-            "updated_at": data[0]["updated_at"],
+            "createdAt": data[0]["createdAt"],
+            "updatedAt": data[0]["updatedAt"],
             "post": {
                 "id": post_.id,
             },
@@ -160,8 +160,8 @@ def test_handle_successfully_with_params_including_post_id(client, common_user):
         {
             "id": comment_1.id,
             "content": "테스트 내용 1",
-            "created_at": data[0]["created_at"],
-            "updated_at": data[0]["updated_at"],
+            "createdAt": data[0]["createdAt"],
+            "updatedAt": data[0]["updatedAt"],
             "post": {
                 "id": comment_1.post_id,
             },

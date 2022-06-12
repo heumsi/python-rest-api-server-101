@@ -31,8 +31,8 @@ def test_handle_successfully(client, common_user):
         "id": 1,
         "title": "테스트 제목",
         "content": "테스트 내용",
-        "created_at": data["created_at"],
-        "updated_at": data["updated_at"],
+        "createdAt": data["createdAt"],
+        "updatedAt": data["updatedAt"],
         "user": {
             "id": common_user.id,
             "name": common_user.name,

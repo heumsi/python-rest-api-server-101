@@ -1,16 +1,16 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
-from pydantic import BaseModel
 from sqlmodel import Session
 
 from src.api.auth.utils import pwd_context, JWT_SECRET_KEY, JWT_ALGORITHM, TokenPayload
+from src.api.common import SchemaModel
 from src.database import engine
 from src.models.user import User
 
 
-class SigninResponse(BaseModel):
-    class Data(BaseModel):
+class SigninResponse(SchemaModel):
+    class Data(SchemaModel):
         access_token: str
         token_type: str
 

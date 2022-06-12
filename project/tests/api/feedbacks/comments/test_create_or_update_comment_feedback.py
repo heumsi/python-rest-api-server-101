@@ -45,8 +45,8 @@ def test_handle_successfully_with_creating_comment_feedback(
     assert data == {
         "id": data["id"],
         "like": True,
-        "created_at": data["created_at"],
-        "updated_at": data["updated_at"],
+        "createdAt": data["createdAt"],
+        "updatedAt": data["updatedAt"],
         "user": {
             "id": common_user.id,
         },
@@ -118,8 +118,8 @@ def test_handle_successfully_with_updating_comment_feedback(
     assert data == {
         "id": data["id"],
         "like": False,
-        "created_at": data["created_at"],
-        "updated_at": data["updated_at"],
+        "createdAt": data["createdAt"],
+        "updatedAt": data["updatedAt"],
         "user": {
             "id": common_user.id,
         },

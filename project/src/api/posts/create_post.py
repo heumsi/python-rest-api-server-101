@@ -1,26 +1,26 @@
 from fastapi import Depends
-from pydantic import BaseModel
 from sqlmodel import Session
 
 from src.api.auth.utils import GetAuthorizedUser
+from src.api.common import SchemaModel
 from src.database import engine
 from src.models import post, user
 
 
-class CreatePostReqeust(BaseModel):
+class CreatePostReqeust(SchemaModel):
     title: str = post.title_field
     content: str = post.content_field
 
 
-class CreatePostResponse(BaseModel):
-    class Data(BaseModel):
+class CreatePostResponse(SchemaModel):
+    class Data(SchemaModel):
         id: int = post.id_field
         title: str = post.title_field
         content: str = post.content_field
         created_at: int = post.created_at_field
         updated_at: int = post.updated_at_field
 
-        class User(BaseModel):
+        class User(SchemaModel):
             id: str = user.id_field
 
             class Config:
