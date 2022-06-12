@@ -44,11 +44,15 @@ def test_handle_successfully_with_creating_comment_feedback(
     data = json_data.get("data")
     assert data == {
         "id": data["id"],
-        "user_id": common_user.id,
         "like": True,
-        "comment_id": comment_.id,
         "created_at": data["created_at"],
         "updated_at": data["updated_at"],
+        "user": {
+            "id": common_user.id,
+        },
+        "comment": {
+            "id": comment_.id,
+        }
     }
 
     with Session(engine) as session:
@@ -113,11 +117,15 @@ def test_handle_successfully_with_updating_comment_feedback(
     data = json_data.get("data")
     assert data == {
         "id": data["id"],
-        "user_id": common_user.id,
-        "comment_id": comment_.id,
         "like": False,
         "created_at": data["created_at"],
         "updated_at": data["updated_at"],
+        "user": {
+            "id": common_user.id,
+        },
+        "comment": {
+            "id": comment_.id,
+        }
     }
     with Session(engine) as session:
         statement = select(comment_feedback.CommentFeedback)

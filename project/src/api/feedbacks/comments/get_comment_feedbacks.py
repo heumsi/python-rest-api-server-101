@@ -14,13 +14,27 @@ from src.models.feedbacks import comment_feedback
 class GetCommentFeedbacksResponse(BaseModel):
     class Data(BaseModel):
         id: int = comment_feedback.id_field
-        comment_id: int = comment.id_field
-        user_id: str = user.id_field
-        user_name: str = user.name_field
         like: bool
         created_at: int = comment_feedback.created_at_field
         updated_at: int = comment_feedback.updated_at_field
         links: List[Link]
+
+        class Comment(BaseModel):
+            id: int = comment.id_field
+
+            class Config:
+                title = 'GetCommentFeedbacksResponse.Data.Comment'
+
+        class User(BaseModel):
+            id: str = user.id_field
+            name: str = user.name_field
+
+            class Config:
+                title = 'GetCommentFeedbacksResponse.Data.User'
+
+        comment: Comment
+        user: User
+
 
         class Config:
             title = 'GetCommentFeedbacksResponse.Data'
@@ -51,12 +65,16 @@ def handle(
             data=[
                 GetCommentFeedbacksResponse.Data(
                     id=comment_feedback_to_read.id,
-                    comment_id=comment_feedback_to_read.comment_id,
-                    user_id=comment_feedback_to_read.user_id,
-                    user_name=comment_feedback_to_read.user.name,
                     like=comment_feedback_to_read.like,
                     created_at=comment_feedback_to_read.created_at,
                     updated_at=comment_feedback_to_read.updated_at,
+                    comment=GetCommentFeedbacksResponse.Data.Comment(
+                        id=comment_feedback_to_read.comment_id,
+                    ),
+                    user=GetCommentFeedbacksResponse.Data.User(
+                        id=comment_feedback_to_read.user_id,
+                        name=comment_feedback_to_read.user.name,
+                    ),
                     links=[
                         Link(
                             rel="comment",

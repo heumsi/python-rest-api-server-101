@@ -14,13 +14,26 @@ from src.models.feedbacks import post_feedback
 class GetPostFeedbacksResponse(BaseModel):
     class Data(BaseModel):
         id: int = post_feedback.id_field
-        post_id: int = post.id_field
-        user_id: str = user.id_field
-        user_name: str = user.name_field
         like: bool
         created_at: int = post_feedback.created_at_field
         updated_at: int = post_feedback.updated_at_field
         links: List[Link]
+
+        class Post(BaseModel):
+            id: int = post.id_field
+
+            class Config:
+                title = 'GetPostFeedbacksResponse.Data'
+
+        class User(BaseModel):
+            id: str = user.id_field
+            name: str = user.name_field
+
+            class Config:
+                title = 'GetPostFeedbacksResponse.Data'
+
+        post: Post
+        user: User
 
         class Config:
             title = 'GetPostFeedbacksResponse.Data'
@@ -51,12 +64,16 @@ def handle(
             data=[
                 GetPostFeedbacksResponse.Data(
                     id=post_feedback_to_read.id,
-                    post_id=post_feedback_to_read.post_id,
-                    user_id=post_feedback_to_read.user_id,
-                    user_name=post_feedback_to_read.user.name,
                     like=post_feedback_to_read.like,
                     created_at=post_feedback_to_read.created_at,
                     updated_at=post_feedback_to_read.updated_at,
+                    post=GetPostFeedbacksResponse.Data.Post(
+                        id=post_feedback_to_read.post_id
+                    ),
+                    user=GetPostFeedbacksResponse.Data.User(
+                        id=post_feedback_to_read.user_id,
+                        name=post_feedback_to_read.user.name,
+                    ),
                     links=[
                         Link(
                             rel="post",

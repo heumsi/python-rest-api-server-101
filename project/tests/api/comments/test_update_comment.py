@@ -46,10 +46,14 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
     data = json_data.get("data")
     assert data == {
         "id": comment_.id,
-        "post_id": comment_.post_id,
         "content": "수정된 테스트 내용",
-        "user_id": common_user.id,
-        "user_name": common_user.name,
+        "post": {
+            "id": comment_.post_id,
+        },
+        "user": {
+            "id": common_user.id,
+            "name": common_user.name,
+        },
         "created_at": data["created_at"],
         "updated_at": data["updated_at"],
     }

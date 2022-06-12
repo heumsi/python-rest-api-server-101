@@ -39,12 +39,16 @@ def test_handle_successfully(client, common_user):
     data = json_data.get("data")
     assert data == {
         "id": comment_.id,
-        "post_id": post_.id,
-        "user_id": common_user.id,
-        "user_name": common_user.name,
         "content": "테스트 내용",
         "created_at": data["created_at"],
         "updated_at": data["updated_at"],
+        "post": {
+            "id": post_.id,
+        },
+        "user": {
+            "id": common_user.id,
+            "name": common_user.name,
+        },
         'links': [
             {
                 'href': f'{client.base_url}/comments/1',

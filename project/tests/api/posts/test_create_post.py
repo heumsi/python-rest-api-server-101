@@ -5,7 +5,7 @@ from src.database import engine
 from src.models import post
 
 
-def test_handle_successfully(client, headers_with_authorized_common):
+def test_handle_successfully(client, common_user, headers_with_authorized_common):
     # when
     response = client.post(
         "/posts/",
@@ -26,7 +26,9 @@ def test_handle_successfully(client, headers_with_authorized_common):
         "content": "테스트 내용",
         "created_at": data["created_at"],
         "updated_at": data["updated_at"],
-        "user_id": data["user_id"],
+        "user": {
+            "id": common_user.id,
+        }
     }
     with Session(engine) as session:
         statement = select(post.Post)

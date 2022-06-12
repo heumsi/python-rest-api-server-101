@@ -13,12 +13,26 @@ from src.models.comment import Comment
 class ReadCommentResponse(BaseModel):
     class Data(BaseModel):
         id: int = comment.id_field
-        post_id: int = post.id_field
         content: str = comment.content_field
-        user_id: str = user.id_field
-        user_name: str = user.name_field
         created_at: int = comment.created_at_field
         updated_at: int = comment.updated_at_field
+
+        class Post(BaseModel):
+            id: int = post.id_field
+
+            class Config:
+                title = 'ReadCommentResponse.Data.Post'
+
+        class User(BaseModel):
+            id: str = user.id_field
+            name: str = user.name_field
+
+            class Config:
+                title = 'ReadCommentResponse.Data.User'
+
+        post: Post
+        user: User
+
         links: List[Link]
 
         class Config:
@@ -36,12 +50,16 @@ def handle(comment_id: int, request: Request) -> ReadCommentResponse:
         return ReadCommentResponse(
             data=ReadCommentResponse.Data(
                 id=comment_to_read.id,
-                post_id=comment_to_read.post_id,
                 content=comment_to_read.content,
-                user_id=comment_to_read.user.id,
-                user_name=comment_to_read.user.name,
                 created_at=comment_to_read.created_at,
                 updated_at=comment_to_read.updated_at,
+                post=ReadCommentResponse.Data.Post(
+                    id=comment_to_read.post_id,
+                ),
+                user=ReadCommentResponse.Data.User(
+                    id=comment_to_read.user.id,
+                    name=comment_to_read.user.name,
+                ),
                 links=[
                     Link(
                         rel="self",

@@ -16,10 +16,23 @@ class CreateCommentResponse(BaseModel):
     class Data(BaseModel):
         id: int = comment.id_field
         content: str = comment.content_field
-        post_id: int = post.id_field
-        user_id: str = user.id_field
         created_at: int = comment.created_at_field
         updated_at: int = comment.updated_at_field
+
+        class Post(BaseModel):
+            id: int = post.id_field
+
+            class Config:
+                title = 'CreateCommentResponse.Data.Post'
+
+        class User(BaseModel):
+            id: str = user.id_field
+
+            class Config:
+                title = 'CreateCommentResponse.Data.User'
+
+        post: Post
+        user: User
 
         class Config:
             title = 'CreateCommentResponse.Data'
@@ -49,8 +62,8 @@ def handle(
             data=CreateCommentResponse.Data(
                 id=new_comment.id,
                 content=new_comment.content,
-                post_id=new_comment.post_id,
-                user_id=new_comment.user_id,
+                post=CreateCommentResponse.Data.Post(id=new_comment.post_id),
+                user=CreateCommentResponse.Data.User(id=new_comment.user_id),
                 created_at=new_comment.created_at,
                 updated_at=new_comment.updated_at
             )

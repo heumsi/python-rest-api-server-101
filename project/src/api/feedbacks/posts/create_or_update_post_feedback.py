@@ -14,11 +14,24 @@ from src.models.utils import get_current_unix_timestamp
 class BaseResponse(BaseModel):
     class Data(BaseModel):
         id: int = post_feedback.id_field
-        post_id: int = post.id_field
-        user_id: str = user.id_field
         like: bool
         created_at: int = post_feedback.created_at_field
         updated_at: int = post_feedback.updated_at_field
+
+        class Post(BaseModel):
+            id: int = post.id_field
+
+            class Config:
+                title = 'CreateOrUpdatePostFeedbackBaseResponse.Data'
+
+        class User(BaseModel):
+            id: str = user.id_field
+
+            class Config:
+                title = 'CreateOrUpdatePostFeedbackBaseResponse.Data'
+
+        post: Post
+        user: User
 
         class Config:
             title = 'CreateOrUpdatePostFeedbackBaseResponse.Data'
@@ -70,11 +83,15 @@ def handle(
             return UpdatePostFeedbackResponse(
                 data=UpdatePostFeedbackResponse.Data(
                     id=existing_post_feedback.id,
-                    post_id=existing_post_feedback.post_id,
-                    user_id=existing_post_feedback.user_id,
                     like=existing_post_feedback.like,
                     created_at=existing_post_feedback.created_at,
-                    updated_at=existing_post_feedback.updated_at
+                    updated_at=existing_post_feedback.updated_at,
+                    post=UpdatePostFeedbackResponse.Data.Post(
+                        id=existing_post_feedback.post_id
+                    ),
+                    user=UpdatePostFeedbackResponse.Data.User(
+                        id=existing_post_feedback.user_id,
+                    )
                 )
             )
         else:
@@ -97,10 +114,14 @@ def handle(
             return CreatePostFeedbackResponse(
                 data=CreatePostFeedbackResponse.Data(
                     id=new_post_feedback.id,
-                    post_id=new_post_feedback.post_id,
-                    user_id=new_post_feedback.user_id,
                     like=new_post_feedback.like,
                     created_at=new_post_feedback.created_at,
-                    updated_at=new_post_feedback.updated_at
+                    updated_at=new_post_feedback.updated_at,
+                    post=UpdatePostFeedbackResponse.Data.Post(
+                        id=new_post_feedback.post_id
+                    ),
+                    user=UpdatePostFeedbackResponse.Data.User(
+                        id=new_post_feedback.user_id,
+                    )
                 )
             )

@@ -38,12 +38,16 @@ def handle(
             data=[
                 ReadCommentResponse.Data(
                     id=comment_to_read.id,
-                    post_id=comment_to_read.post_id,
                     content=comment_to_read.content,
-                    user_id=comment_to_read.user_id,
-                    user_name=comment_to_read.user.name,
                     created_at=comment_to_read.created_at,
                     updated_at=comment_to_read.updated_at,
+                    post=ReadCommentResponse.Data.Post(
+                        id=comment_to_read.post_id,
+                    ),
+                    user=ReadCommentResponse.Data.User(
+                        id=comment_to_read.user.id,
+                        name=comment_to_read.user.name,
+                    ),
                     links=[
                         Link(
                             rel="self",

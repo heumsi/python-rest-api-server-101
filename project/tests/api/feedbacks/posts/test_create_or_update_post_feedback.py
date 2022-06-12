@@ -34,11 +34,15 @@ def test_handle_successfully_with_creating_post_feedback(
     data = json_data.get("data")
     assert data == {
         "id": data["id"],
-        "user_id": common_user.id,
         "like": True,
-        "post_id": post_.id,
         "created_at": data["created_at"],
         "updated_at": data["updated_at"],
+        "user": {
+            "id": common_user.id,
+        },
+        "post": {
+            "id": post_.id,
+        },
     }
 
     with Session(engine) as session:
@@ -94,11 +98,15 @@ def test_handle_successfully_with_updating_post_feedback(
     data = json_data.get("data")
     assert data == {
         "id": data["id"],
-        "user_id": common_user.id,
-        "post_id": post_.id,
         "like": False,
         "created_at": data["created_at"],
         "updated_at": data["updated_at"],
+        "user": {
+            "id": common_user.id,
+        },
+        "post": {
+            "id": post_.id,
+        },
     }
 
     with Session(engine) as session:

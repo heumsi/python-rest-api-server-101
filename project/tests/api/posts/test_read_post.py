@@ -33,8 +33,10 @@ def test_handle_successfully(client, common_user):
         "content": "테스트 내용",
         "created_at": data["created_at"],
         "updated_at": data["updated_at"],
-        "user_id": common_user.id,
-        "user_name": common_user.name,
+        "user": {
+            "id": common_user.id,
+            "name": common_user.name,
+        }
     }
     links = json_data.get("links")
     assert links == [

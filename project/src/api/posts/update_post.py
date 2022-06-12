@@ -19,9 +19,16 @@ class UpdatePostResponse(BaseModel):
         id: int = post.id_field
         title: str = post.title_field
         content: str = post.content_field
-        user_id: str = user.id_field
         created_at: int = post.created_at_field
         updated_at: int = post.updated_at_field
+
+        class User(BaseModel):
+            id: str = user.id_field
+
+            class Config:
+                title = 'UpdatePostResponse.Data.User'
+
+        user: User
 
         class Config:
             title = "UpdatePostResponse.Data"
@@ -52,9 +59,11 @@ def handle(
                 id=post_to_update.id,
                 title=post_to_update.title,
                 content=post_to_update.content,
-                user_id=post_to_update.user_id,
                 created_at=post_to_update.created_at,
-                updated_at=post_to_update.updated_at
+                updated_at=post_to_update.updated_at,
+                user=UpdatePostResponse.Data.User(
+                    id=post_to_update.user_id,
+                )
             )
         )
 

@@ -15,14 +15,27 @@ class ReadPostsResponse(BaseModel):
         id: int = post.id_field
         title: str = post.title_field
         content: str = post.content_field
-        user_id: str = user.id_field
-        user_name: str = user.name_field
         created_at: int = post.created_at_field
         updated_at: int = post.updated_at_field
-        num_likes: int
-        num_dislikes: int
-        num_comments: int
         links: List[Link]
+
+        class User(BaseModel):
+            id: str = user.id_field
+            name: str = user.name_field
+
+            class Config:
+                title = 'ReadPostsResponse.Data.User'
+
+        class NumOf(BaseModel):
+            likes: int
+            dislikes: int
+            comments: int
+
+            class Config:
+                title = 'ReadPostsResponse.Data.NumOf'
+
+        user: User
+        num_of: NumOf
 
         class Config:
             title = "ReadPostsResponse.Data"
@@ -53,13 +66,17 @@ def handle(*,
                     id=post_to_read.id,
                     title=post_to_read.title,
                     content=post_to_read.content,
-                    user_id=post_to_read.user_id,
-                    user_name=post_to_read.user.name,
                     created_at=post_to_read.created_at,
                     updated_at=post_to_read.updated_at,
-                    num_likes=len([feedback for feedback in post_to_read.feedbacks if feedback.like]),
-                    num_dislikes=len([feedback for feedback in post_to_read.feedbacks if not feedback.like]),
-                    num_comments=len(post_to_read.comments),
+                    user=ReadPostsResponse.Data.User(
+                        id=post_to_read.user.id,
+                        name=post_to_read.user.name,
+                    ),
+                    num_of=ReadPostsResponse.Data.NumOf(
+                        likes=len([feedback for feedback in post_to_read.feedbacks if feedback.like]),
+                        dislikes=len([feedback for feedback in post_to_read.feedbacks if not feedback.like]),
+                        comments=len(post_to_read.comments),
+                    ),
                     links=[
                         Link(
                             rel="self",

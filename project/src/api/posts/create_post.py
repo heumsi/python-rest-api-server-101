@@ -17,9 +17,16 @@ class CreatePostResponse(BaseModel):
         id: int = post.id_field
         title: str = post.title_field
         content: str = post.content_field
-        user_id: str = user.id_field
         created_at: int = post.created_at_field
         updated_at: int = post.updated_at_field
+
+        class User(BaseModel):
+            id: str = user.id_field
+
+            class Config:
+                title = 'CreatePostResponse.Data.User'
+
+        user: User
 
         class Config:
             title = 'CreatePostResponse.Data'
@@ -46,8 +53,10 @@ def handle(
                 id=new_post.id,
                 title=new_post.title,
                 content=new_post.content,
-                user_id=new_post.user_id,
                 created_at=new_post.created_at,
-                updated_at=new_post.updated_at
+                updated_at=new_post.updated_at,
+                user=CreatePostResponse.Data.User(
+                    id=new_post.user_id
+                )
             )
         )

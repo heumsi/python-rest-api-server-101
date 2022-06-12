@@ -101,12 +101,16 @@ def test_handle_successfully(
     assert data == [
         {
             'id': 1,
-            'comment_id': comment_1.id,
-            'user_id': common_user.id,
-            'user_name': common_user.name,
             'like': True,
             'created_at': data[0]['created_at'],
             'updated_at': data[0]['updated_at'],
+            "user": {
+                "id": common_user.id,
+                'name': common_user.name,
+            },
+            "comment": {
+                "id": comment_1.id,
+            },
             'links': [
                 {
                     'href': f'{client.base_url}/comments/{comment_1.id}',
@@ -115,12 +119,16 @@ def test_handle_successfully(
             ],
         }, {
             'id': 2,
-            'comment_id': comment_1.id,
-            'user_id': common_another_user.id,
-            'user_name': common_another_user.name,
             'like': False,
             'created_at': data[1]['created_at'],
             'updated_at': data[1]['updated_at'],
+            "user": {
+                "id": common_another_user.id,
+                'name': common_another_user.name,
+            },
+            "comment": {
+                "id": comment_1.id,
+            },
             'links': [
                 {
                     'href': f'{client.base_url}/comments/{comment_1.id}',
@@ -129,12 +137,16 @@ def test_handle_successfully(
             ],
         }, {
             'id': 3,
-            'comment_id': comment_2.id,
-            'user_id': common_user.id,
-            'user_name': common_user.name,
             'like': True,
             'created_at': data[2]['created_at'],
             'updated_at': data[2]['updated_at'],
+            "user": {
+                "id": common_user.id,
+                'name': common_user.name,
+            },
+            "comment": {
+                "id": comment_2.id,
+            },
             'links': [
                 {
                     'href': f'{client.base_url}/comments/{comment_2.id}',
@@ -143,12 +155,16 @@ def test_handle_successfully(
             ],
         }, {
             'id': 4,
-            'comment_id': comment_2.id,
-            'user_id': common_another_user.id,
-            'user_name': common_another_user.name,
             'like': False,
             'created_at': data[3]['created_at'],
             'updated_at': data[3]['updated_at'],
+            "user": {
+                "id": common_another_user.id,
+                'name': common_another_user.name,
+            },
+            "comment": {
+                "id": comment_2.id,
+            },
             'links': [
                 {
                     'href': f'{client.base_url}/comments/{comment_2.id}',
@@ -263,12 +279,16 @@ def test_handle_successfully_with_specific_post_id(
     assert data == [
         {
             "id": data[0]["id"],
-            "user_id": common_user.id,
-            "user_name": common_user.name,
-            "comment_id": comment_1.id,
             "like": True,
             "created_at": data[0]["created_at"],
             "updated_at": data[0]["updated_at"],
+            "user": {
+                "id": common_user.id,
+                'name': common_user.name,
+            },
+            "comment": {
+                "id": comment_1.id,
+            },
             'links': [
                 {
                     'href': f'{client.base_url}/comments/{comment_1.id}',
@@ -278,12 +298,16 @@ def test_handle_successfully_with_specific_post_id(
         },
         {
             "id": data[1]["id"],
-            "user_id": common_another_user.id,
-            "user_name": common_another_user.name,
-            "comment_id": comment_1.id,
             "like": False,
             "created_at": data[1]["created_at"],
             "updated_at": data[1]["updated_at"],
+            "user": {
+                "id": common_another_user.id,
+                'name': common_another_user.name,
+            },
+            "comment": {
+                "id": comment_1.id,
+            },
             'links': [
                 {
                     'href': f'{client.base_url}/comments/{comment_1.id}',

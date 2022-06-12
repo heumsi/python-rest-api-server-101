@@ -7,7 +7,7 @@ from src.database import engine
 from src.models import post
 
 
-def test_handle_successfully(client, headers_with_authorized_common):
+def test_handle_successfully(client, common_user, headers_with_authorized_common):
     # given
     with Session(engine) as session:
         session.add(post.Post(
@@ -36,9 +36,11 @@ def test_handle_successfully(client, headers_with_authorized_common):
         "id": 1,
         "title": "수정된 테스트 제목",
         "content": "테스트 내용",
-        "user_id": "heumsi",
         "created_at": data["created_at"],
         "updated_at": data["updated_at"],
+        "user": {
+            "id": common_user.id,
+        }
     }
     assert data["updated_at"] > data["created_at"]
     with Session(engine) as session:

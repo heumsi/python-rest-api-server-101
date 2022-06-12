@@ -48,12 +48,16 @@ def test_handle_successfully(client, common_user, common_another_user):
     assert data == [
         {
             "id": 1,
-            "post_id": post_.id,
             "content": "테스트 내용 1",
             "created_at": data[0]["created_at"],
             "updated_at": data[0]["updated_at"],
-            "user_id": common_user.id,
-            "user_name": common_user.name,
+            "post": {
+                "id": post_.id,
+            },
+            "user": {
+                "id": common_user.id,
+                "name": common_user.name,
+            },
             'links': [
                 {
                     'href': f'{client.base_url}/comments/1',
@@ -67,12 +71,16 @@ def test_handle_successfully(client, common_user, common_another_user):
         },
         {
             "id": 2,
-            "post_id": post_.id,
             "content": "테스트 내용 2",
             "created_at": data[0]["created_at"],
             "updated_at": data[0]["updated_at"],
-            "user_id": common_another_user.id,
-            "user_name": common_another_user.name,
+            "post": {
+                "id": post_.id,
+            },
+            "user": {
+                "id": common_another_user.id,
+                "name": common_another_user.name,
+            },
             'links': [
                 {
                     'href': f'{client.base_url}/comments/2',
@@ -151,12 +159,16 @@ def test_handle_successfully_with_params_including_post_id(client, common_user):
     assert data == [
         {
             "id": comment_1.id,
-            "post_id": comment_1.post_id,
             "content": "테스트 내용 1",
             "created_at": data[0]["created_at"],
             "updated_at": data[0]["updated_at"],
-            "user_id": common_user.id,
-            "user_name": common_user.name,
+            "post": {
+                "id": comment_1.post_id,
+            },
+            "user": {
+                "id": common_user.id,
+                "name": common_user.name,
+            },
             'links': [
                 {
                     'href': f'{client.base_url}/comments/{comment_1.id}',

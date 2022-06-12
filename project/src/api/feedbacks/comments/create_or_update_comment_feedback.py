@@ -14,11 +14,24 @@ from src.models.utils import get_current_unix_timestamp
 class BaseResponse(BaseModel):
     class Data(BaseModel):
         id: int = comment_feedback.id_field
-        comment_id: int = comment.id_field
-        user_id: str = user.id_field
         like: bool
         created_at: int = comment_feedback.created_at_field
         updated_at: int = comment_feedback.updated_at_field
+
+        class Comment(BaseModel):
+            id: int = comment.id_field
+
+            class Config:
+                title = 'CreateOrUpdateCommentFeedbackBaseResponse.Data.Comment'
+
+        class User(BaseModel):
+            id: str = user.id_field
+
+            class Config:
+                title = 'CreateOrUpdateCommentFeedbackBaseResponse.Data.User'
+
+        comment: Comment
+        user: User
 
         class Config:
             title = 'CreateOrUpdateCommentFeedbackBaseResponse.Data'
@@ -70,11 +83,15 @@ def handle(
             return UpdateCommentFeedbackResponse(
                 data=UpdateCommentFeedbackResponse.Data(
                     id=existing_comment_feedback.id,
-                    comment_id=existing_comment_feedback.comment_id,
-                    user_id=existing_comment_feedback.user_id,
                     like=existing_comment_feedback.like,
                     created_at=existing_comment_feedback.created_at,
-                    updated_at=existing_comment_feedback.updated_at
+                    updated_at=existing_comment_feedback.updated_at,
+                    comment=UpdateCommentFeedbackResponse.Data.Comment(
+                        id=existing_comment_feedback.comment_id,
+                    ),
+                    user=UpdateCommentFeedbackResponse.Data.User(
+                        id=existing_comment_feedback.user_id,
+                    )
                 )
             )
         else:
@@ -97,10 +114,14 @@ def handle(
             return CreateCommentFeedbackResponse(
                 data=CreateCommentFeedbackResponse.Data(
                     id=new_comment_feedback.id,
-                    comment_id=new_comment_feedback.comment_id,
-                    user_id=new_comment_feedback.user_id,
                     like=new_comment_feedback.like,
                     created_at=new_comment_feedback.created_at,
-                    updated_at=new_comment_feedback.updated_at
+                    updated_at=new_comment_feedback.updated_at,
+                    comment=UpdateCommentFeedbackResponse.Data.Comment(
+                        id=new_comment_feedback.comment_id,
+                    ),
+                    user=UpdateCommentFeedbackResponse.Data.User(
+                        id=new_comment_feedback.user_id,
+                    )
                 )
             )

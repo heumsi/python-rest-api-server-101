@@ -35,11 +35,15 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
     data = json_data.get("data")
     assert data == {
         "id": data["id"],
-        "post_id": post_.id,
         "content": "테스트 내용",
         "created_at": data["created_at"],
         "updated_at": data["updated_at"],
-        "user_id": common_user.id,
+        "post": {
+            "id": post_.id,
+        },
+        "user": {
+            "id": common_user.id,
+        }
     }
     with Session(engine) as session:
         statement = select(comment.Comment)
