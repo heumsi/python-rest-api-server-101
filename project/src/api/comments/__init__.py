@@ -10,7 +10,6 @@ router.add_api_route(
     endpoint=create_comment.handle,
     status_code=status.HTTP_201_CREATED,
     summary="댓글을 추가합니다.",
-    response_model=create_comment.CreateCommentResponse,
 )
 
 router.add_api_route(
@@ -35,9 +34,8 @@ router.add_api_route(
     methods=["PUT"],
     path="/{comment_id}",
     endpoint=update_comment.handle,
-    status_code=status.HTTP_200_OK,
+    status_code=status.HTTP_204_NO_CONTENT,
     summary="댓글 전체를 수정합니다.",
-    response_model=update_comment.UpdateCommentResponse,
 )
 
 router.add_api_route(

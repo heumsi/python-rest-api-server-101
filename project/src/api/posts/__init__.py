@@ -10,7 +10,6 @@ router.add_api_route(
     endpoint=create_post.handle,
     status_code=status.HTTP_201_CREATED,
     summary="게시글을 추가합니다.",
-    response_model=create_post.CreatePostResponse,
 )
 router.add_api_route(
     methods=["GET"],
@@ -32,17 +31,15 @@ router.add_api_route(
     methods=["PUT"],
     path="/{post_id}",
     endpoint=update_post.handle,
-    status_code=status.HTTP_200_OK,
+    status_code=status.HTTP_204_NO_CONTENT,
     summary="게시글 전체를 수정합니다.",
-    response_model=update_post.UpdatePostResponse,
 )
 router.add_api_route(
     methods=["PATCH"],
     path="/{post_id}",
     endpoint=patch_post.handle,
-    status_code=status.HTTP_200_OK,
+    status_code=status.HTTP_204_NO_CONTENT,
     summary="게시글 일부를 수정합니다.",
-    response_model=patch_post.PatchPostResponse
 )
 router.add_api_route(
     methods=["DELETE"],

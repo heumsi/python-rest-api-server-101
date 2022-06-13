@@ -30,20 +30,7 @@ def test_handle_successfully(client, headers_with_authorized_common):
     )
 
     # then
-    assert response.status_code == status.HTTP_200_OK
-    json_data = response.json()
-    data = json_data.get("data")
-    assert data == {
-        "id": 1,
-        "title": "수정된 테스트 제목",
-        "content": "수정된 테스트 내용",
-        "createdAt": data["createdAt"],
-        "updatedAt": data["updatedAt"],
-        "user": {
-            "id": "heumsi",
-        }
-    }
-    assert data["updatedAt"] > data["createdAt"]
+    assert response.status_code == status.HTTP_204_NO_CONTENT
     with Session(engine) as session:
         statement = select(post.Post)
         results = session.exec(statement)

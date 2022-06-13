@@ -14,33 +14,11 @@ class UpdatePostRequest(SchemaModel):
     content: str = post.content_field
 
 
-class UpdatePostResponse(SchemaModel):
-    class Data(SchemaModel):
-        id: int = post.id_field
-        title: str = post.title_field
-        content: str = post.content_field
-        created_at: int = post.created_at_field
-        updated_at: int = post.updated_at_field
-
-        class User(SchemaModel):
-            id: str = user.id_field
-
-            class Config:
-                title = 'UpdatePostResponse.Data.User'
-
-        user: User
-
-        class Config:
-            title = "UpdatePostResponse.Data"
-
-    data: Data
-
-
 def handle(
     post_id: int,
     request: UpdatePostRequest,
     current_user: user.User = Depends(GetAuthorizedUser(allowed_roles=[user.Role.ADMIN, user.Role.COMMON])),
-) -> UpdatePostResponse:
+) -> None:
     with Session(engine) as session:
         post_to_update = session.get(post.Post, post_id)
         if not post_to_update:
@@ -54,16 +32,4 @@ def handle(
         session.add(post_to_update)
         session.commit()
         session.refresh(post_to_update)
-        return UpdatePostResponse(
-            data=UpdatePostResponse.Data(
-                id=post_to_update.id,
-                title=post_to_update.title,
-                content=post_to_update.content,
-                created_at=post_to_update.created_at,
-                updated_at=post_to_update.updated_at,
-                user=UpdatePostResponse.Data.User(
-                    id=post_to_update.user_id,
-                )
-            )
-        )
 

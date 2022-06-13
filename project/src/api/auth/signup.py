@@ -13,18 +13,7 @@ class SignupRequest(SchemaModel):
     password: str = user.password_field
 
 
-class SignUpResponse(SchemaModel):
-    class Data(SchemaModel):
-        id: str = user.id_field
-        name: str = user.name_field
-
-        class Config:
-            title = "SignUpResponse.Data"
-
-    data: Data
-
-
-def handle(request: SignupRequest) -> SignUpResponse:
+def handle(request: SignupRequest) -> None:
     with Session(engine) as session:
         existing_user = session.get(user.User, request.id)
         if existing_user:
@@ -37,9 +26,3 @@ def handle(request: SignupRequest) -> SignUpResponse:
         )
         session.add(new_user)
         session.commit()
-        return SignUpResponse(
-            data=SignUpResponse.Data(
-                id=new_user.id,
-                name=new_user.name,
-            )
-        )

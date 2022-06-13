@@ -18,19 +18,7 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
 
     # then
     assert response.status_code == status.HTTP_201_CREATED
-    json_data = response.json()
-    data = json_data.get("data")
-    assert data == {
-        "id": data["id"],
-        "title": "테스트 제목",
-        "content": "테스트 내용",
-        "createdAt": data["createdAt"],
-        "updatedAt": data["updatedAt"],
-        "user": {
-            "id": common_user.id,
-        }
-    }
-    assert response.headers.get("Location") == f"/posts/{data['id']}"
+    assert response.headers.get("Location").startswith("/posts/")
     with Session(engine) as session:
         statement = select(post.Post)
         results = session.exec(statement)

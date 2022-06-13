@@ -41,23 +41,7 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
     )
 
     # then
-    assert response.status_code == status.HTTP_200_OK
-    json_data = response.json()
-    data = json_data.get("data")
-    assert data == {
-        "id": comment_.id,
-        "content": "수정된 테스트 내용",
-        "post": {
-            "id": comment_.post_id,
-        },
-        "user": {
-            "id": common_user.id,
-            "name": common_user.name,
-        },
-        "createdAt": data["createdAt"],
-        "updatedAt": data["updatedAt"],
-    }
-    assert data["updatedAt"] > data["createdAt"]
+    assert response.status_code == status.HTTP_204_NO_CONTENT
     with Session(engine) as session:
         statement = select(comment.Comment)
         results = session.exec(statement)
