@@ -1,4 +1,4 @@
-from fastapi import Depends, status, HTTPException
+from fastapi import Depends, status, HTTPException, Response
 from sqlmodel import Session
 
 from src.api.auth.utils import GetAuthorizedUser
@@ -41,8 +41,10 @@ class CreateCommentResponse(SchemaModel):
 
 
 def handle(
+    *,
     request: CreateCommentReqeust,
-    current_user: user.User = Depends(GetAuthorizedUser(allowed_roles=[user.Role.ADMIN, user.Role.COMMON]))
+    current_user: user.User = Depends(GetAuthorizedUser(allowed_roles=[user.Role.ADMIN, user.Role.COMMON])),
+    response: Response
 ) -> CreateCommentResponse:
     with Session(engine) as session:
         existing_post = session.get(post.Post, request.post_id)
@@ -58,6 +60,7 @@ def handle(
         session.add(new_comment)
         session.commit()
         session.refresh(new_comment)
+        response.headers["Location"] = f"/comments/{new_comment.id}"
         return CreateCommentResponse(
             data=CreateCommentResponse.Data(
                 id=new_comment.id,

@@ -45,6 +45,7 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
             "id": common_user.id,
         }
     }
+    assert response.headers.get("Location") == f"/comments/{data['id']}"
     with Session(engine) as session:
         statement = select(comment.Comment)
         results = session.exec(statement)

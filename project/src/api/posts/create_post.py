@@ -1,4 +1,4 @@
-from fastapi import Depends
+from fastapi import Depends, Response
 from sqlmodel import Session
 
 from src.api.auth.utils import GetAuthorizedUser
@@ -35,8 +35,10 @@ class CreatePostResponse(SchemaModel):
 
 
 def handle(
+    *,
     request: CreatePostReqeust,
-    current_user: user.User = Depends(GetAuthorizedUser(allowed_roles=[user.Role.ADMIN, user.Role.COMMON]))
+    current_user: user.User = Depends(GetAuthorizedUser(allowed_roles=[user.Role.ADMIN, user.Role.COMMON])),
+    response: Response,
 ) -> CreatePostResponse:
     with Session(engine) as session:
         new_post = post.Post(
@@ -48,6 +50,7 @@ def handle(
         session.add(new_post)
         session.commit()
         session.refresh(new_post)
+        response.headers["Location"] = f"/posts/{new_post.id}"
         return CreatePostResponse(
             data=CreatePostResponse.Data(
                 id=new_post.id,

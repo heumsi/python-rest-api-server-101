@@ -30,6 +30,7 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
             "id": common_user.id,
         }
     }
+    assert response.headers.get("Location") == f"/posts/{data['id']}"
     with Session(engine) as session:
         statement = select(post.Post)
         results = session.exec(statement)
