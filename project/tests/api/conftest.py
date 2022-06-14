@@ -17,6 +17,9 @@ from src.models import user
 @pytest.fixture(scope="session")
 def client() -> TestClient:
     with TestClient(app) as client:
+        client.headers = {
+            "Accept": "application/vnd.api+json"
+        }
         return client
 
 

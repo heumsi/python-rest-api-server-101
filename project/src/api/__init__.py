@@ -1,13 +1,27 @@
-from fastapi import FastAPI, status
+from typing import Optional
+
+from fastapi import FastAPI, status, Depends, Header, HTTPException
 from fastapi.responses import PlainTextResponse
 
 from src.api import auth, users, posts, comments, feedbacks
 from src.database import create_db_and_tables
 
+
+def check_api_version_in_headers(accept: Optional[str] = Header(default=None)) -> None:
+    if not accept or accept.lower() != "application/vnd.api+json":
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail="Please put 'application/vnd.api+json' in the 'Accept' key in Headers"
+        )
+
+
 app = FastAPI(
     title="Project REST API Docs",
     description="프로젝트 REST API 문서입니다.",
     version="v1",
+    dependencies=[
+        Depends(check_api_version_in_headers),
+    ]
 )
 
 app.include_router(auth.router)
