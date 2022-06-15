@@ -1,7 +1,5 @@
-from fastapi.testclient import TestClient
 from fastapi import status
 
-from src.api import app
 
 
 def test_handle(client):

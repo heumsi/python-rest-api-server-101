@@ -4,7 +4,7 @@ from sqlmodel import Session
 from src.api.auth.utils import GetAuthorizedUser
 from src.api.common import SchemaModel
 from src.database import engine
-from src.models import comment, user, post
+from src.models import comment, user
 from src.models.utils import get_current_unix_timestamp
 
 
