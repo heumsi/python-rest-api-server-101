@@ -1,6 +1,12 @@
 from typing import List, Optional
-
 from sqlmodel import Field, Relationship, SQLModel
+
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from src.models.comment import Comment
+    from src.models.feedbacks.post_feedback import PostFeedback
 
 from src.models.user import User
 from src.models.utils import get_current_unix_timestamp
