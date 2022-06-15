@@ -7,23 +7,17 @@ from src.models.feedbacks import comment_feedback
 
 
 def test_handle_successfully_with_creating_comment_feedback(
-    client,
-    common_user,
-    headers_with_authorized_common
+    client, common_user, headers_with_authorized_common
 ):
     # given
     with Session(engine) as session:
-        post_ = post.Post(
-            title="테스트 제목",
-            user_id=common_user.id,
-            content="테스트 내용"
-        )
+        post_ = post.Post(title="테스트 제목", user_id=common_user.id, content="테스트 내용")
         comment_ = comment.Comment(
             post_id=post_.id,
             user_id=common_user.id,
             content="테스트 내용",
             post=post_,
-            user=common_user
+            user=common_user,
         )
         session.add(post_)
         session.add(comment_)
@@ -52,7 +46,7 @@ def test_handle_successfully_with_creating_comment_feedback(
         },
         "comment": {
             "id": comment_.id,
-        }
+        },
     }
 
     with Session(engine) as session:
@@ -71,23 +65,17 @@ def test_handle_successfully_with_creating_comment_feedback(
 
 
 def test_handle_successfully_with_updating_comment_feedback(
-    client,
-    common_user,
-    headers_with_authorized_common
+    client, common_user, headers_with_authorized_common
 ):
     # given
     with Session(engine) as session:
-        post_ = post.Post(
-            title="테스트 제목",
-            user_id=common_user.id,
-            content="테스트 내용"
-        )
+        post_ = post.Post(title="테스트 제목", user_id=common_user.id, content="테스트 내용")
         comment_ = comment.Comment(
             post_id=post_.id,
             user_id=common_user.id,
             content="테스트 내용",
             post=post_,
-            user=common_user
+            user=common_user,
         )
         comment_feedback_ = comment_feedback.CommentFeedback(
             comment_id=comment_.id,
@@ -125,7 +113,7 @@ def test_handle_successfully_with_updating_comment_feedback(
         },
         "comment": {
             "id": comment_.id,
-        }
+        },
     }
     with Session(engine) as session:
         statement = select(comment_feedback.CommentFeedback)
@@ -161,5 +149,3 @@ def test_handle_unsuccessfully_with_no_authentication(client):
 
     # then
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-

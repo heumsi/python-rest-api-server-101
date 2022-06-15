@@ -6,11 +6,7 @@ from src.models import post
 from src.models.feedbacks import post_feedback
 
 
-def test_handle_successfully(
-    client,
-    common_user,
-    headers_with_authorized_common
-):
+def test_handle_successfully(client, common_user, headers_with_authorized_common):
     # given
     with Session(engine) as session:
         post_ = post.Post(
@@ -50,8 +46,7 @@ def test_handle_successfully(
 def test_handle_unsuccessfully_with_not_found(client, headers_with_authorized_common):
     # when
     response = client.delete(
-        "/feedbacks/posts/1",
-        headers=headers_with_authorized_common
+        "/feedbacks/posts/1", headers=headers_with_authorized_common
     )
 
     # then
@@ -68,7 +63,9 @@ def test_handle_unsuccessfully_with_no_authentication(client):
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_handle_unsuccessfully_with_no_authorization(client, common_user, headers_with_authorized_common_another):
+def test_handle_unsuccessfully_with_no_authorization(
+    client, common_user, headers_with_authorized_common_another
+):
     # given
     with Session(engine) as session:
         post_ = post.Post(
@@ -98,4 +95,3 @@ def test_handle_unsuccessfully_with_no_authorization(client, common_user, header
 
     # then
     assert response.status_code == status.HTTP_403_FORBIDDEN
-

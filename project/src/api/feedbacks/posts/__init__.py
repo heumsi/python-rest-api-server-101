@@ -1,6 +1,10 @@
 from fastapi import APIRouter, status
 
-from src.api.feedbacks.posts import create_or_update_post_feedback, get_post_feedbacks, delete_post_feedback
+from src.api.feedbacks.posts import (
+    create_or_update_post_feedback,
+    get_post_feedbacks,
+    delete_post_feedback,
+)
 
 router = APIRouter(prefix="/posts")
 
@@ -15,8 +19,8 @@ router.add_api_route(
         },
         status.HTTP_201_CREATED: {
             "model": create_or_update_post_feedback.CreatePostFeedbackResponse,
-        }
-    }
+        },
+    },
 )
 
 

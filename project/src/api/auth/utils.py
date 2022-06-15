@@ -50,8 +50,7 @@ class GetAuthorizedUser:
     def __call__(self, user: User = Depends(get_current_user)) -> User:
         if Role(user.role) not in self._allowed_roles:
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="User does not authorized"
+                status_code=status.HTTP_403_FORBIDDEN, detail="User does not authorized"
             )
         return user
 

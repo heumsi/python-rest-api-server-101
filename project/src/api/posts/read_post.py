@@ -22,12 +22,12 @@ class ReadPostResponse(SchemaModel):
             name: str = user.name_field
 
             class Config:
-                title = 'ReadPostResponse.Data.User'
+                title = "ReadPostResponse.Data.User"
 
         user: User
 
         class Config:
-            title = 'ReadPostResponse.Data'
+            title = "ReadPostResponse.Data"
 
     data: Data
     links: List[Link]
@@ -37,7 +37,9 @@ def handle(post_id: int, request: Request) -> ReadPostResponse:
     with Session(engine) as session:
         post_to_read = session.get(Post, post_id)
         if not post_to_read:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Post not found"
+            )
         return ReadPostResponse(
             data=ReadPostResponse.Data(
                 id=post_to_read.id,
@@ -48,7 +50,7 @@ def handle(post_id: int, request: Request) -> ReadPostResponse:
                 user=ReadPostResponse.Data.User(
                     id=post_to_read.user.id,
                     name=post_to_read.user.name,
-                )
+                ),
             ),
             links=[
                 Link(
@@ -56,12 +58,11 @@ def handle(post_id: int, request: Request) -> ReadPostResponse:
                     href=str(request.url),
                 ),
                 Link(
-                    rel="comments",
-                    href=f"{request.base_url}comments?post_id={post_id}"
+                    rel="comments", href=f"{request.base_url}comments?post_id={post_id}"
                 ),
                 Link(
                     rel="feedbacks",
-                    href=f"{request.base_url}feedbacks/posts?post_id={post_id}"
-                )
-            ]
+                    href=f"{request.base_url}feedbacks/posts?post_id={post_id}",
+                ),
+            ],
         )

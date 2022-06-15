@@ -17,9 +17,7 @@ from src.models import user
 @pytest.fixture(scope="session")
 def client() -> TestClient:
     with TestClient(app) as client:
-        client.headers = {
-            "Accept": "application/vnd.api+json"
-        }
+        client.headers = {"Accept": "application/vnd.api+json"}
         return client
 
 
@@ -61,19 +59,19 @@ def headers_with_authorized_common(client, common_user) -> Dict[str, str]:
         data={
             "username": common_user.id,
             "password": "1234",
-        }
+        },
     )
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
     data = json_data.get("data")
-    headers = {
-        "Authorization": f"{data['tokenType']} {data['accessToken']}"
-    }
+    headers = {"Authorization": f"{data['tokenType']} {data['accessToken']}"}
     return headers
 
 
 @pytest.fixture()
-def headers_with_authorized_common_another(client, common_another_user) -> Dict[str, str]:
+def headers_with_authorized_common_another(
+    client, common_another_user
+) -> Dict[str, str]:
     response = client.post(
         "/auth/signin",
         headers={
@@ -82,14 +80,12 @@ def headers_with_authorized_common_another(client, common_another_user) -> Dict[
         data={
             "username": common_another_user.id,
             "password": "1234",
-        }
+        },
     )
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
     data = json_data.get("data")
-    headers = {
-        "Authorization": f"{data['tokenType']} {data['accessToken']}"
-    }
+    headers = {"Authorization": f"{data['tokenType']} {data['accessToken']}"}
     return headers
 
 
@@ -97,8 +93,13 @@ def headers_with_authorized_common_another(client, common_another_user) -> Dict[
 def headers_with_authorized_admin(client) -> Dict[str, str]:
     # given
     with Session(engine) as session:
-        session.add(user.User(
-            id="admin", name="admin", password=get_hashed_password("1234"), role=str(user.Role.ADMIN))
+        session.add(
+            user.User(
+                id="admin",
+                name="admin",
+                password=get_hashed_password("1234"),
+                role=str(user.Role.ADMIN),
+            )
         )
         session.commit()
 
@@ -110,14 +111,12 @@ def headers_with_authorized_admin(client) -> Dict[str, str]:
         data={
             "username": "admin",
             "password": "1234",
-        }
+        },
     )
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
     data = json_data.get("data")
-    headers = {
-        "Authorization": f"{data['tokenType']} {data['accessToken']}"
-    }
+    headers = {"Authorization": f"{data['tokenType']} {data['accessToken']}"}
     return headers
 
 

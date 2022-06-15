@@ -20,14 +20,14 @@ class ReadCommentResponse(SchemaModel):
             id: int = post.id_field
 
             class Config:
-                title = 'ReadCommentResponse.Data.Post'
+                title = "ReadCommentResponse.Data.Post"
 
         class User(SchemaModel):
             id: str = user.id_field
             name: str = user.name_field
 
             class Config:
-                title = 'ReadCommentResponse.Data.User'
+                title = "ReadCommentResponse.Data.User"
 
         post: Post
         user: User
@@ -35,7 +35,7 @@ class ReadCommentResponse(SchemaModel):
         links: List[Link]
 
         class Config:
-            title = 'ReadCommentResponse.Data'
+            title = "ReadCommentResponse.Data"
 
     data: Data
     links: List[Link]
@@ -45,7 +45,9 @@ def handle(comment_id: int, request: Request) -> ReadCommentResponse:
     with Session(engine) as session:
         comment_to_read = session.get(Comment, comment_id)
         if not comment_to_read:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Comment not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Comment not found"
+            )
         return ReadCommentResponse(
             data=ReadCommentResponse.Data(
                 id=comment_to_read.id,
@@ -62,18 +64,13 @@ def handle(comment_id: int, request: Request) -> ReadCommentResponse:
                 links=[
                     Link(
                         rel="self",
-                        href=f"{request.base_url}comments/{comment_to_read.id}"
+                        href=f"{request.base_url}comments/{comment_to_read.id}",
                     ),
                     Link(
                         rel="post",
-                        href=f"{request.base_url}posts/{comment_to_read.post_id}"
-                    )
-                ]
+                        href=f"{request.base_url}posts/{comment_to_read.post_id}",
+                    ),
+                ],
             ),
-            links=[
-                Link(
-                    rel="self",
-                    href=str(request.url)
-                )
-            ]
+            links=[Link(rel="self", href=str(request.url))],
         )

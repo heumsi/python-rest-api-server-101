@@ -9,10 +9,7 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
     # given
     with Session(engine) as session:
         post_ = post.Post(
-            title="테스트 제목",
-            user_id=common_user.id,
-            user=common_user,
-            content="테스트 내용"
+            title="테스트 제목", user_id=common_user.id, user=common_user, content="테스트 내용"
         )
         session.add(post_)
         session.commit()
@@ -23,10 +20,7 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
     response = client.post(
         "/comments/",
         headers=headers_with_authorized_common,
-        json={
-            "post_id": post_.id,
-            "content": "테스트 내용"
-        }
+        json={"post_id": post_.id, "content": "테스트 내용"},
     )
 
     # then
@@ -49,27 +43,20 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
 
 def test_handle_unsuccessfully_with_no_auth(client):
     # when
-    response = client.post(
-        "/comments/",
-        json={
-            "post_id": 1,
-            "content": "테스트 내용"
-        }
-    )
+    response = client.post("/comments/", json={"post_id": 1, "content": "테스트 내용"})
 
     # then
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_handle_unsuccessfully_with_not_found_post(client, headers_with_authorized_common):
+def test_handle_unsuccessfully_with_not_found_post(
+    client, headers_with_authorized_common
+):
     # when
     response = client.post(
         "/comments/",
         headers=headers_with_authorized_common,
-        json={
-            "post_id": 1,  # not existing post
-            "content": "테스트 내용"
-        }
+        json={"post_id": 1, "content": "테스트 내용"},  # not existing post
     )
 
     # then

@@ -10,12 +10,7 @@ from src.models import post
 def test_handle_successfully(client, common_user, headers_with_authorized_common):
     # given
     with Session(engine) as session:
-        session.add(post.Post(
-            id=1,
-            title="테스트 제목",
-            user_id="heumsi",
-            content="테스트 내용"
-        ))
+        session.add(post.Post(id=1, title="테스트 제목", user_id="heumsi", content="테스트 내용"))
         session.commit()
     time.sleep(1)  # wait for making difference between created_at, updated_at
 
@@ -49,12 +44,7 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
 def test_handle_unsuccessfully_with_no_authentication(client):
     # given
     with Session(engine) as session:
-        session.add(post.Post(
-            id=1,
-            title="테스트 제목",
-            user_id="heumsi",
-            content="테스트 내용"
-        ))
+        session.add(post.Post(id=1, title="테스트 제목", user_id="heumsi", content="테스트 내용"))
         session.commit()
 
     # when
@@ -69,15 +59,12 @@ def test_handle_unsuccessfully_with_no_authentication(client):
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_handle_unsuccessfully_with_no_authorization(client, headers_with_authorized_common_another):
+def test_handle_unsuccessfully_with_no_authorization(
+    client, headers_with_authorized_common_another
+):
     # given
     with Session(engine) as session:
-        session.add(post.Post(
-            id=1,
-            title="테스트 제목",
-            user_id="heumsi",
-            content="테스트 내용"
-        ))
+        session.add(post.Post(id=1, title="테스트 제목", user_id="heumsi", content="테스트 내용"))
         session.commit()
 
     # when
@@ -86,7 +73,7 @@ def test_handle_unsuccessfully_with_no_authorization(client, headers_with_author
         json={
             "title": "수정된 테스트 제목",
         },
-        headers=headers_with_authorized_common_another
+        headers=headers_with_authorized_common_another,
     )
 
     # then

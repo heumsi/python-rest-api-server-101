@@ -15,7 +15,9 @@ class CreatePostReqeust(SchemaModel):
 def handle(
     *,
     request: CreatePostReqeust,
-    current_user: user.User = Depends(GetAuthorizedUser(allowed_roles=[user.Role.ADMIN, user.Role.COMMON])),
+    current_user: user.User = Depends(
+        GetAuthorizedUser(allowed_roles=[user.Role.ADMIN, user.Role.COMMON])
+    ),
     response: Response,
 ) -> None:
     with Session(engine) as session:

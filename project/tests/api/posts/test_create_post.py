@@ -10,10 +10,7 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
     response = client.post(
         "/posts/",
         headers=headers_with_authorized_common,
-        json={
-            "title": "테스트 제목",
-            "content": "테스트 내용"
-        }
+        json={"title": "테스트 제목", "content": "테스트 내용"},
     )
 
     # then

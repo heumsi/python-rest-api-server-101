@@ -25,7 +25,7 @@ def test_handle_successfully(
             user_id=common_user.id,
             content="테스트 내용",
             post=post_1,
-            user=common_user
+            user=common_user,
         )
         comment_feedback_1_1 = comment_feedback.CommentFeedback(
             comment_id=comment_1.id,
@@ -51,7 +51,7 @@ def test_handle_successfully(
             user_id=common_user.id,
             content="테스트 내용",
             post=post_2,
-            user=common_user
+            user=common_user,
         )
         comment_feedback_2_1 = comment_feedback.CommentFeedback(
             comment_id=comment_2.id,
@@ -88,7 +88,6 @@ def test_handle_successfully(
         session.refresh(common_user)
         session.refresh(common_another_user)
 
-
     # when
     response = client.get(
         f"/feedbacks/comments/",
@@ -98,102 +97,95 @@ def test_handle_successfully(
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
     pagination = json_data.get("pagination")
-    assert pagination == {
-        'limit': 100,
-        'offset': 0,
-        'total': 4
-    }
+    assert pagination == {"limit": 100, "offset": 0, "total": 4}
     data = json_data.get("data")
     assert data == [
         {
-            'id': 1,
-            'like': True,
-            'createdAt': data[0]['createdAt'],
-            'updatedAt': data[0]['updatedAt'],
+            "id": 1,
+            "like": True,
+            "createdAt": data[0]["createdAt"],
+            "updatedAt": data[0]["updatedAt"],
             "user": {
                 "id": common_user.id,
-                'name': common_user.name,
+                "name": common_user.name,
             },
             "comment": {
                 "id": comment_1.id,
             },
-            'links': [
-                {
-                    'href': f'{client.base_url}/comments/{comment_1.id}',
-                    'rel': 'comment'
-                }
+            "links": [
+                {"href": f"{client.base_url}/comments/{comment_1.id}", "rel": "comment"}
             ],
-        }, {
-            'id': 2,
-            'like': False,
-            'createdAt': data[1]['createdAt'],
-            'updatedAt': data[1]['updatedAt'],
+        },
+        {
+            "id": 2,
+            "like": False,
+            "createdAt": data[1]["createdAt"],
+            "updatedAt": data[1]["updatedAt"],
             "user": {
                 "id": common_another_user.id,
-                'name': common_another_user.name,
+                "name": common_another_user.name,
             },
             "comment": {
                 "id": comment_1.id,
             },
-            'links': [
+            "links": [
                 {
-                    'href': f'{client.base_url}/comments/{comment_1.id}',
-                    'rel': 'comment'
+                    "href": f"{client.base_url}/comments/{comment_1.id}",
+                    "rel": "comment",
                 },
             ],
-        }, {
-            'id': 3,
-            'like': True,
-            'createdAt': data[2]['createdAt'],
-            'updatedAt': data[2]['updatedAt'],
+        },
+        {
+            "id": 3,
+            "like": True,
+            "createdAt": data[2]["createdAt"],
+            "updatedAt": data[2]["updatedAt"],
             "user": {
                 "id": common_user.id,
-                'name': common_user.name,
+                "name": common_user.name,
             },
             "comment": {
                 "id": comment_2.id,
             },
-            'links': [
+            "links": [
                 {
-                    'href': f'{client.base_url}/comments/{comment_2.id}',
-                    'rel': 'comment'
+                    "href": f"{client.base_url}/comments/{comment_2.id}",
+                    "rel": "comment",
                 },
             ],
-        }, {
-            'id': 4,
-            'like': False,
-            'createdAt': data[3]['createdAt'],
-            'updatedAt': data[3]['updatedAt'],
+        },
+        {
+            "id": 4,
+            "like": False,
+            "createdAt": data[3]["createdAt"],
+            "updatedAt": data[3]["updatedAt"],
             "user": {
                 "id": common_another_user.id,
-                'name': common_another_user.name,
+                "name": common_another_user.name,
             },
             "comment": {
                 "id": comment_2.id,
             },
-            'links': [
+            "links": [
                 {
-                    'href': f'{client.base_url}/comments/{comment_2.id}',
-                    'rel': 'comment'
+                    "href": f"{client.base_url}/comments/{comment_2.id}",
+                    "rel": "comment",
                 },
             ],
-        }
+        },
     ]
     links = json_data.get("links")
     assert links == [
-        {
-            'href': f'{client.base_url}/feedbacks/comments/',
-            'rel': 'self'
-        },
+        {"href": f"{client.base_url}/feedbacks/comments/", "rel": "self"},
     ]
 
 
 def test_handle_successfully_with_specific_post_id(
-        client,
-        common_user,
-        common_another_user,
-        headers_with_authorized_common,
-        headers_with_authorized_common_another,
+    client,
+    common_user,
+    common_another_user,
+    headers_with_authorized_common,
+    headers_with_authorized_common_another,
 ):
     # given
     with Session(engine) as session:
@@ -207,7 +199,7 @@ def test_handle_successfully_with_specific_post_id(
             user_id=common_user.id,
             content="테스트 내용",
             post=post_1,
-            user=common_user
+            user=common_user,
         )
         comment_feedback_1_1 = comment_feedback.CommentFeedback(
             comment_id=comment_1.id,
@@ -233,7 +225,7 @@ def test_handle_successfully_with_specific_post_id(
             user_id=common_user.id,
             content="테스트 내용",
             post=post_2,
-            user=common_user
+            user=common_user,
         )
         comment_feedback_2_1 = comment_feedback.CommentFeedback(
             comment_id=comment_2.id,
@@ -271,22 +263,13 @@ def test_handle_successfully_with_specific_post_id(
         session.refresh(common_another_user)
 
     # when
-    response = client.get(
-        f"/feedbacks/comments/",
-        params={
-            "comment_id": comment_1.id
-        }
-    )
+    response = client.get(f"/feedbacks/comments/", params={"comment_id": comment_1.id})
 
     # then
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
     pagination = json_data.get("pagination")
-    assert pagination == {
-        'limit': 100,
-        'offset': 0,
-        'total': 4
-    }
+    assert pagination == {"limit": 100, "offset": 0, "total": 4}
     data = json_data.get("data")
     assert data == [
         {
@@ -296,15 +279,15 @@ def test_handle_successfully_with_specific_post_id(
             "updatedAt": data[0]["updatedAt"],
             "user": {
                 "id": common_user.id,
-                'name': common_user.name,
+                "name": common_user.name,
             },
             "comment": {
                 "id": comment_1.id,
             },
-            'links': [
+            "links": [
                 {
-                    'href': f'{client.base_url}/comments/{comment_1.id}',
-                    'rel': 'comment'
+                    "href": f"{client.base_url}/comments/{comment_1.id}",
+                    "rel": "comment",
                 },
             ],
         },
@@ -315,24 +298,23 @@ def test_handle_successfully_with_specific_post_id(
             "updatedAt": data[1]["updatedAt"],
             "user": {
                 "id": common_another_user.id,
-                'name': common_another_user.name,
+                "name": common_another_user.name,
             },
             "comment": {
                 "id": comment_1.id,
             },
-            'links': [
+            "links": [
                 {
-                    'href': f'{client.base_url}/comments/{comment_1.id}',
-                    'rel': 'comment'
+                    "href": f"{client.base_url}/comments/{comment_1.id}",
+                    "rel": "comment",
                 },
             ],
-        }
+        },
     ]
     links = json_data.get("links")
     assert links == [
         {
-            'href': f'{client.base_url}/feedbacks/comments/?comment_id={comment_1.id}',
-            'rel': 'self'
+            "href": f"{client.base_url}/feedbacks/comments/?comment_id={comment_1.id}",
+            "rel": "self",
         },
     ]
-

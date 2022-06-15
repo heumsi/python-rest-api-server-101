@@ -22,19 +22,19 @@ class BaseResponse(SchemaModel):
             id: int = post.id_field
 
             class Config:
-                title = 'CreateOrUpdatePostFeedbackBaseResponse.Data'
+                title = "CreateOrUpdatePostFeedbackBaseResponse.Data"
 
         class User(SchemaModel):
             id: str = user.id_field
 
             class Config:
-                title = 'CreateOrUpdatePostFeedbackBaseResponse.Data'
+                title = "CreateOrUpdatePostFeedbackBaseResponse.Data"
 
         post: Post
         user: User
 
         class Config:
-            title = 'CreateOrUpdatePostFeedbackBaseResponse.Data'
+            title = "CreateOrUpdatePostFeedbackBaseResponse.Data"
 
     data: Data
 
@@ -42,25 +42,29 @@ class BaseResponse(SchemaModel):
 class CreatePostFeedbackResponse(BaseResponse):
     class Data(BaseResponse.Data):
         class Config:
-            title = 'CreatePostFeedbackResponse.Data'
+            title = "CreatePostFeedbackResponse.Data"
 
 
 class UpdatePostFeedbackResponse(BaseResponse):
     class Data(BaseResponse.Data):
         class Config:
-            title = 'UpdatePostFeedbackResponse.Data'
+            title = "UpdatePostFeedbackResponse.Data"
 
 
 def handle(
     post_id: int,
     like_or_dislike: Literal["like", "dislike"],
     response: Response,
-    current_user: user.User = Depends(GetAuthorizedUser(allowed_roles=[user.Role.ADMIN, user.Role.COMMON])),
+    current_user: user.User = Depends(
+        GetAuthorizedUser(allowed_roles=[user.Role.ADMIN, user.Role.COMMON])
+    ),
 ) -> Union[CreatePostFeedbackResponse, UpdatePostFeedbackResponse]:
     with Session(engine) as session:
         existing_post = session.get(post.Post, post_id)
         if not existing_post:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Post not found"
+            )
 
         statement = select(post_feedback.PostFeedback).where(
             post_feedback.PostFeedback.post_id == existing_post.id,
@@ -91,7 +95,7 @@ def handle(
                     ),
                     user=UpdatePostFeedbackResponse.Data.User(
                         id=existing_post_feedback.user_id,
-                    )
+                    ),
                 )
             )
         else:
@@ -104,7 +108,7 @@ def handle(
                 user_id=current_user.id,
                 like=like,
                 post=existing_post,
-                user=current_user
+                user=current_user,
             )
             session.add(new_post_feedback)
             session.commit()
@@ -122,6 +126,6 @@ def handle(
                     ),
                     user=UpdatePostFeedbackResponse.Data.User(
                         id=new_post_feedback.user_id,
-                    )
+                    ),
                 )
             )

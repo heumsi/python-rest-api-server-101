@@ -22,21 +22,20 @@ class GetCommentFeedbacksResponse(SchemaModel):
             id: int = comment.id_field
 
             class Config:
-                title = 'GetCommentFeedbacksResponse.Data.Comment'
+                title = "GetCommentFeedbacksResponse.Data.Comment"
 
         class User(SchemaModel):
             id: str = user.id_field
             name: str = user.name_field
 
             class Config:
-                title = 'GetCommentFeedbacksResponse.Data.User'
+                title = "GetCommentFeedbacksResponse.Data.User"
 
         comment: Comment
         user: User
 
-
         class Config:
-            title = 'GetCommentFeedbacksResponse.Data'
+            title = "GetCommentFeedbacksResponse.Data"
 
     pagination: Pagination
     data: List[Data]
@@ -48,7 +47,7 @@ def handle(
     comment_id: Optional[int] = None,
     offset: int = 0,
     limit: int = Query(default=100, lte=100),
-    request: Request
+    request: Request,
 ) -> GetCommentFeedbacksResponse:
     with Session(engine) as session:
         # get total count of rows for pagination
@@ -57,21 +56,21 @@ def handle(
 
         # get all rows
         statement = (
-            select(comment_feedback.CommentFeedback).offset(offset).limit(limit)
+            select(comment_feedback.CommentFeedback)
+            .offset(offset)
+            .limit(limit)
             .options(
                 selectinload(comment_feedback.CommentFeedback.user),
             )
         )
         if comment_id:
-            statement = statement.where(comment_feedback.CommentFeedback.comment_id == comment_id)
+            statement = statement.where(
+                comment_feedback.CommentFeedback.comment_id == comment_id
+            )
         results = session.exec(statement)
         comment_feedbacks_to_read = results.all()
         return GetCommentFeedbacksResponse(
-            pagination=Pagination(
-                offset=offset,
-                limit=limit,
-                total=total
-            ),
+            pagination=Pagination(offset=offset, limit=limit, total=total),
             data=[
                 GetCommentFeedbacksResponse.Data(
                     id=comment_feedback_to_read.id,
@@ -88,11 +87,11 @@ def handle(
                     links=[
                         Link(
                             rel="comment",
-                            href=f"{request.base_url}comments/{comment_feedback_to_read.comment_id}"
+                            href=f"{request.base_url}comments/{comment_feedback_to_read.comment_id}",
                         )
-                    ]
+                    ],
                 )
                 for comment_feedback_to_read in comment_feedbacks_to_read
             ],
-            links=get_links_for_pagination(offset, limit, total, request)
+            links=get_links_for_pagination(offset, limit, total, request),
         )

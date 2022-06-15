@@ -10,11 +10,7 @@ from src.models import post, comment
 def test_handle_successfully(client, common_user, headers_with_authorized_common):
     # given
     with Session(engine) as session:
-        post_ = post.Post(
-            title="테스트 제목",
-            user_id="heumsi",
-            content="테스트 내용"
-        )
+        post_ = post.Post(title="테스트 제목", user_id="heumsi", content="테스트 내용")
         session.add(post_)
         comment_ = comment.Comment(
             id=1,
@@ -22,7 +18,7 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
             user_id=common_user.id,
             content="테스트 내용",
             post=post_,
-            user=common_user
+            user=common_user,
         )
         session.add(comment_)
 
@@ -61,11 +57,7 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
 def test_handle_unsuccessfully_with_no_authentication(client, common_user):
     # given
     with Session(engine) as session:
-        post_ = post.Post(
-            title="테스트 제목",
-            user_id="heumsi",
-            content="테스트 내용"
-        )
+        post_ = post.Post(title="테스트 제목", user_id="heumsi", content="테스트 내용")
         session.add(post_)
         comment_ = comment.Comment(
             id=1,
@@ -73,7 +65,7 @@ def test_handle_unsuccessfully_with_no_authentication(client, common_user):
             user_id=common_user.id,
             content="테스트 내용",
             post=post_,
-            user=common_user
+            user=common_user,
         )
         session.add(comment_)
 
@@ -93,14 +85,12 @@ def test_handle_unsuccessfully_with_no_authentication(client, common_user):
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_handle_unsuccessfully_with_no_authorization(client, common_user, headers_with_authorized_common_another):
+def test_handle_unsuccessfully_with_no_authorization(
+    client, common_user, headers_with_authorized_common_another
+):
     # given
     with Session(engine) as session:
-        post_ = post.Post(
-            title="테스트 제목",
-            user_id="heumsi",
-            content="테스트 내용"
-        )
+        post_ = post.Post(title="테스트 제목", user_id="heumsi", content="테스트 내용")
         session.add(post_)
         comment_ = comment.Comment(
             id=1,
@@ -108,7 +98,7 @@ def test_handle_unsuccessfully_with_no_authorization(client, common_user, header
             user_id=common_user.id,
             content="테스트 내용",
             post=post_,
-            user=common_user
+            user=common_user,
         )
         session.add(comment_)
 
@@ -122,7 +112,7 @@ def test_handle_unsuccessfully_with_no_authorization(client, common_user, header
         json={
             "content": "수정된 테스트 내용",
         },
-        headers=headers_with_authorized_common_another
+        headers=headers_with_authorized_common_another,
     )
 
     # then

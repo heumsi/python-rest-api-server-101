@@ -1,6 +1,13 @@
 from fastapi import APIRouter, status
 
-from src.api.posts import create_post, read_posts, read_post, update_post, patch_post, delete_post
+from src.api.posts import (
+    create_post,
+    read_posts,
+    read_post,
+    update_post,
+    patch_post,
+    delete_post,
+)
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 

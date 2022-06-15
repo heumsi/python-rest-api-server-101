@@ -21,7 +21,7 @@ def handle(
     post_id: Optional[int] = None,
     offset: int = 0,
     limit: int = Query(default=100, lte=100),
-    request: Request
+    request: Request,
 ) -> ReadCommentsResponse:
     with Session(engine) as session:
         # get total count of rows for pagination
@@ -36,20 +36,14 @@ def handle(
             .order_by(comment.Comment.id)
             .offset(offset)
             .limit(limit)
-            .options(
-                selectinload(comment.Comment.user)
-            )
+            .options(selectinload(comment.Comment.user))
         )
         if post_id:
             statement = statement.where(comment.Comment.post_id == post_id)
         results = session.exec(statement)
         comments_to_read = results.all()
         return ReadCommentsResponse(
-            pagination=Pagination(
-                offset=offset,
-                limit=limit,
-                total=total
-            ),
+            pagination=Pagination(offset=offset, limit=limit, total=total),
             data=[
                 ReadCommentResponse.Data(
                     id=comment_to_read.id,
@@ -66,15 +60,15 @@ def handle(
                     links=[
                         Link(
                             rel="self",
-                            href=f"{request.base_url}comments/{comment_to_read.id}"
+                            href=f"{request.base_url}comments/{comment_to_read.id}",
                         ),
                         Link(
                             rel="post",
-                            href=f"{request.base_url}posts/{comment_to_read.post_id}"
-                        )
-                    ]
+                            href=f"{request.base_url}posts/{comment_to_read.post_id}",
+                        ),
+                    ],
                 )
                 for comment_to_read in comments_to_read
             ],
-            links=get_links_for_pagination(offset, limit, total, request)
+            links=get_links_for_pagination(offset, limit, total, request),
         )

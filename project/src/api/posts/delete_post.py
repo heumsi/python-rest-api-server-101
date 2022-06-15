@@ -16,9 +16,12 @@ def handle(
         results = session.exec(statement)
         post = results.first()
         if not post:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Post not found"
+            )
         if Role(user.role) != Role.ADMIN and post.user_id != user.id:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User does not authorized")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="User does not authorized"
+            )
         session.delete(post)
         session.commit()
-

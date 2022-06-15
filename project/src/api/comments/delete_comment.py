@@ -16,9 +16,12 @@ def handle(
         results = session.exec(statement)
         comment = results.first()
         if not comment:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Comment not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Comment not found"
+            )
         if Role(user.role) != Role.ADMIN and comment.user_id != user.id:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User does not authorized")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="User does not authorized"
+            )
         session.delete(comment)
         session.commit()
-

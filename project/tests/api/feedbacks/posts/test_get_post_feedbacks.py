@@ -81,18 +81,14 @@ def test_handle_successfully(
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
     pagination = json_data.get("pagination")
-    assert pagination == {
-        'limit': 100,
-        'offset': 0,
-        'total': 4
-    }
+    assert pagination == {"limit": 100, "offset": 0, "total": 4}
     data = json_data.get("data")
     assert data == [
         {
-            'id': 1,
-            'like': True,
-            'createdAt': data[0]['createdAt'],
-            'updatedAt': data[0]['updatedAt'],
+            "id": 1,
+            "like": True,
+            "createdAt": data[0]["createdAt"],
+            "updatedAt": data[0]["updatedAt"],
             "user": {
                 "id": common_user.id,
                 "name": common_user.name,
@@ -100,17 +96,13 @@ def test_handle_successfully(
             "post": {
                 "id": post_1.id,
             },
-            'links': [
-                {
-                    'href': f'{client.base_url}/posts/{post_1.id}',
-                    'rel': 'post'
-                }
-            ],
-        }, {
-            'id': 2,
-            'like': False,
-            'createdAt': data[1]['createdAt'],
-            'updatedAt': data[1]['updatedAt'],
+            "links": [{"href": f"{client.base_url}/posts/{post_1.id}", "rel": "post"}],
+        },
+        {
+            "id": 2,
+            "like": False,
+            "createdAt": data[1]["createdAt"],
+            "updatedAt": data[1]["updatedAt"],
             "user": {
                 "id": common_another_user.id,
                 "name": common_another_user.name,
@@ -118,17 +110,13 @@ def test_handle_successfully(
             "post": {
                 "id": post_1.id,
             },
-            'links': [
-                {
-                    'href': f'{client.base_url}/posts/{post_1.id}',
-                    'rel': 'post'
-                }
-            ],
-        }, {
-            'id': 3,
-            'like': True,
-            'createdAt': data[2]['createdAt'],
-            'updatedAt': data[2]['updatedAt'],
+            "links": [{"href": f"{client.base_url}/posts/{post_1.id}", "rel": "post"}],
+        },
+        {
+            "id": 3,
+            "like": True,
+            "createdAt": data[2]["createdAt"],
+            "updatedAt": data[2]["updatedAt"],
             "user": {
                 "id": common_user.id,
                 "name": common_user.name,
@@ -136,17 +124,13 @@ def test_handle_successfully(
             "post": {
                 "id": post_2.id,
             },
-            'links': [
-                {
-                    'href': f'{client.base_url}/posts/{post_2.id}',
-                    'rel': 'post'
-                }
-            ],
-        }, {
-            'id': 4,
-            'like': False,
-            'createdAt': data[3]['createdAt'],
-            'updatedAt': data[3]['updatedAt'],
+            "links": [{"href": f"{client.base_url}/posts/{post_2.id}", "rel": "post"}],
+        },
+        {
+            "id": 4,
+            "like": False,
+            "createdAt": data[3]["createdAt"],
+            "updatedAt": data[3]["updatedAt"],
             "user": {
                 "id": common_another_user.id,
                 "name": common_another_user.name,
@@ -154,21 +138,11 @@ def test_handle_successfully(
             "post": {
                 "id": post_2.id,
             },
-            'links': [
-                {
-                    'href': f'{client.base_url}/posts/{post_2.id}',
-                    'rel': 'post'
-                }
-            ],
-        }
+            "links": [{"href": f"{client.base_url}/posts/{post_2.id}", "rel": "post"}],
+        },
     ]
     links = json_data.get("links")
-    assert links == [
-        {
-            'href': f'{client.base_url}/feedbacks/posts/',
-            'rel': 'self'
-        }
-    ]
+    assert links == [{"href": f"{client.base_url}/feedbacks/posts/", "rel": "self"}]
 
 
 def test_handle_successfully_with_specific_post_id(
@@ -209,22 +183,13 @@ def test_handle_successfully_with_specific_post_id(
         session.refresh(common_another_user)
 
     # when
-    response = client.get(
-        f"/feedbacks/posts/",
-        params={
-            "post_id": post_.id
-        }
-    )
+    response = client.get(f"/feedbacks/posts/", params={"post_id": post_.id})
 
     # then
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
     pagination = json_data.get("pagination")
-    assert pagination == {
-        'limit': 100,
-        'offset': 0,
-        'total': 2
-    }
+    assert pagination == {"limit": 100, "offset": 0, "total": 2}
     data = json_data.get("data")
     assert [
         {
@@ -239,12 +204,7 @@ def test_handle_successfully_with_specific_post_id(
             "post": {
                 "id": post_.id,
             },
-            'links': [
-                {
-                    'href': f'{client.base_url}/posts/{post_.id}',
-                    'rel': 'post'
-                }
-            ],
+            "links": [{"href": f"{client.base_url}/posts/{post_.id}", "rel": "post"}],
         },
         {
             "id": data[1]["id"],
@@ -258,18 +218,13 @@ def test_handle_successfully_with_specific_post_id(
             "post": {
                 "id": post_.id,
             },
-            'links': [
-                {
-                    'href': f'{client.base_url}/posts/{post_.id}',
-                    'rel': 'post'
-                }
-            ],
-        }
+            "links": [{"href": f"{client.base_url}/posts/{post_.id}", "rel": "post"}],
+        },
     ]
     links = json_data.get("links")
     assert links == [
         {
-            'href': f'{client.base_url}/feedbacks/posts/?post_id={post_.id}',
-            'rel': 'self'
+            "href": f"{client.base_url}/feedbacks/posts/?post_id={post_.id}",
+            "rel": "self",
         }
     ]

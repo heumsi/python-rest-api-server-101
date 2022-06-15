@@ -15,22 +15,26 @@ def test_handle_successfully(client, common_user, common_another_user):
             user=common_user,
         )
         session.add(post_)
-        session.add(comment.Comment(
-            id=1,
-            post_id=post_.id,
-            user_id=common_user.id,
-            content="테스트 내용 1",
-            user=common_user,
-            post=post_,
-        ))
-        session.add(comment.Comment(
-            id=2,
-            post_id=post_.id,
-            user_id=common_another_user.id,
-            content="테스트 내용 2",
-            user=common_another_user,
-            post=post_,
-        ))
+        session.add(
+            comment.Comment(
+                id=1,
+                post_id=post_.id,
+                user_id=common_user.id,
+                content="테스트 내용 1",
+                user=common_user,
+                post=post_,
+            )
+        )
+        session.add(
+            comment.Comment(
+                id=2,
+                post_id=post_.id,
+                user_id=common_another_user.id,
+                content="테스트 내용 2",
+                user=common_another_user,
+                post=post_,
+            )
+        )
         session.commit()
         session.refresh(post_)
         session.refresh(common_user)
@@ -45,11 +49,7 @@ def test_handle_successfully(client, common_user, common_another_user):
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
     pagination = json_data.get("pagination")
-    assert pagination == {
-        'limit': 100,
-        'offset': 0,
-        'total': 2
-    }
+    assert pagination == {"limit": 100, "offset": 0, "total": 2}
     data = json_data.get("data")
     assert data == [
         {
@@ -64,15 +64,9 @@ def test_handle_successfully(client, common_user, common_another_user):
                 "id": common_user.id,
                 "name": common_user.name,
             },
-            'links': [
-                {
-                    'href': f'{client.base_url}/comments/1',
-                    'rel': 'self'
-                },
-                {
-                    'href': f'{client.base_url}/posts/{post_.id}',
-                    'rel': 'post'
-                }
+            "links": [
+                {"href": f"{client.base_url}/comments/1", "rel": "self"},
+                {"href": f"{client.base_url}/posts/{post_.id}", "rel": "post"},
             ],
         },
         {
@@ -87,25 +81,14 @@ def test_handle_successfully(client, common_user, common_another_user):
                 "id": common_another_user.id,
                 "name": common_another_user.name,
             },
-            'links': [
-                {
-                    'href': f'{client.base_url}/comments/2',
-                    'rel': 'self'
-                },
-                {
-                    'href': f'{client.base_url}/posts/{post_.id}',
-                    'rel': 'post'
-                }
+            "links": [
+                {"href": f"{client.base_url}/comments/2", "rel": "self"},
+                {"href": f"{client.base_url}/posts/{post_.id}", "rel": "post"},
             ],
         },
     ]
     links = json_data.get("links")
-    assert links == [
-        {
-            'href': f'{client.base_url}/comments/',
-            'rel': 'self'
-        }
-    ]
+    assert links == [{"href": f"{client.base_url}/comments/", "rel": "self"}]
 
 
 def test_handle_successfully_with_params_including_post_id(client, common_user):
@@ -151,22 +134,13 @@ def test_handle_successfully_with_params_including_post_id(client, common_user):
         session.refresh(common_user)
 
     # when
-    response = client.get(
-        "/comments/",
-        params={
-            "post_id": post_1.id
-        }
-    )
+    response = client.get("/comments/", params={"post_id": post_1.id})
 
     # then
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
     pagination = json_data.get("pagination")
-    assert pagination == {
-        'limit': 100,
-        'offset': 0,
-        'total': 1
-    }
+    assert pagination == {"limit": 100, "offset": 0, "total": 1}
     data = json_data.get("data")
     assert data == [
         {
@@ -181,24 +155,15 @@ def test_handle_successfully_with_params_including_post_id(client, common_user):
                 "id": common_user.id,
                 "name": common_user.name,
             },
-            'links': [
-                {
-                    'href': f'{client.base_url}/comments/{comment_1.id}',
-                    'rel': 'self'
-                },
-                {
-                    'href': f'{client.base_url}/posts/{post_1.id}',
-                    'rel': 'post'
-                }
+            "links": [
+                {"href": f"{client.base_url}/comments/{comment_1.id}", "rel": "self"},
+                {"href": f"{client.base_url}/posts/{post_1.id}", "rel": "post"},
             ],
         },
     ]
     links = json_data.get("links")
     assert links == [
-        {
-            'href': f'{client.base_url}/comments/?post_id={post_1.id}',
-            'rel': 'self'
-        }
+        {"href": f"{client.base_url}/comments/?post_id={post_1.id}", "rel": "self"}
     ]
 
 
@@ -250,18 +215,14 @@ def test_handle_successfully_with_specific_offset_and_limit(client, common_user)
         params={
             "offset": 1,
             "limit": 1,
-        }
+        },
     )
 
     # then
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
     pagination = json_data.get("pagination")
-    assert pagination == {
-        'limit': 1,
-        'offset': 1,
-        'total': 3
-    }
+    assert pagination == {"limit": 1, "offset": 1, "total": 3}
     data = json_data.get("data")
     assert data == [
         {
@@ -276,30 +237,15 @@ def test_handle_successfully_with_specific_offset_and_limit(client, common_user)
                 "id": common_user.id,
                 "name": common_user.name,
             },
-            'links': [
-                {
-                    'href': f'{client.base_url}/comments/{comment_2.id}',
-                    'rel': 'self'
-                },
-                {
-                    'href': f'{client.base_url}/posts/{post_1.id}',
-                    'rel': 'post'
-                }
+            "links": [
+                {"href": f"{client.base_url}/comments/{comment_2.id}", "rel": "self"},
+                {"href": f"{client.base_url}/posts/{post_1.id}", "rel": "post"},
             ],
         },
     ]
     links = json_data.get("links")
     assert links == [
-        {
-            'href': f'{client.base_url}/comments/?offset=1&limit=1',
-            'rel': 'self'
-        },
-        {
-            'href': f'{client.base_url}/comments/?offset=2&limit=1',
-            'rel': 'next'
-        },
-        {
-            'href': f'{client.base_url}/comments/?offset=0&limit=1',
-            'rel': 'prev'
-        }
+        {"href": f"{client.base_url}/comments/?offset=1&limit=1", "rel": "self"},
+        {"href": f"{client.base_url}/comments/?offset=2&limit=1", "rel": "next"},
+        {"href": f"{client.base_url}/comments/?offset=0&limit=1", "rel": "prev"},
     ]

@@ -21,10 +21,8 @@ class ReadUsersResponse(SchemaModel):
     links: List[Link]
 
 
-def handle(*,
-    offset: int = 0,
-    limit: int = Query(default=100, lte=100),
-    request: Request
+def handle(
+    *, offset: int = 0, limit: int = Query(default=100, lte=100), request: Request
 ) -> ReadUsersResponse:
     with Session(engine) as session:
         # get total count of rows for pagination
@@ -32,20 +30,11 @@ def handle(*,
         total = session.exec(statement).one()
 
         # get all rows
-        statement = (
-            select(user.User)
-            .order_by(user.User.id)
-            .offset(offset)
-            .limit(limit)
-        )
+        statement = select(user.User).order_by(user.User.id).offset(offset).limit(limit)
         results = session.exec(statement)
         users = results.all()
         return ReadUsersResponse(
-            pagination=Pagination(
-                offset=offset,
-                limit=limit,
-                total=total
-            ),
+            pagination=Pagination(offset=offset, limit=limit, total=total),
             data=[
                 ReadUsersResponse.Data(
                     id=user_.id,
@@ -53,5 +42,5 @@ def handle(*,
                 )
                 for user_ in users
             ],
-            links=get_links_for_pagination(offset, limit, total, request)
+            links=get_links_for_pagination(offset, limit, total, request),
         )

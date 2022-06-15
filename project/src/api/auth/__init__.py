@@ -18,5 +18,5 @@ router.add_api_route(
     endpoint=signin.handle,
     status_code=status.HTTP_200_OK,
     summary="로그인 합니다.",
-    response_model=signin.SigninResponse
+    response_model=signin.SigninResponse,
 )

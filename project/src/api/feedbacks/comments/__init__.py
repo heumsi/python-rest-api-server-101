@@ -1,6 +1,10 @@
 from fastapi import APIRouter, status
 
-from src.api.feedbacks.comments import create_or_update_comment_feedback, get_comment_feedbacks, delete_comment_feedback
+from src.api.feedbacks.comments import (
+    create_or_update_comment_feedback,
+    get_comment_feedbacks,
+    delete_comment_feedback,
+)
 
 router = APIRouter(prefix="/comments")
 
@@ -15,8 +19,8 @@ router.add_api_route(
         },
         status.HTTP_201_CREATED: {
             "model": create_or_update_comment_feedback.CreateCommentFeedbackResponse,
-        }
-    }
+        },
+    },
 )
 
 

@@ -7,17 +7,11 @@ from src.models.feedbacks import post_feedback
 
 
 def test_handle_successfully_with_creating_post_feedback(
-    client,
-    common_user,
-    headers_with_authorized_common
+    client, common_user, headers_with_authorized_common
 ):
     # given
     with Session(engine) as session:
-        post_ = post.Post(
-            title="테스트 제목",
-            user_id=common_user.id,
-            content="테스트 내용"
-        )
+        post_ = post.Post(title="테스트 제목", user_id=common_user.id, content="테스트 내용")
         session.add(post_)
         session.commit()
         session.refresh(post_)
@@ -61,9 +55,7 @@ def test_handle_successfully_with_creating_post_feedback(
 
 
 def test_handle_successfully_with_updating_post_feedback(
-    client,
-    common_user,
-    headers_with_authorized_common
+    client, common_user, headers_with_authorized_common
 ):
     # given
     with Session(engine) as session:
@@ -132,5 +124,3 @@ def test_handle_unsuccessfully_with_no_authentication(client):
 
     # then
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-

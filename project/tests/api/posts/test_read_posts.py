@@ -10,44 +10,38 @@ def test_handle_successfully(client, common_user):
     # given
     with Session(engine) as session:
         post_1 = post.Post(
-            title="테스트 제목",
-            user_id=common_user.id,
-            user=common_user,
-            content="테스트 내용"
+            title="테스트 제목", user_id=common_user.id, user=common_user, content="테스트 내용"
         )
         feedback_1 = post_feedback.PostFeedback(
             post_id=post_1.id,
             user_id=common_user.id,
             like=True,
             post=post_1,
-            user=common_user
+            user=common_user,
         )
         comment_1 = comment.Comment(
             post_id=post_1.id,
             user_id=common_user.id,
             content="테스트 내용",
             post=post_1,
-            user=common_user
+            user=common_user,
         )
         post_2 = post.Post(
-            title="테스트 제목",
-            user_id=common_user.id,
-            user=common_user,
-            content="테스트 내용"
+            title="테스트 제목", user_id=common_user.id, user=common_user, content="테스트 내용"
         )
         feedback_2 = post_feedback.PostFeedback(
             post_id=post_2.id,
             user_id=common_user.id,
             like=True,
             post=post_2,
-            user=common_user
+            user=common_user,
         )
         comment_2 = comment.Comment(
             post_id=post_2.id,
             user_id=common_user.id,
             content="테스트 내용",
             post=post_2,
-            user=common_user
+            user=common_user,
         )
         session.add(post_1)
         session.add(feedback_1)
@@ -69,11 +63,7 @@ def test_handle_successfully(client, common_user):
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
     pagination = json_data.get("pagination")
-    assert pagination == {
-        'limit': 100,
-        'offset': 0,
-        'total': 2
-    }
+    assert pagination == {"limit": 100, "offset": 0, "total": 2}
     data = json_data.get("data")
     assert data == [
         {
@@ -82,7 +72,6 @@ def test_handle_successfully(client, common_user):
             "content": "테스트 내용",
             "createdAt": data[0]["createdAt"],
             "updatedAt": data[0]["updatedAt"],
-
             "user": {
                 "id": common_user.id,
                 "name": common_user.name,
@@ -92,19 +81,16 @@ def test_handle_successfully(client, common_user):
                 "dislikes": 0,
                 "comments": 1,
             },
-            'links': [
+            "links": [
+                {"href": f"{client.base_url}/posts/{post_1.id}", "rel": "self"},
                 {
-                    'href': f'{client.base_url}/posts/{post_1.id}', 
-                    'rel': 'self'
+                    "href": f"{client.base_url}/comments?post_id={post_1.id}",
+                    "rel": "comments",
                 },
                 {
-                    'href': f'{client.base_url}/comments?post_id={post_1.id}', 
-                    'rel': 'comments'
+                    "href": f"{client.base_url}/feedbacks/posts?post_id={post_1.id}",
+                    "rel": "feedbacks",
                 },
-                {
-                    'href': f'{client.base_url}/feedbacks/posts?post_id={post_1.id}',
-                    'rel': 'feedbacks'
-                }
             ],
         },
         {
@@ -122,27 +108,18 @@ def test_handle_successfully(client, common_user):
                 "dislikes": 0,
                 "comments": 1,
             },
-            'links': [
+            "links": [
+                {"href": f"{client.base_url}/posts/{post_2.id}", "rel": "self"},
                 {
-                    'href': f'{client.base_url}/posts/{post_2.id}',
-                    'rel': 'self'
+                    "href": f"{client.base_url}/comments?post_id={post_2.id}",
+                    "rel": "comments",
                 },
                 {
-                    'href': f'{client.base_url}/comments?post_id={post_2.id}',
-                    'rel': 'comments'
+                    "href": f"{client.base_url}/feedbacks/posts?post_id={post_2.id}",
+                    "rel": "feedbacks",
                 },
-                {
-                    'href': f'{client.base_url}/feedbacks/posts?post_id={post_2.id}',
-                    'rel': 'feedbacks'
-                }
             ],
-            
         },
     ]
     links = json_data.get("links")
-    assert links == [
-        {
-            'href': f'{client.base_url}/posts/',
-            'rel': 'self'
-        }
-    ]
+    assert links == [{"href": f"{client.base_url}/posts/", "rel": "self"}]

@@ -11,7 +11,7 @@ def check_api_version_in_headers(accept: Optional[str] = Header(default=None)) -
     if not accept or accept.lower() != "application/vnd.api+json":
         raise HTTPException(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
-            detail="Please put 'application/vnd.api+json' in the 'Accept' key in Headers"
+            detail="Please put 'application/vnd.api+json' in the 'Accept' key in Headers",
         )
 
 
@@ -21,7 +21,7 @@ app = FastAPI(
     version="v1",
     dependencies=[
         Depends(check_api_version_in_headers),
-    ]
+    ],
 )
 
 app.include_router(auth.router)
@@ -36,7 +36,8 @@ def handle_startup_event():
     create_db_and_tables()
 
 
-@app.get("/",
+@app.get(
+    "/",
     response_class=PlainTextResponse,
     status_code=status.HTTP_200_OK,
     summary="헬스체크용 엔드포인트 입니다.",

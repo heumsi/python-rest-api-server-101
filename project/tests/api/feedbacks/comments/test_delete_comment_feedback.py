@@ -6,11 +6,7 @@ from src.models import post, comment
 from src.models.feedbacks import comment_feedback
 
 
-def test_handle_successfully(
-    client,
-    common_user,
-    headers_with_authorized_common
-):
+def test_handle_successfully(client, common_user, headers_with_authorized_common):
     # given
     with Session(engine) as session:
         post_ = post.Post(
@@ -23,7 +19,7 @@ def test_handle_successfully(
             user_id=common_user.id,
             content="테스트 내용",
             post=post_,
-            user=common_user
+            user=common_user,
         )
         feedback_ = comment_feedback.CommentFeedback(
             comment_id=comment_.id,
@@ -59,8 +55,7 @@ def test_handle_successfully(
 def test_handle_unsuccessfully_with_not_found(client, headers_with_authorized_common):
     # when
     response = client.delete(
-        "/feedbacks/comments/1",
-        headers=headers_with_authorized_common
+        "/feedbacks/comments/1", headers=headers_with_authorized_common
     )
 
     # then
@@ -77,7 +72,9 @@ def test_handle_unsuccessfully_with_no_authentication(client):
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_handle_unsuccessfully_with_no_authorization(client, common_user, headers_with_authorized_common_another):
+def test_handle_unsuccessfully_with_no_authorization(
+    client, common_user, headers_with_authorized_common_another
+):
     # given
     with Session(engine) as session:
         post_ = post.Post(
@@ -90,7 +87,7 @@ def test_handle_unsuccessfully_with_no_authorization(client, common_user, header
             user_id=common_user.id,
             content="테스트 내용",
             post=post_,
-            user=common_user
+            user=common_user,
         )
         feedback_ = comment_feedback.CommentFeedback(
             comment_id=comment_.id,
@@ -116,4 +113,3 @@ def test_handle_unsuccessfully_with_no_authorization(client, common_user, header
 
     # then
     assert response.status_code == status.HTTP_403_FORBIDDEN
-

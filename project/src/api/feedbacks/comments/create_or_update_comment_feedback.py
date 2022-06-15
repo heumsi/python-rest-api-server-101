@@ -22,19 +22,19 @@ class BaseResponse(SchemaModel):
             id: int = comment.id_field
 
             class Config:
-                title = 'CreateOrUpdateCommentFeedbackBaseResponse.Data.Comment'
+                title = "CreateOrUpdateCommentFeedbackBaseResponse.Data.Comment"
 
         class User(SchemaModel):
             id: str = user.id_field
 
             class Config:
-                title = 'CreateOrUpdateCommentFeedbackBaseResponse.Data.User'
+                title = "CreateOrUpdateCommentFeedbackBaseResponse.Data.User"
 
         comment: Comment
         user: User
 
         class Config:
-            title = 'CreateOrUpdateCommentFeedbackBaseResponse.Data'
+            title = "CreateOrUpdateCommentFeedbackBaseResponse.Data"
 
     data: Data
 
@@ -42,25 +42,29 @@ class BaseResponse(SchemaModel):
 class CreateCommentFeedbackResponse(BaseResponse):
     class Data(BaseResponse.Data):
         class Config:
-            title = 'CreateCommentFeedbackResponse.Data'
+            title = "CreateCommentFeedbackResponse.Data"
 
 
 class UpdateCommentFeedbackResponse(BaseResponse):
     class Data(BaseResponse.Data):
         class Config:
-            title = 'UpdateCommentFeedbackResponse.Data'
+            title = "UpdateCommentFeedbackResponse.Data"
 
 
 def handle(
     comment_id: int,
     like_or_dislike: Literal["like", "dislike"],
     response: Response,
-    current_user: user.User = Depends(GetAuthorizedUser(allowed_roles=[user.Role.ADMIN, user.Role.COMMON])),
+    current_user: user.User = Depends(
+        GetAuthorizedUser(allowed_roles=[user.Role.ADMIN, user.Role.COMMON])
+    ),
 ) -> Union[CreateCommentFeedbackResponse, UpdateCommentFeedbackResponse]:
     with Session(engine) as session:
         existing_comment = session.get(comment.Comment, comment_id)
         if not existing_comment:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Comment not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Comment not found"
+            )
 
         statement = select(comment_feedback.CommentFeedback).where(
             comment_feedback.CommentFeedback.comment_id == existing_comment.id,
@@ -91,7 +95,7 @@ def handle(
                     ),
                     user=UpdateCommentFeedbackResponse.Data.User(
                         id=existing_comment_feedback.user_id,
-                    )
+                    ),
                 )
             )
         else:
@@ -104,7 +108,7 @@ def handle(
                 user_id=current_user.id,
                 like=like,
                 comment=existing_comment,
-                user=current_user
+                user=current_user,
             )
             session.add(new_comment_feedback)
             session.commit()
@@ -122,6 +126,6 @@ def handle(
                     ),
                     user=UpdateCommentFeedbackResponse.Data.User(
                         id=new_comment_feedback.user_id,
-                    )
+                    ),
                 )
             )

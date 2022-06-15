@@ -22,20 +22,20 @@ class GetPostFeedbacksResponse(SchemaModel):
             id: int = post.id_field
 
             class Config:
-                title = 'GetPostFeedbacksResponse.Data'
+                title = "GetPostFeedbacksResponse.Data"
 
         class User(SchemaModel):
             id: str = user.id_field
             name: str = user.name_field
 
             class Config:
-                title = 'GetPostFeedbacksResponse.Data'
+                title = "GetPostFeedbacksResponse.Data"
 
         post: Post
         user: User
 
         class Config:
-            title = 'GetPostFeedbacksResponse.Data'
+            title = "GetPostFeedbacksResponse.Data"
 
     pagination: Pagination
     data: List[Data]
@@ -47,7 +47,7 @@ def handle(
     post_id: Optional[int] = None,
     offset: int = 0,
     limit: int = Query(default=100, lte=100),
-    request: Request
+    request: Request,
 ) -> GetPostFeedbacksResponse:
     with Session(engine) as session:
         # get total count of rows for pagination
@@ -69,11 +69,7 @@ def handle(
         results = session.exec(statement)
         post_feedbacks_to_read = results.all()
         return GetPostFeedbacksResponse(
-            pagination=Pagination(
-                offset=offset,
-                limit=limit,
-                total=total
-            ),
+            pagination=Pagination(offset=offset, limit=limit, total=total),
             data=[
                 GetPostFeedbacksResponse.Data(
                     id=post_feedback_to_read.id,
@@ -90,11 +86,11 @@ def handle(
                     links=[
                         Link(
                             rel="post",
-                            href=f"{request.base_url}posts/{post_feedback_to_read.post_id}"
+                            href=f"{request.base_url}posts/{post_feedback_to_read.post_id}",
                         )
-                    ]
+                    ],
                 )
                 for post_feedback_to_read in post_feedbacks_to_read
             ],
-            links=get_links_for_pagination(offset, limit, total, request)
+            links=get_links_for_pagination(offset, limit, total, request),
         )

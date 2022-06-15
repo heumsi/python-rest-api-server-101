@@ -9,17 +9,14 @@ def test_handle_successfully(client, common_user):
     # given
     with Session(engine) as session:
         post_ = post.Post(
-            title="테스트 제목",
-            user_id=common_user.id,
-            content="테스트 내용",
-            user=common_user
+            title="테스트 제목", user_id=common_user.id, content="테스트 내용", user=common_user
         )
         comment_ = comment.Comment(
             post_id=post_.id,
             user_id=common_user.id,
             content="테스트 내용",
             user=common_user,
-            post=post_
+            post=post_,
         )
         session.add(post_)
         session.add(comment_)
@@ -49,23 +46,14 @@ def test_handle_successfully(client, common_user):
             "id": common_user.id,
             "name": common_user.name,
         },
-        'links': [
-            {
-                'href': f'{client.base_url}/comments/1',
-                'rel': 'self'
-            },
-            {
-                'href': f'{client.base_url}/posts/1',
-                'rel': 'post'
-            }
+        "links": [
+            {"href": f"{client.base_url}/comments/1", "rel": "self"},
+            {"href": f"{client.base_url}/posts/1", "rel": "post"},
         ],
     }
     links = json_data.get("links")
     assert links == [
-        {
-            'href': f'{client.base_url}/comments/{comment_.id}',
-            'rel': 'self'
-        }
+        {"href": f"{client.base_url}/comments/{comment_.id}", "rel": "self"}
     ]
 
 

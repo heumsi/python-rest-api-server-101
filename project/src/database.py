@@ -11,7 +11,7 @@ engine = create_engine(
     sqlite_url,
     echo=True,
     connect_args={
-        'check_same_thread': False,
+        "check_same_thread": False,
     },
     poolclass=pool.StaticPool,
 )

@@ -20,19 +20,9 @@ class GetMeResponse(SchemaModel):
 
 
 def handle(
-    *,
-    current_user: user.User = Depends(get_current_user),
-    request: Request
+    *, current_user: user.User = Depends(get_current_user), request: Request
 ) -> GetMeResponse:
     return GetMeResponse(
-        data=GetMeResponse.Data(
-            id=current_user.id,
-            name=current_user.name
-        ),
-        links=[
-            Link(
-                rel="self",
-                href=str(request.url)
-            )
-        ]
+        data=GetMeResponse.Data(id=current_user.id, name=current_user.name),
+        links=[Link(rel="self", href=str(request.url))],
     )

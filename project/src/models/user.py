@@ -25,4 +25,3 @@ class User(SQLModel, table=True):
     role: Optional[str] = Field(description="유저 롤", default=str(Role.COMMON))
     created_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
     updated_at: Optional[int] = Field(default_factory=get_current_unix_timestamp)
-
