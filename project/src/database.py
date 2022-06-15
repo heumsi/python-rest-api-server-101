@@ -1,7 +1,6 @@
 import os
 
-from sqlmodel import create_engine, SQLModel, pool
-
+from sqlmodel import SQLModel, create_engine, pool
 
 sqlite_url = os.getenv("DB_URL")
 if not sqlite_url:

@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import jwt, JWTError
+from jose import JWTError, jwt
 from jose.constants import ALGORITHMS
 from passlib.context import CryptContext
 from pydantic import ValidationError

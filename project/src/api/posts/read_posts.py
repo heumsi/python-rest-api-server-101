@@ -2,9 +2,9 @@ from typing import List
 
 from fastapi import Query, Request
 from sqlalchemy.orm import selectinload
-from sqlmodel import Session, select, func
+from sqlmodel import Session, func, select
 
-from src.api.common import Link, SchemaModel, Pagination, get_links_for_pagination
+from src.api.common import Link, Pagination, SchemaModel, get_links_for_pagination
 from src.database import engine
 from src.models import post, user
 

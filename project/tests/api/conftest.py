@@ -3,10 +3,10 @@ from typing import Dict
 
 os.environ["DB_URL"] = "sqlite:///:memory:"
 
-from sqlmodel import Session, SQLModel
 import pytest
-from fastapi.testclient import TestClient
 from fastapi import status
+from fastapi.testclient import TestClient
+from sqlmodel import Session, SQLModel
 
 from src.api import app
 from src.api.auth.utils import get_hashed_password

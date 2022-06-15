@@ -2,10 +2,10 @@ from fastapi import APIRouter, status
 
 from src.api.comments import (
     create_comment,
+    delete_comment,
     read_comment,
     read_comments,
     update_comment,
-    delete_comment,
 )
 
 router = APIRouter(prefix="/comments", tags=["comments"])

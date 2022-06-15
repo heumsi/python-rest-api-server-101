@@ -4,7 +4,7 @@ from fastapi import status
 from sqlmodel import Session, select
 
 from src.database import engine
-from src.models import post, comment
+from src.models import comment, post
 
 
 def test_handle_successfully(client, common_user, headers_with_authorized_common):

@@ -1,6 +1,6 @@
-from typing import Optional, List
+from typing import List, Optional
 
-from sqlmodel import Field, SQLModel, Relationship
+from sqlmodel import Field, Relationship, SQLModel
 
 from src.models.user import User
 from src.models.utils import get_current_unix_timestamp

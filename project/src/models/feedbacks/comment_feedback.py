@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import Field, Relationship, SQLModel
 
 from src.models.comment import Comment
 from src.models.user import User

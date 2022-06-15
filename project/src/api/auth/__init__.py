@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from src.api.auth import signup, signin
+from src.api.auth import signin, signup
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

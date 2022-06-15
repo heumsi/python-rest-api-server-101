@@ -1,6 +1,6 @@
-from typing import Union, Literal
+from typing import Literal, Union
 
-from fastapi import Depends, HTTPException, status, Response
+from fastapi import Depends, HTTPException, Response, status
 from sqlmodel import Session, select
 
 from src.api.auth.utils import GetAuthorizedUser

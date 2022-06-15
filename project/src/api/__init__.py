@@ -1,9 +1,9 @@
 from typing import Optional
 
-from fastapi import FastAPI, status, Depends, Header, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, status
 from fastapi.responses import PlainTextResponse
 
-from src.api import auth, users, posts, comments, feedbacks
+from src.api import auth, comments, feedbacks, posts, users
 from src.database import create_db_and_tables
 
 

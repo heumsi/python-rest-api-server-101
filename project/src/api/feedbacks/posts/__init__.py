@@ -2,8 +2,8 @@ from fastapi import APIRouter, status
 
 from src.api.feedbacks.posts import (
     create_or_update_post_feedback,
-    get_post_feedbacks,
     delete_post_feedback,
+    get_post_feedbacks,
 )
 
 router = APIRouter(prefix="/posts")

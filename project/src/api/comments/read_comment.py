@@ -1,11 +1,11 @@
 from typing import List
 
-from fastapi import HTTPException, status, Request
+from fastapi import HTTPException, Request, status
 from sqlmodel import Session
 
 from src.api.common import Link, SchemaModel
 from src.database import engine
-from src.models import comment, user, post
+from src.models import comment, post, user
 from src.models.comment import Comment
 
 

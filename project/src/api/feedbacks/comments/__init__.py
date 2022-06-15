@@ -2,8 +2,8 @@ from fastapi import APIRouter, status
 
 from src.api.feedbacks.comments import (
     create_or_update_comment_feedback,
-    get_comment_feedbacks,
     delete_comment_feedback,
+    get_comment_feedbacks,
 )
 
 router = APIRouter(prefix="/comments")

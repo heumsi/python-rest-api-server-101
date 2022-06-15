@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
 from sqlmodel import Session
 
-from src.api.auth.utils import pwd_context, JWT_SECRET_KEY, JWT_ALGORITHM, TokenPayload
+from src.api.auth.utils import JWT_ALGORITHM, JWT_SECRET_KEY, TokenPayload, pwd_context
 from src.api.common import SchemaModel
 from src.database import engine
 from src.models.user import User

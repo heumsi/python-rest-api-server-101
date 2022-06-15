@@ -1,7 +1,7 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, Depends, status
 
 from src.api.auth.utils import GetAuthorizedUser
-from src.api.users import read_users, get_me
+from src.api.users import get_me, read_users
 from src.models.user import Role
 
 router = APIRouter(prefix="/users", tags=["users"])

@@ -3,8 +3,8 @@ from sqlmodel import Session, select
 
 from src.api.auth.utils import GetAuthorizedUser
 from src.database import engine
-from src.models.user import Role, User
 from src.models.post import Post
+from src.models.user import Role, User
 
 
 def handle(

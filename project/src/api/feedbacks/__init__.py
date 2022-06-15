@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.api.feedbacks import posts, comments
+from src.api.feedbacks import comments, posts
 
 router = APIRouter(prefix="/feedbacks", tags=["feedbacks"])
 

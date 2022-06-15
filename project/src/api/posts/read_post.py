@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import HTTPException, status, Request
+from fastapi import HTTPException, Request, status
 from sqlmodel import Session
 
 from src.api.common import Link, SchemaModel

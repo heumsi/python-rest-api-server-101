@@ -1,8 +1,8 @@
 from typing import List
 
+from fastapi import Request
 from humps import camelize
 from pydantic import BaseModel
-from fastapi import Request
 
 
 def to_camel(string):

@@ -1,8 +1,8 @@
-from sqlmodel import Session, select
 from fastapi import status
+from sqlmodel import Session, select
 
 from src.database import engine
-from src.models import post, comment
+from src.models import comment, post
 from src.models.feedbacks import comment_feedback
 
 
