@@ -16,6 +16,29 @@ class ReadCommentsResponse(SchemaModel):
     links: List[Link]
 
 
+def _get_total(session: Session, post_id: Optional[int] = None) -> int:
+    """ get total count of rows for pagination """
+    statement = select([func.count(comment.Comment.id)])
+    if post_id:
+        statement = statement.where(comment.Comment.post_id == post_id)
+    return session.exec(statement).one()  # type: ignore
+
+
+def _get_comments(session: Session, offset: int, limit: int, post_id: Optional[int] = None) -> List[comment.Comment]:
+    """ get all rows """
+    statement = (
+        select(comment.Comment)
+        .order_by(comment.Comment.id)
+        .offset(offset)
+        .limit(limit)
+        .options(selectinload(comment.Comment.user))
+    )
+    if post_id:
+        statement = statement.where(comment.Comment.post_id == post_id)
+    results = session.exec(statement)
+    return results.all()
+
+
 def handle(
     *,
     post_id: Optional[int] = None,
@@ -24,24 +47,8 @@ def handle(
     request: Request,
 ) -> ReadCommentsResponse:
     with Session(engine) as session:
-        # get total count of rows for pagination
-        statement = select([func.count(comment.Comment.id)])
-        if post_id:
-            statement = statement.where(comment.Comment.post_id == post_id)
-        total = session.exec(statement).one()
-
-        # get all rows
-        statement = (
-            select(comment.Comment)
-            .order_by(comment.Comment.id)
-            .offset(offset)
-            .limit(limit)
-            .options(selectinload(comment.Comment.user))
-        )
-        if post_id:
-            statement = statement.where(comment.Comment.post_id == post_id)
-        results = session.exec(statement)
-        comments_to_read = results.all()
+        total = _get_total(session, post_id)
+        comments_to_read = _get_comments(session, offset, limit, post_id)
         return ReadCommentsResponse(
             pagination=Pagination(offset=offset, limit=limit, total=total),
             data=[

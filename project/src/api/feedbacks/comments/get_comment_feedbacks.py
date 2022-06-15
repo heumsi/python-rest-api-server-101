@@ -42,6 +42,31 @@ class GetCommentFeedbacksResponse(SchemaModel):
     links: List[Link]
 
 
+def _get_total(session: Session, comment_id: Optional[int] = None) -> int:
+    """ get total count of rows for pagination """
+    statement = select([func.count(comment_feedback.CommentFeedback.id)])
+    if comment_id:
+        statement = statement.where(comment_feedback.CommentFeedback.comment_id == comment_id)
+    return session.exec(statement).one()  # type: ignore
+
+
+def _get_comment_feedbacks(session: Session, offset: int, limit: int, comment_id: Optional[int] = None) -> List[comment_feedback.CommentFeedback]:
+    """ get all rows """
+    statement = (
+        select(comment_feedback.CommentFeedback)
+        .order_by(comment_feedback.CommentFeedback.id)
+        .offset(offset)
+        .limit(limit)
+        .options(
+            selectinload(comment_feedback.CommentFeedback.user),
+        )
+    )
+    if comment_id:
+        statement = statement.where(comment_feedback.CommentFeedback.comment_id == comment_id)
+    results = session.exec(statement)
+    return results.all()
+
+
 def handle(
     *,
     comment_id: Optional[int] = None,
@@ -50,25 +75,8 @@ def handle(
     request: Request,
 ) -> GetCommentFeedbacksResponse:
     with Session(engine) as session:
-        # get total count of rows for pagination
-        statement = select([func.count(comment_feedback.CommentFeedback.id)])
-        total = session.exec(statement).one()
-
-        # get all rows
-        statement = (
-            select(comment_feedback.CommentFeedback)
-            .offset(offset)
-            .limit(limit)
-            .options(
-                selectinload(comment_feedback.CommentFeedback.user),
-            )
-        )
-        if comment_id:
-            statement = statement.where(
-                comment_feedback.CommentFeedback.comment_id == comment_id
-            )
-        results = session.exec(statement)
-        comment_feedbacks_to_read = results.all()
+        total = _get_total(session, comment_id)
+        comment_feedbacks_to_read = _get_comment_feedbacks(session, offset, limit, comment_id)
         return GetCommentFeedbacksResponse(
             pagination=Pagination(offset=offset, limit=limit, total=total),
             data=[

@@ -44,28 +44,35 @@ class ReadPostsResponse(SchemaModel):
     links: List[Link]
 
 
+def _get_total(session: Session) -> int:
+    """ get total count of rows for pagination """
+    statement = select([func.count(post.Post.id)])
+    return session.exec(statement).one()  # type: ignore
+
+
+def _get_posts(session: Session, offset: int, limit: int) -> List[post.Post]:
+    """ get all rows """
+    statement = (
+        select(post.Post)
+        .order_by(post.Post.id)
+        .offset(offset)
+        .limit(limit)
+        .options(
+            selectinload(post.Post.user),
+            selectinload(post.Post.comments),
+            selectinload(post.Post.feedbacks),
+        )
+    )
+    results = session.exec(statement)
+    return results.all()
+
+
 def handle(
     *, offset: int = 0, limit: int = Query(default=100, lte=100), request: Request
 ) -> ReadPostsResponse:
     with Session(engine) as session:
-        # get total count of rows for pagination
-        statement = select([func.count(post.Post.id)])
-        total = session.exec(statement).one()
-
-        # get all rows
-        statement = (
-            select(post.Post)
-            .order_by(post.Post.id)
-            .offset(offset)
-            .limit(limit)
-            .options(
-                selectinload(post.Post.user),
-                selectinload(post.Post.comments),
-                selectinload(post.Post.feedbacks),
-            )
-        )
-        results = session.exec(statement)
-        posts_to_read = results.all()
+        total = _get_total(session)
+        posts_to_read = _get_posts(session, offset, limit)
         return ReadPostsResponse(
             pagination=Pagination(offset=offset, limit=limit, total=total),
             data=[

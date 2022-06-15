@@ -42,6 +42,31 @@ class GetPostFeedbacksResponse(SchemaModel):
     links: List[Link]
 
 
+def _get_total(session: Session, post_id: Optional[int] = None) -> int:
+    """ get total count of rows for pagination """
+    statement = select([func.count(post_feedback.PostFeedback.id)])
+    if post_id:
+        statement = statement.where(post_feedback.PostFeedback.post_id == post_id)
+    return session.exec(statement).one()  # type: ignore
+
+
+def _get_post_feedbacks(session: Session, offset: int, limit: int, post_id: Optional[int] = None) -> List[post_feedback.PostFeedback]:
+    """ get all rows """
+    statement = (
+        select(post_feedback.PostFeedback)
+        .order_by(post_feedback.PostFeedback.id)
+        .offset(offset)
+        .limit(limit)
+        .options(
+            selectinload(post_feedback.PostFeedback.user),
+        )
+    )
+    if post_id:
+        statement = statement.where(post_feedback.PostFeedback.post_id == post_id)
+    results = session.exec(statement)
+    return results.all()
+
+
 def handle(
     *,
     post_id: Optional[int] = None,
@@ -50,24 +75,8 @@ def handle(
     request: Request,
 ) -> GetPostFeedbacksResponse:
     with Session(engine) as session:
-        # get total count of rows for pagination
-        statement = select([func.count(post_feedback.PostFeedback.id)])
-        total = session.exec(statement).one()
-
-        # get all rows
-        statement = (
-            select(post_feedback.PostFeedback)
-            .order_by(post_feedback.PostFeedback.id)
-            .offset(offset)
-            .limit(limit)
-            .options(
-                selectinload(post_feedback.PostFeedback.user),
-            )
-        )
-        if post_id:
-            statement = statement.where(post_feedback.PostFeedback.post_id == post_id)
-        results = session.exec(statement)
-        post_feedbacks_to_read = results.all()
+        total = _get_total(session, post_id)
+        post_feedbacks_to_read= _get_post_feedbacks(session, offset, limit, post_id)
         return GetPostFeedbacksResponse(
             pagination=Pagination(offset=offset, limit=limit, total=total),
             data=[

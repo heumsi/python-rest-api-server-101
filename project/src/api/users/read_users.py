@@ -21,18 +21,25 @@ class ReadUsersResponse(SchemaModel):
     links: List[Link]
 
 
+def _get_total(session: Session) -> int:
+    """ get total count of rows for pagination """
+    statement = select([func.count(user.User.id)])
+    return session.exec(statement).one()  # type: ignore
+
+
+def _get_users(session: Session, offset: int, limit: int) -> List[user.User]:
+    """ get all rows """
+    statement = select(user.User).order_by(user.User.id).offset(offset).limit(limit)
+    results = session.exec(statement)
+    return results.all()
+
+
 def handle(
     *, offset: int = 0, limit: int = Query(default=100, lte=100), request: Request
 ) -> ReadUsersResponse:
     with Session(engine) as session:
-        # get total count of rows for pagination
-        statement = select([func.count(user.User.id)])
-        total = session.exec(statement).one()
-
-        # get all rows
-        statement = select(user.User).order_by(user.User.id).offset(offset).limit(limit)
-        results = session.exec(statement)
-        users = results.all()
+        total = _get_total(session)
+        users_to_read = _get_users(session, offset, limit)
         return ReadUsersResponse(
             pagination=Pagination(offset=offset, limit=limit, total=total),
             data=[
@@ -40,7 +47,7 @@ def handle(
                     id=user_.id,
                     name=user_.name,
                 )
-                for user_ in users
+                for user_ in users_to_read
             ],
             links=get_links_for_pagination(offset, limit, total, request),
         )

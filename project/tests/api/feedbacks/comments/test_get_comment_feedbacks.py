@@ -269,7 +269,7 @@ def test_handle_successfully_with_specific_post_id(
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
     pagination = json_data.get("pagination")
-    assert pagination == {"limit": 100, "offset": 0, "total": 4}
+    assert pagination == {"limit": 100, "offset": 0, "total": 2}
     data = json_data.get("data")
     assert data == [
         {
