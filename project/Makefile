@@ -7,3 +7,7 @@ format:  ## 🔧 코드를 포매팅합니다.
 	pycln . --all
 	black .
 	isort . --profile black
+
+.PHONY: lint
+lint:  ## 💯 코드를 린팅합니다.
+	mypy .
