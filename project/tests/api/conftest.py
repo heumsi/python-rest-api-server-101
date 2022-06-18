@@ -63,8 +63,7 @@ def headers_with_authorized_common(client, common_user) -> Dict[str, str]:
     )
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
-    data = json_data.get("data")
-    headers = {"Authorization": f"{data['tokenType']} {data['accessToken']}"}
+    headers = {"Authorization": f"{json_data['token_type']} {json_data['access_token']}"}
     return headers
 
 
@@ -84,8 +83,8 @@ def headers_with_authorized_common_another(
     )
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
-    data = json_data.get("data")
-    headers = {"Authorization": f"{data['tokenType']} {data['accessToken']}"}
+    json_data = response.json()
+    headers = {"Authorization": f"{json_data['token_type']} {json_data['access_token']}"}
     return headers
 
 
@@ -115,8 +114,7 @@ def headers_with_authorized_admin(client) -> Dict[str, str]:
     )
     assert response.status_code == status.HTTP_200_OK
     json_data = response.json()
-    data = json_data.get("data")
-    headers = {"Authorization": f"{data['tokenType']} {data['accessToken']}"}
+    headers = {"Authorization": f"{json_data['token_type']} {json_data['access_token']}"}
     return headers
 
 
