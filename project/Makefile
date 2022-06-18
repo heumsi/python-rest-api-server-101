@@ -4,9 +4,9 @@ help:
 
 .PHONY: format
 format:  ## 🔧 코드를 포매팅합니다.
-	pycln . --all
+	pycln .
 	black .
-	isort . --profile black
+	isort .
 
 .PHONY: lint
 lint:  ## 💯 코드를 린팅합니다.
