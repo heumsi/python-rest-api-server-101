@@ -22,13 +22,13 @@ class ReadUsersResponse(SchemaModel):
 
 
 def _get_total(session: Session) -> int:
-    """ get total count of rows for pagination """
+    """get total count of rows for pagination"""
     statement = select([func.count(user.User.id)])
     return session.exec(statement).one()  # type: ignore
 
 
 def _get_users(session: Session, offset: int, limit: int) -> List[user.User]:
-    """ get all rows """
+    """get all rows"""
     statement = select(user.User).order_by(user.User.id).offset(offset).limit(limit)
     results = session.exec(statement)
     return results.all()

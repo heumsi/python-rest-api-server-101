@@ -19,14 +19,16 @@ def handle(
         post_feedback = results.first()
         if not post_feedback:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="PostFeedback not found"
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="PostFeedback not found",
             )
         if (
             Role(current_user.role) != Role.ADMIN
             and post_feedback.user_id != current_user.id
         ):
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail="User does not authorized"
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="User does not authorized",
             )
         session.delete(post_feedback)
         session.commit()

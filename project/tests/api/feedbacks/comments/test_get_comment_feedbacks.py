@@ -113,7 +113,10 @@ def test_handle_successfully(
                 "id": comment_1.id,
             },
             "links": [
-                {"href": f"{client.base_url}/comments/{comment_1.id}", "rel": "comment"}
+                {
+                    "href": f"{client.base_url}/comments/{comment_1.id}",
+                    "rel": "comment",
+                }
             ],
         },
         {

@@ -44,7 +44,10 @@ def test_handle_successfully(client, common_user):
     assert links == [
         {"href": f"{client.base_url}/posts/1", "rel": "self"},
         {"href": f"{client.base_url}/comments?post_id=1", "rel": "comments"},
-        {"href": f"{client.base_url}/feedbacks/posts?post_id=1", "rel": "feedbacks"},
+        {
+            "href": f"{client.base_url}/feedbacks/posts?post_id=1",
+            "rel": "feedbacks",
+        },
     ]
 
 

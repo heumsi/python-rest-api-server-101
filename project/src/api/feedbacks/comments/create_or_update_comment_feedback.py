@@ -63,7 +63,8 @@ def handle(
         existing_comment = session.get(comment.Comment, comment_id)
         if not existing_comment:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Comment not found"
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Comment not found",
             )
 
         statement = select(comment_feedback.CommentFeedback).where(

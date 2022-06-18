@@ -9,7 +9,10 @@ def test_handle_successfully(client, common_user, headers_with_authorized_common
     # given
     with Session(engine) as session:
         post_ = post.Post(
-            title="테스트 제목", user_id=common_user.id, user=common_user, content="테스트 내용"
+            title="테스트 제목",
+            user_id=common_user.id,
+            user=common_user,
+            content="테스트 내용",
         )
         session.add(post_)
         session.commit()

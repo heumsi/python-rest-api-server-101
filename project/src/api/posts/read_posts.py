@@ -45,13 +45,13 @@ class ReadPostsResponse(SchemaModel):
 
 
 def _get_total(session: Session) -> int:
-    """ get total count of rows for pagination """
+    """get total count of rows for pagination"""
     statement = select([func.count(post.Post.id)])
     return session.exec(statement).one()  # type: ignore
 
 
 def _get_posts(session: Session, offset: int, limit: int) -> List[post.Post]:
-    """ get all rows """
+    """get all rows"""
     statement = (
         select(post.Post)
         .order_by(post.Post.id)
@@ -68,7 +68,10 @@ def _get_posts(session: Session, offset: int, limit: int) -> List[post.Post]:
 
 
 def handle(
-    *, offset: int = 0, limit: int = Query(default=100, lte=100), request: Request
+    *,
+    offset: int = 0,
+    limit: int = Query(default=100, lte=100),
+    request: Request,
 ) -> ReadPostsResponse:
     with Session(engine) as session:
         total = _get_total(session)

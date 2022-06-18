@@ -17,15 +17,17 @@ class ReadCommentsResponse(SchemaModel):
 
 
 def _get_total(session: Session, post_id: Optional[int] = None) -> int:
-    """ get total count of rows for pagination """
+    """get total count of rows for pagination"""
     statement = select([func.count(comment.Comment.id)])
     if post_id:
         statement = statement.where(comment.Comment.post_id == post_id)
     return session.exec(statement).one()  # type: ignore
 
 
-def _get_comments(session: Session, offset: int, limit: int, post_id: Optional[int] = None) -> List[comment.Comment]:
-    """ get all rows """
+def _get_comments(
+    session: Session, offset: int, limit: int, post_id: Optional[int] = None
+) -> List[comment.Comment]:
+    """get all rows"""
     statement = (
         select(comment.Comment)
         .order_by(comment.Comment.id)

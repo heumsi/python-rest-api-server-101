@@ -9,7 +9,10 @@ def test_handle_successfully(client, common_user):
     # given
     with Session(engine) as session:
         post_ = post.Post(
-            title="테스트 제목", user_id=common_user.id, content="테스트 내용", user=common_user
+            title="테스트 제목",
+            user_id=common_user.id,
+            content="테스트 내용",
+            user=common_user,
         )
         comment_ = comment.Comment(
             post_id=post_.id,

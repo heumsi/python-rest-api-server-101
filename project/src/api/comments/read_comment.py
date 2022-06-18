@@ -46,7 +46,8 @@ def handle(comment_id: int, request: Request) -> ReadCommentResponse:
         comment_to_read = session.get(Comment, comment_id)
         if not comment_to_read:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Comment not found"
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Comment not found",
             )
         return ReadCommentResponse(
             data=ReadCommentResponse.Data(

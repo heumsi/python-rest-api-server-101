@@ -21,7 +21,8 @@ def handle(
             )
         if Role(user.role) != Role.ADMIN and post.user_id != user.id:
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail="User does not authorized"
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="User does not authorized",
             )
         session.delete(post)
         session.commit()

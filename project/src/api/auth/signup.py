@@ -18,7 +18,8 @@ def handle(request: SignupRequest) -> None:
         existing_user = session.get(user.User, request.id)
         if existing_user:
             raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT, detail="User already exist"
+                status_code=status.HTTP_409_CONFLICT,
+                detail="User already exist",
             )
         request.password = get_hashed_password(request.password)
         new_user = user.User(

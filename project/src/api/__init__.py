@@ -7,7 +7,9 @@ from src.api import auth, comments, feedbacks, posts, users
 from src.database import create_db_and_tables
 
 
-def check_api_version_in_headers(accept: Optional[str] = Header(default=None)) -> None:
+def check_api_version_in_headers(
+    accept: Optional[str] = Header(default=None),
+) -> None:
     if not accept or accept.lower() != "application/vnd.api+json":
         raise HTTPException(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,

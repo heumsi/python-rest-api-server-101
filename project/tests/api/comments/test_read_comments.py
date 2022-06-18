@@ -156,14 +156,20 @@ def test_handle_successfully_with_params_including_post_id(client, common_user):
                 "name": common_user.name,
             },
             "links": [
-                {"href": f"{client.base_url}/comments/{comment_1.id}", "rel": "self"},
+                {
+                    "href": f"{client.base_url}/comments/{comment_1.id}",
+                    "rel": "self",
+                },
                 {"href": f"{client.base_url}/posts/{post_1.id}", "rel": "post"},
             ],
         },
     ]
     links = json_data.get("links")
     assert links == [
-        {"href": f"{client.base_url}/comments/?post_id={post_1.id}", "rel": "self"}
+        {
+            "href": f"{client.base_url}/comments/?post_id={post_1.id}",
+            "rel": "self",
+        }
     ]
 
 
@@ -238,14 +244,26 @@ def test_handle_successfully_with_specific_offset_and_limit(client, common_user)
                 "name": common_user.name,
             },
             "links": [
-                {"href": f"{client.base_url}/comments/{comment_2.id}", "rel": "self"},
+                {
+                    "href": f"{client.base_url}/comments/{comment_2.id}",
+                    "rel": "self",
+                },
                 {"href": f"{client.base_url}/posts/{post_1.id}", "rel": "post"},
             ],
         },
     ]
     links = json_data.get("links")
     assert links == [
-        {"href": f"{client.base_url}/comments/?offset=1&limit=1", "rel": "self"},
-        {"href": f"{client.base_url}/comments/?offset=2&limit=1", "rel": "next"},
-        {"href": f"{client.base_url}/comments/?offset=0&limit=1", "rel": "prev"},
+        {
+            "href": f"{client.base_url}/comments/?offset=1&limit=1",
+            "rel": "self",
+        },
+        {
+            "href": f"{client.base_url}/comments/?offset=2&limit=1",
+            "rel": "next",
+        },
+        {
+            "href": f"{client.base_url}/comments/?offset=0&limit=1",
+            "rel": "prev",
+        },
     ]

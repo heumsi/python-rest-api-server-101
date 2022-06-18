@@ -58,7 +58,8 @@ def handle(post_id: int, request: Request) -> ReadPostResponse:
                     href=str(request.url),
                 ),
                 Link(
-                    rel="comments", href=f"{request.base_url}comments?post_id={post_id}"
+                    rel="comments",
+                    href=f"{request.base_url}comments?post_id={post_id}",
                 ),
                 Link(
                     rel="feedbacks",

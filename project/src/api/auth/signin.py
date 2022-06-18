@@ -25,11 +25,13 @@ def handle(form_data: OAuth2PasswordRequestForm = Depends()) -> SigninResponse:
         user = session.get(User, form_data.username)
         if not user:
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="User does not exist"
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User does not exist",
             )
         if not pwd_context.verify(form_data.password, user.password):
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Password is incorrect"
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Password is incorrect",
             )
     token_payload = TokenPayload(user=user)
     jwt_token = jwt.encode(

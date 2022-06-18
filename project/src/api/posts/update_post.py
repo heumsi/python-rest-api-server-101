@@ -32,7 +32,8 @@ def handle(
             and post_to_update.user_id != current_user.id
         ):
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail="User does not authorized"
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="User does not authorized",
             )
         post_to_update.updated_at = get_current_unix_timestamp()
         updated_data = request.dict(exclude_unset=True)

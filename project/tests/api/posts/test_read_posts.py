@@ -10,7 +10,10 @@ def test_handle_successfully(client, common_user):
     # given
     with Session(engine) as session:
         post_1 = post.Post(
-            title="테스트 제목", user_id=common_user.id, user=common_user, content="테스트 내용"
+            title="테스트 제목",
+            user_id=common_user.id,
+            user=common_user,
+            content="테스트 내용",
         )
         feedback_1 = post_feedback.PostFeedback(
             post_id=post_1.id,
@@ -27,7 +30,10 @@ def test_handle_successfully(client, common_user):
             user=common_user,
         )
         post_2 = post.Post(
-            title="테스트 제목", user_id=common_user.id, user=common_user, content="테스트 내용"
+            title="테스트 제목",
+            user_id=common_user.id,
+            user=common_user,
+            content="테스트 내용",
         )
         feedback_2 = post_feedback.PostFeedback(
             post_id=post_2.id,

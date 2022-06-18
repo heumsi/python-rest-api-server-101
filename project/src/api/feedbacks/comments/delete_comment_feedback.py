@@ -29,7 +29,8 @@ def handle(
             and comment_feedback.user_id != current_user.id
         ):
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail="User does not authorized"
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="User does not authorized",
             )
         session.delete(comment_feedback)
         session.commit()
