@@ -42,3 +42,13 @@ repos:
         types: [python]
         language: system
         entry: pytest
+  - repo: local
+    hooks:
+      - id: commitizen
+        name: commitizen check
+        stages: [ commit-msg ]
+        language: system
+        entry: cz check
+        args:
+          - --allow-abort
+          - --commit-msg-file

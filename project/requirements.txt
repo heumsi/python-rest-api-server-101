@@ -13,3 +13,4 @@ isort==5.10.1
 mypy==0.961
 pre-commit==2.19.0
 pytest-xdist==2.5.0
+commitizen==2.27.1
