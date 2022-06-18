@@ -35,3 +35,10 @@ repos:
         args:
           - --config-file
           - project/pyproject.toml
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        types: [python]
+        language: system
+        entry: pytest
