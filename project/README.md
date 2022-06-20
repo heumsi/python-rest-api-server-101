@@ -2,7 +2,7 @@
 
 ## Preparations
 
-We use poetry as our build system. 
+We use poetry as our build system.
 If [poetry](https://python-poetry.org/docs/#installation) is not installed, please install it first.
 
 ## Installation
@@ -17,19 +17,20 @@ $ poetry shell
 
 ## Usage
 
-First, please set environment variables in `.env`. 
+First, please set environment variables in `.env`.
 
 ```bash
 $ touch .env
 $ vi .env
 ```
 
-`.env` is following
+`.env` is following (example)
 
 ```
-# DB_URL is sqlalchmy url for connecting database
-# ex. DB_URL = "sqlite:////Users/user/Desktop/heumsi/python-rest-api-server-101/project/database.db"
-DB_URL = "YOUR_SQLALCHEM_URL"
+DB__SQLALCHEMY_URL=sqlite:////Users/user/Desktop/heumsi/repos/python-rest-api-server-101/project/database.db
+DB__ECHO=False
+AUTH__JWT_SECRET_KEY=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
+AUTH__JWT_ALGORITHM=HS256
 ```
 
 Next, run uvicorn app.
@@ -44,7 +45,7 @@ $ uvicorn src.main:app
 
 ### How to commit
 
-We use commitizen as our commit method. 
+We use commitizen as our commit method.
 Please use `$ cz c` for committing, not `$ git commit`.
 
 ```bash
@@ -53,12 +54,12 @@ $ git add .
 $ cz c  # Instead of `git commit`
 ```
 
-When a commit is attempted, pre-commit works, 
+When a commit is attempted, pre-commit works,
 and commit is completed only when pre-commit works successfully.
 
 ### How to add python packages
 
-We use poetry for package installation. 
+We use poetry for package installation.
 Therefore, if you need to install a package, please install it with the following command.
 
 ```bash

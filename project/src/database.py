@@ -1,14 +1,10 @@
-import os
-
 from sqlmodel import SQLModel, create_engine, pool
 
-sqlite_url = os.getenv("DB_URL")
-if not sqlite_url:
-    raise EnvironmentError(f"Please fill os environment: DB_URL")
+from src import config
 
 engine = create_engine(
-    sqlite_url,
-    echo=True,
+    url=config.db.url,
+    echo=config.db.echo,
     connect_args={
         "check_same_thread": False,
     },

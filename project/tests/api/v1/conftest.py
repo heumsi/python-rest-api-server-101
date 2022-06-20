@@ -1,7 +1,4 @@
-import os
 from typing import Dict
-
-os.environ["DB_URL"] = "sqlite:///:memory:"
 
 import pytest
 from fastapi import status

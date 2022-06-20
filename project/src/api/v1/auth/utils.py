@@ -8,6 +8,7 @@ from passlib.context import CryptContext
 from pydantic import ValidationError
 from sqlmodel import Session
 
+from src import config
 from src.api.common import SchemaModel
 from src.database import engine
 from src.models.user import Role, User
@@ -16,9 +17,6 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/auth/signin")
 
-JWT_SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-JWT_ALGORITHM = ALGORITHMS.HS256
-
 
 class TokenPayload(SchemaModel):
     user: User
@@ -26,7 +24,9 @@ class TokenPayload(SchemaModel):
 
 def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     try:
-        token_payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=JWT_ALGORITHM)
+        token_payload = jwt.decode(
+            token, config.auth.jwt_secret_key, algorithms=config.auth.jwt_algorithm
+        )
         token_payload = TokenPayload(**token_payload)
     except (JWTError, ValidationError):
         raise HTTPException(

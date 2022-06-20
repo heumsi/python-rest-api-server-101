@@ -4,12 +4,8 @@ from jose import jwt
 from pydantic.main import BaseModel
 from sqlmodel import Session
 
-from src.api.v1.auth.utils import (
-    JWT_ALGORITHM,
-    JWT_SECRET_KEY,
-    TokenPayload,
-    pwd_context,
-)
+from src import config
+from src.api.v1.auth.utils import TokenPayload, pwd_context
 from src.database import engine
 from src.models.user import User
 
@@ -37,6 +33,8 @@ def handle(form_data: OAuth2PasswordRequestForm = Depends()) -> SigninResponse:
             )
     token_payload = TokenPayload(user=user)
     jwt_token = jwt.encode(
-        token_payload.dict(), key=JWT_SECRET_KEY, algorithm=JWT_ALGORITHM
+        token_payload.dict(),
+        key=config.auth.jwt_secret_key,
+        algorithm=config.auth.jwt_algorithm,
     )
     return SigninResponse(access_token=jwt_token, token_type="Bearer")
