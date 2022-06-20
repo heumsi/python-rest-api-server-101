@@ -8,6 +8,7 @@ repos:
     hooks:
       - id: pycln
         name: pycln
+        stages: [ commit ]
         types: [python]
         language: system
         entry: pycln
@@ -15,6 +16,7 @@ repos:
     hooks:
       - id: black
         name: black
+        stages: [ commit ]
         types: [python]
         language: system
         entry: black
@@ -22,6 +24,7 @@ repos:
     hooks:
       - id: isort
         name: isort
+        stages: [ commit ]
         types: [python]
         language: system
         entry: isort
@@ -29,6 +32,7 @@ repos:
     hooks:
       - id: mypy
         name: mypy
+        stages: [ commit ]
         types: [python]
         language: system
         entry: mypy
@@ -39,9 +43,12 @@ repos:
     hooks:
       - id: pytest
         name: pytest
+        stages: [ push ]
         types: [python]
         language: system
         entry: pytest
+        pass_filenames: false
+        always_run: true
   - repo: local
     hooks:
       - id: commitizen
